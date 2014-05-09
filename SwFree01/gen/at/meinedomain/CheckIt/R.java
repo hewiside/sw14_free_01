@@ -5,7 +5,7 @@
  * should not be modified by hand.
  */
 
-package at.meinedomain.swfree01;
+package at.meinedomain.CheckIt;
 
 public final class R {
     public static final class attr {
