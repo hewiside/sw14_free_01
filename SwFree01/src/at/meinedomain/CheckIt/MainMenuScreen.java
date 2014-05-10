@@ -1,5 +1,7 @@
 package at.meinedomain.CheckIt;
 
+import android.util.Log;
+
 import java.util.List;
 
 import com.badlogic.androidgames.framework.Game;
@@ -22,26 +24,27 @@ public class MainMenuScreen extends AbstractScreen {
     // overriden from Screen----------------------------------------------------
     @Override
     public void update(float deltaTime) {
-    	return;
-//        Graphics g = game.getGraphics();
-//        List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
-//        game.getInput().getKeyEvents();       
-//        
-//        int len = touchEvents.size();
-//        for(int i = 0; i < len; i++) {
-//            TouchEvent event = touchEvents.get(i);
-//            if(event.type == TouchEvent.TOUCH_UP) {
+        Graphics g = game.getGraphics();
+        List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
+        game.getInput().getKeyEvents();       
+        
+        int len = touchEvents.size();
+        for(int i = 0; i < len; i++) {
+            TouchEvent event = touchEvents.get(i);
+            if(event.type == TouchEvent.TOUCH_UP) {
 //                if(inBounds(event, 0, g.getHeight() - 64, 64, 64)) {
 //                    Settings.soundEnabled = !Settings.soundEnabled;
-//                    if(Settings.soundEnabled)
+//                    if(Settings.soundEnabled){
 //                        Assets.click.play(1);
+//                    }
 //                }
-//                if(inBounds(event, 64, 220, 192, 42) ) {
+                if(inBounds(event, g.getWidth()/3, g.getWidth()/6, 
+     				   g.getWidth()/3, g.getWidth()/3)) {
 //                    game.setScreen(new GameScreen(game));
-//                    if(Settings.soundEnabled)
+                    if(Settings.soundEnabled)
 //                        Assets.click.play(1);
-//                    return;
-//                }
+                    return;
+                }
 //                if(inBounds(event, 64, 220 + 42, 192, 42) ) {
 //                    game.setScreen(new HighscoreScreen(game));
 //                    if(Settings.soundEnabled)
@@ -54,8 +57,8 @@ public class MainMenuScreen extends AbstractScreen {
 //                        Assets.click.play(1);
 //                    return;
 //                }
-//            }
-//        }
+            }
+        }
     }
     
     private boolean inBounds(TouchEvent event, int x, int y, int width, int height) {
@@ -69,7 +72,14 @@ public class MainMenuScreen extends AbstractScreen {
     @Override
     public void present(float deltaTime) {
         Graphics g = game.getGraphics();
-//        
+        
+        // background
+        g.drawRect(0, 0, g.getWidth(), g.getHeight(), 0xffffce9e);
+        // playbutton
+        g.drawRect(g.getWidth()/3, g.getWidth()/6, g.getWidth()/3, g.getWidth()/3, 0xffb57554);
+        g.drawRect(5*g.getWidth()/12, g.getWidth()/4, g.getWidth()/12, g.getWidth()/6, 0xffffce9e);
+        g.drawRect(g.getWidth()/2, 7*g.getWidth()/24, g.getWidth()/12, g.getWidth()/12, 0xffffce9e);
+
 //        g.drawPixmap(Assets.background, 0, 0);
 //        g.drawPixmap(Assets.logo, 32, 20);
 //        g.drawPixmap(Assets.mainMenu, 64, 220);
