@@ -17,4 +17,7 @@ public class Assets {
     public static Pixmap wp;
     public static Pixmap wq;
     public static Pixmap wr;
+    
+    public static Pixmap buttonPlay;
+    public static Pixmap buttonSettings;
 }

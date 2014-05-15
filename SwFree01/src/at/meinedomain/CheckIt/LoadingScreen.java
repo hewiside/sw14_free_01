@@ -36,6 +36,11 @@ public class LoadingScreen extends AbstractScreen {
         Assets.wq = g.newPixmap("wq.png", PixmapFormat.ARGB4444);
         Assets.wr = g.newPixmap("wr.png", PixmapFormat.ARGB4444);
         
+        Assets.buttonPlay = g.newPixmap("buttonPlay.png", 
+        								PixmapFormat.ARGB4444);
+        Assets.buttonSettings = g.newPixmap("buttonSettings.png", 
+        								PixmapFormat.ARGB4444);
+        
         Settings.load(game.getFileIO());
         game.setScreen(new MainMenuScreen(game));
     }
