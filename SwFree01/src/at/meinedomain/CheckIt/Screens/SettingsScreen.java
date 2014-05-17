@@ -1,6 +1,8 @@
-package at.meinedomain.CheckIt;
+package at.meinedomain.CheckIt.Screens;
 
 import android.util.Log;
+import at.meinedomain.CheckIt.CheckItGame;
+import at.meinedomain.CheckIt.Settings;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package at.meinedomain.CheckIt;
+package at.meinedomain.CheckIt.Screens;
 
 import com.badlogic.androidgames.framework.Screen;
 import com.badlogic.androidgames.framework.Game;

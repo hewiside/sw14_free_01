@@ -1,5 +1,8 @@
 package at.meinedomain.CheckIt;
 
+import at.meinedomain.CheckIt.Screens.AbstractScreen;
+import at.meinedomain.CheckIt.Screens.LoadingScreen;
+
 import com.badlogic.androidgames.framework.Screen;
 import com.badlogic.androidgames.framework.impl.AndroidGame;
 

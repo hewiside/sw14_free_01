@@ -1,6 +1,8 @@
-package at.meinedomain.CheckIt;
+package at.meinedomain.CheckIt.Screens;
 
 import android.util.Log;
+import at.meinedomain.CheckIt.Assets;
+import at.meinedomain.CheckIt.Settings;
 
 import java.util.List;
 
@@ -39,6 +41,14 @@ public class MainMenuScreen extends AbstractScreen {
 //                        Assets.click.play(1);
 //                    }
 //                }
+            	
+            	// if "Play" clicked
+                if(inBounds(event, 4*unit, 2*unit, 4*unit, 4*unit)) {
+                    game.setScreen(new GameScreen(game));
+                    if(Settings.soundEnabled)
+//                        Assets.click.play(1);
+                    return;
+                }
             	
             	// if "Settings" clicked
                 if(inBounds(event, 4*unit, 8*unit, 4*unit, 4*unit)) {
@@ -90,7 +100,10 @@ public class MainMenuScreen extends AbstractScreen {
         
         // Settings button
         g.drawPixmap(Assets.buttonSettings, 4*unit, 8*unit);
+        
+        g.drawRect(0, 0, 12*unit, 2*unit, 0xffb57554);
 
+        g.drawRect(0, g.getHeight()-2*unit, 12*unit, 2*unit, 0xffb57554);
 //        here would be more abstract art ;)
 //        g.drawRect(4*unit, 8*unit, 4*unit, 4*unit, 0xffb57554);
 //        g.drawRect(11*unit/2, 19*unit/2, unit, unit, 0xffffce9e);

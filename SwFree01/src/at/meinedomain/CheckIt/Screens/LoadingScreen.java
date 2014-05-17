@@ -1,4 +1,7 @@
-package at.meinedomain.CheckIt;
+package at.meinedomain.CheckIt.Screens;
+
+import at.meinedomain.CheckIt.Assets;
+import at.meinedomain.CheckIt.Settings;
 
 import com.badlogic.androidgames.framework.Game;
 import com.badlogic.androidgames.framework.Graphics;
