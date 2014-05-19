@@ -11,9 +11,7 @@ public abstract class AbstractPiece {
 	private Color color;
 	private Point location;
 	protected Pixmap pixmap;
-	
-//	public abstract int[][] getReachableTiles();
-//	public abstract int[][] getCapturableTiles();
+
 
 	public AbstractPiece(Board b, Color col, Point pt){
 		board = b;

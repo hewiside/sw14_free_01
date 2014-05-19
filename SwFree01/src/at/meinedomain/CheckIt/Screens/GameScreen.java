@@ -1,6 +1,5 @@
 package at.meinedomain.CheckIt.Screens;
 
-import android.util.Log;
 import at.meinedomain.CheckIt.Assets;
 import at.meinedomain.CheckIt.Board;
 import at.meinedomain.CheckIt.Color;
@@ -17,20 +16,39 @@ public class GameScreen extends AbstractScreen {
 	
 	enum GameState{
 		Ready,
-		Running,	// maybe 1 state for white's turn and 1 state for black' turn.
+		MyTurn,
+		OpponentsTurn,		
 		GameOver
 	}
 	
 	GameState state = GameState.Ready;
 	Board board;
 	Color player;
-	int offset; // determines whether A8 is a light or dark tile?
+	
+	float myTime;
+	float opponentsTime;
+	
+	int offset; // determines whether A8 is a light or dark tile?	
+    int unit;
+    int tileSize;
+    int firstRankY;
+    private static final int NUM_WIDTH = 135; // a number's width in the picture Assets.numbers
+    private static final int NUM_HEIGHT = 180;
+	private static final int COLON_WIDTH = 45; // width of colon in Assets.numbers 
 	
     public GameScreen(Game game) {
         super(game);
         board = new Board();
         player = Color.WHITE;
+
+        myTime = 300;
+        opponentsTime = 300;
+        
         offset = (player==Color.WHITE ? 1 : 0);
+        unit = game.getGraphics().getWidth()/12;
+        tileSize = game.getGraphics().getWidth() / board.getWidth();
+        firstRankY = game.getGraphics().getHeight()/2 +
+        									(board.getHeight()/2-1)*tileSize;
     }   
 
 	// overriden from AbstractScreen--------------------------------------------
@@ -102,12 +120,29 @@ public class GameScreen extends AbstractScreen {
     public void present(float deltaTime) {
         Graphics g = game.getGraphics();
         
-        // background
-        g.drawRect(0, 0, g.getWidth(), g.getHeight(), 0xffdaa179);
+        drawBackground(g);
+        drawBoard(g);
+        drawTimes(g);
         
-        int unit = g.getWidth()/12;
-        int tileSize = g.getWidth()/8;
-        int firstRankY = g.getHeight()/2+3*tileSize;
+        if(state == GameState.Ready){ 
+            drawReadyUI(g);
+        }
+        if(state == GameState.MyTurn){
+            drawMyTurnUI(g);
+        }
+        if(state == GameState.OpponentsTurn){
+            drawOpponentsTurnUI(g);
+        }
+        if(state == GameState.GameOver){
+            drawGameOverUI(g);
+        }
+    }
+    
+    private void drawBackground(Graphics g){
+        g.drawRect(0, 0, g.getWidth(), g.getHeight(), 0xffdaa179);
+    }
+    
+    private void drawBoard(Graphics g){
         // Dark tiles
         g.drawRect(0, firstRankY - 7*tileSize, 
         		   g.getWidth(), g.getWidth(), 0xffb57554);
@@ -125,54 +160,53 @@ public class GameScreen extends AbstractScreen {
         		}
         	}
         }
-	//	        g.drawPixmap(Assets.br, 0, 0);
-	//	        g.drawPixmap(Assets.bn, tileSize, 0);
-	//	        g.drawPixmap(Assets.bb, 2*tileSize, 0);
-	//	        g.drawPixmap(Assets.bq, 3*tileSize, 0);
-	//	        g.drawPixmap(Assets.bk, 4*tileSize, 0);
-	//	        g.drawPixmap(Assets.bb, 5*tileSize, 0);
-	//	        g.drawPixmap(Assets.bn, 6*tileSize, 0);
-	//	        g.drawPixmap(Assets.br, 7*tileSize, 0);
-	//	        g.drawPixmap(Assets.bp, 0, 2*tileSize);
-	//	
-	//	        g.drawPixmap(Assets.wr, 0, 0);
-	//	        g.drawPixmap(Assets.wn, tileSize, 0);
-	//	        g.drawPixmap(Assets.wb, 2*tileSize, 0);
-	//	        g.drawPixmap(Assets.wq, 3*tileSize, 0);
-	//	        g.drawPixmap(Assets.wk, 4*tileSize, 0);
-	//	        g.drawPixmap(Assets.wb, 5*tileSize, 0);
-	//	        g.drawPixmap(Assets.wn, 6*tileSize, 0);
-	//	        g.drawPixmap(Assets.wr, 7*tileSize, 0);
-	//	        g.drawPixmap(Assets.wp, 0, 2*tileSize);
-	//	        
-	//	        g.drawPixmap(Assets.wr, 0, tileSize);
-	//	        g.drawPixmap(Assets.wn, tileSize, tileSize);
-	//	        g.drawPixmap(Assets.wb, 2*tileSize, tileSize);
-	//	        g.drawPixmap(Assets.wq, 3*tileSize, tileSize);
-	//	        g.drawPixmap(Assets.wk, 4*tileSize, tileSize);
-	//	        g.drawPixmap(Assets.wb, 5*tileSize, tileSize);
-	//	        g.drawPixmap(Assets.wn, 6*tileSize, tileSize);
-	//	        g.drawPixmap(Assets.wr, 7*tileSize, tileSize);
-	//	        g.drawPixmap(Assets.wp, tileSize, 2*tileSize);
-	//	        
-	//	        g.drawPixmap(Assets.br, 0, tileSize);
-	//	        g.drawPixmap(Assets.bn, tileSize, tileSize);
-	//	        g.drawPixmap(Assets.bb, 2*tileSize, tileSize);
-	//	        g.drawPixmap(Assets.bq, 3*tileSize, tileSize);
-	//	        g.drawPixmap(Assets.bk, 4*tileSize, tileSize);
-	//	        g.drawPixmap(Assets.bb, 5*tileSize, tileSize);
-	//	        g.drawPixmap(Assets.bn, 6*tileSize, tileSize);
-	//	        g.drawPixmap(Assets.br, 7*tileSize, tileSize);
-	//	        g.drawPixmap(Assets.bp, tileSize, 2*tileSize);
-//        g.drawRect(0, 0, 12*unit, 2*unit, 0xffb57554);
-//
-//        g.drawRect(0, g.getHeight()-2*unit, 12*unit, 2*unit, 0xffb57554);
-        
-        
-//        if(Settings.soundEnabled)
-//            g.drawPixmap(Assets.buttons, 0, 416, 0, 0, 64, 64);
-//        else
-//            g.drawPixmap(Assets.buttons, 0, 416, 64, 0, 64, 64);
+    }
+    
+    private void drawTimes(Graphics g){
+    	int x = g.getWidth()/2-2*NUM_WIDTH-COLON_WIDTH/2;
+    	
+    	drawTime(g, (int) opponentsTime, x, 0);
+    	drawTime(g, (int) myTime, x, g.getHeight()-NUM_HEIGHT);
+    }
+    
+    private void drawTime(Graphics g, int time, int x, int y){
+    	int minutes = (int) time / 60;
+    	int minutes10 = (int) minutes / 10;
+    	int minutes01 = (int) minutes - minutes10;
+    	
+    	int seconds = (int) time - 60*minutes;
+    	int seconds10 = (int) seconds / 10;
+    	int seconds01 = (int) seconds - seconds/10;
+    	
+    	g.drawPixmap(Assets.numbers, x, y, minutes10*NUM_WIDTH, 0, NUM_WIDTH, NUM_HEIGHT);
+    	x += NUM_WIDTH;
+    	g.drawPixmap(Assets.numbers, x, y, minutes01*NUM_WIDTH, 0, NUM_WIDTH, NUM_HEIGHT);
+    	x += NUM_WIDTH;
+    	g.drawPixmap(Assets.numbers, x, y, 10*NUM_WIDTH, 0, COLON_WIDTH, NUM_HEIGHT);
+    	x += COLON_WIDTH;
+    	g.drawPixmap(Assets.numbers, x, y, seconds10*NUM_WIDTH, 0, NUM_WIDTH, NUM_HEIGHT);
+    	x += NUM_WIDTH;
+    	g.drawPixmap(Assets.numbers, x, y, seconds01*NUM_WIDTH, 0, NUM_WIDTH, NUM_HEIGHT);
+    }
+    
+    private void drawReadyUI(Graphics g){
+    	if(player == Color.WHITE){
+    		// TODO show that we wait for black to start the countdown
+    	}
+    	if(player == Color.BLACK){
+    		// TODO show a picture that makes player start the countdown
+    	}
+    }
+    private void drawMyTurnUI(Graphics g){
+    	// TODO maybe make the inactive clock darker
+    	// TODO mark chosen tile (if it contains a piece)
+    }
+    private void drawOpponentsTurnUI(Graphics g){
+    	// TODO maybe make the inactive clock darker
+    }
+    private void drawGameOverUI(Graphics g){
+    	// TODO play-again-button & go-back-button
+    	g.drawRect(0, 0, g.getWidth(), g.getHeight(), 0x20000000);
     }
 
     @Override

@@ -20,4 +20,6 @@ public class Assets {
     
     public static Pixmap buttonPlay;
     public static Pixmap buttonSettings;
+    
+    public static Pixmap numbers;
 }

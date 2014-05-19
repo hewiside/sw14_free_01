@@ -1,6 +1,5 @@
 package at.meinedomain.CheckIt.Pieces;
 
-import android.util.Log;
 import at.meinedomain.CheckIt.Assets;
 import at.meinedomain.CheckIt.Board;
 import at.meinedomain.CheckIt.Color;

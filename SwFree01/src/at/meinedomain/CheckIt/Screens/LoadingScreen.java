@@ -44,6 +44,8 @@ public class LoadingScreen extends AbstractScreen {
         Assets.buttonSettings = g.newPixmap("buttonSettings.png", 
         								PixmapFormat.ARGB4444);
         
+        Assets.numbers = g.newPixmap("numbers.png", PixmapFormat.ARGB4444);
+        
         Settings.load(game.getFileIO());
         game.setScreen(new MainMenuScreen(game));
     }
