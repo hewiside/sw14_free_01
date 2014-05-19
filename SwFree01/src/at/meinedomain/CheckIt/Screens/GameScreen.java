@@ -2,6 +2,8 @@ package at.meinedomain.CheckIt.Screens;
 
 import android.util.Log;
 import at.meinedomain.CheckIt.Assets;
+import at.meinedomain.CheckIt.Board;
+import at.meinedomain.CheckIt.Color;
 import at.meinedomain.CheckIt.CheckItGame;
 import at.meinedomain.CheckIt.Settings;
 
@@ -10,12 +12,25 @@ import java.util.List;
 import com.badlogic.androidgames.framework.Game;
 import com.badlogic.androidgames.framework.Graphics;
 import com.badlogic.androidgames.framework.Input.TouchEvent;
-import com.badlogic.androidgames.framework.Screen;
 
 public class GameScreen extends AbstractScreen {
 	
+	enum GameState{
+		Ready,
+		Running,	// maybe 1 state for white's turn and 1 state for black' turn.
+		GameOver
+	}
+	
+	GameState state = GameState.Ready;
+	Board board;
+	Color player;
+	int offset; // determines whether A8 is a light or dark tile?
+	
     public GameScreen(Game game) {
-        super(game);               
+        super(game);
+        board = new Board();
+        player = Color.WHITE;
+        offset = (player==Color.WHITE ? 1 : 0);
     }   
 
 	// overriden from AbstractScreen--------------------------------------------
@@ -88,50 +103,67 @@ public class GameScreen extends AbstractScreen {
         Graphics g = game.getGraphics();
         
         // background
-        g.drawRect(0, 0, g.getWidth(), g.getHeight(), 0xffffce9e);
+        g.drawRect(0, 0, g.getWidth(), g.getHeight(), 0xffdaa179);
         
-        // Play button
         int unit = g.getWidth()/12;
         int tileSize = g.getWidth()/8;
-        g.drawPixmap(Assets.br, 0, 0);
-        g.drawPixmap(Assets.bn, tileSize, 0);
-        g.drawPixmap(Assets.bb, 2*tileSize, 0);
-        g.drawPixmap(Assets.bq, 3*tileSize, 0);
-        g.drawPixmap(Assets.bk, 4*tileSize, 0);
-        g.drawPixmap(Assets.bb, 5*tileSize, 0);
-        g.drawPixmap(Assets.bn, 6*tileSize, 0);
-        g.drawPixmap(Assets.br, 7*tileSize, 0);
-        g.drawPixmap(Assets.bp, 0, 2*tileSize);
-
-        g.drawPixmap(Assets.wr, 0, 0);
-        g.drawPixmap(Assets.wn, tileSize, 0);
-        g.drawPixmap(Assets.wb, 2*tileSize, 0);
-        g.drawPixmap(Assets.wq, 3*tileSize, 0);
-        g.drawPixmap(Assets.wk, 4*tileSize, 0);
-        g.drawPixmap(Assets.wb, 5*tileSize, 0);
-        g.drawPixmap(Assets.wn, 6*tileSize, 0);
-        g.drawPixmap(Assets.wr, 7*tileSize, 0);
-        g.drawPixmap(Assets.wp, 0, 2*tileSize);
-        
-        g.drawPixmap(Assets.wr, 0, tileSize);
-        g.drawPixmap(Assets.wn, tileSize, tileSize);
-        g.drawPixmap(Assets.wb, 2*tileSize, tileSize);
-        g.drawPixmap(Assets.wq, 3*tileSize, tileSize);
-        g.drawPixmap(Assets.wk, 4*tileSize, tileSize);
-        g.drawPixmap(Assets.wb, 5*tileSize, tileSize);
-        g.drawPixmap(Assets.wn, 6*tileSize, tileSize);
-        g.drawPixmap(Assets.wr, 7*tileSize, tileSize);
-        g.drawPixmap(Assets.wp, tileSize, 2*tileSize);
-        
-        g.drawPixmap(Assets.br, 0, tileSize);
-        g.drawPixmap(Assets.bn, tileSize, tileSize);
-        g.drawPixmap(Assets.bb, 2*tileSize, tileSize);
-        g.drawPixmap(Assets.bq, 3*tileSize, tileSize);
-        g.drawPixmap(Assets.bk, 4*tileSize, tileSize);
-        g.drawPixmap(Assets.bb, 5*tileSize, tileSize);
-        g.drawPixmap(Assets.bn, 6*tileSize, tileSize);
-        g.drawPixmap(Assets.br, 7*tileSize, tileSize);
-        g.drawPixmap(Assets.bp, tileSize, 2*tileSize);
+        int firstRankY = g.getHeight()/2+3*tileSize;
+        // Dark tiles
+        g.drawRect(0, firstRankY - 7*tileSize, 
+        		   g.getWidth(), g.getWidth(), 0xffb57554);
+        for(int i=0; i<board.getWidth(); i++){
+        	for(int j=0; j<board.getHeight(); j++){
+        		// Light tiles
+        		if((i+j)%2 == offset){
+        			g.drawRect(i*tileSize, firstRankY - j*tileSize, 
+        					   tileSize, tileSize, 0xffffce9e);
+        		}
+        		// Pieces
+        		if(board.pieceAt(i,j) != null){
+        			g.drawPixmap(board.pieceAt(i,j).getPixmap(), 
+        						 i*tileSize, firstRankY - j*tileSize);
+        		}
+        	}
+        }
+	//	        g.drawPixmap(Assets.br, 0, 0);
+	//	        g.drawPixmap(Assets.bn, tileSize, 0);
+	//	        g.drawPixmap(Assets.bb, 2*tileSize, 0);
+	//	        g.drawPixmap(Assets.bq, 3*tileSize, 0);
+	//	        g.drawPixmap(Assets.bk, 4*tileSize, 0);
+	//	        g.drawPixmap(Assets.bb, 5*tileSize, 0);
+	//	        g.drawPixmap(Assets.bn, 6*tileSize, 0);
+	//	        g.drawPixmap(Assets.br, 7*tileSize, 0);
+	//	        g.drawPixmap(Assets.bp, 0, 2*tileSize);
+	//	
+	//	        g.drawPixmap(Assets.wr, 0, 0);
+	//	        g.drawPixmap(Assets.wn, tileSize, 0);
+	//	        g.drawPixmap(Assets.wb, 2*tileSize, 0);
+	//	        g.drawPixmap(Assets.wq, 3*tileSize, 0);
+	//	        g.drawPixmap(Assets.wk, 4*tileSize, 0);
+	//	        g.drawPixmap(Assets.wb, 5*tileSize, 0);
+	//	        g.drawPixmap(Assets.wn, 6*tileSize, 0);
+	//	        g.drawPixmap(Assets.wr, 7*tileSize, 0);
+	//	        g.drawPixmap(Assets.wp, 0, 2*tileSize);
+	//	        
+	//	        g.drawPixmap(Assets.wr, 0, tileSize);
+	//	        g.drawPixmap(Assets.wn, tileSize, tileSize);
+	//	        g.drawPixmap(Assets.wb, 2*tileSize, tileSize);
+	//	        g.drawPixmap(Assets.wq, 3*tileSize, tileSize);
+	//	        g.drawPixmap(Assets.wk, 4*tileSize, tileSize);
+	//	        g.drawPixmap(Assets.wb, 5*tileSize, tileSize);
+	//	        g.drawPixmap(Assets.wn, 6*tileSize, tileSize);
+	//	        g.drawPixmap(Assets.wr, 7*tileSize, tileSize);
+	//	        g.drawPixmap(Assets.wp, tileSize, 2*tileSize);
+	//	        
+	//	        g.drawPixmap(Assets.br, 0, tileSize);
+	//	        g.drawPixmap(Assets.bn, tileSize, tileSize);
+	//	        g.drawPixmap(Assets.bb, 2*tileSize, tileSize);
+	//	        g.drawPixmap(Assets.bq, 3*tileSize, tileSize);
+	//	        g.drawPixmap(Assets.bk, 4*tileSize, tileSize);
+	//	        g.drawPixmap(Assets.bb, 5*tileSize, tileSize);
+	//	        g.drawPixmap(Assets.bn, 6*tileSize, tileSize);
+	//	        g.drawPixmap(Assets.br, 7*tileSize, tileSize);
+	//	        g.drawPixmap(Assets.bp, tileSize, 2*tileSize);
 //        g.drawRect(0, 0, 12*unit, 2*unit, 0xffb57554);
 //
 //        g.drawRect(0, g.getHeight()-2*unit, 12*unit, 2*unit, 0xffb57554);

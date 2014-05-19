@@ -85,11 +85,16 @@ public class MainMenuScreen extends AbstractScreen {
     public void present(float deltaTime) {
         Graphics g = game.getGraphics();
         
+        int unit = g.getWidth()/12;
         // background
         g.drawRect(0, 0, g.getWidth(), g.getHeight(), 0xffffce9e);
+
+        // bars at top and bottom
+        g.drawRect(0, 0, 12*unit, 2*unit, 0xffb57554);
+        g.drawRect(0, g.getHeight()-2*unit, 12*unit, 2*unit, 0xffb57554);
+
         
         // Play button
-        int unit = g.getWidth()/12;
         g.drawPixmap(Assets.buttonPlay, 4*unit, 2*unit);
 
 //        here would be more abstract art ;)
@@ -101,9 +106,6 @@ public class MainMenuScreen extends AbstractScreen {
         // Settings button
         g.drawPixmap(Assets.buttonSettings, 4*unit, 8*unit);
         
-        g.drawRect(0, 0, 12*unit, 2*unit, 0xffb57554);
-
-        g.drawRect(0, g.getHeight()-2*unit, 12*unit, 2*unit, 0xffb57554);
 //        here would be more abstract art ;)
 //        g.drawRect(4*unit, 8*unit, 4*unit, 4*unit, 0xffb57554);
 //        g.drawRect(11*unit/2, 19*unit/2, unit, unit, 0xffffce9e);
