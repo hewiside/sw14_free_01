@@ -32,6 +32,7 @@ public class MainMenuScreen extends AbstractScreen {
         
         int len = touchEvents.size();
         int unit = g.getWidth()/12;
+        int height = g.getHeight();
         for(int i = 0; i < len; i++) {
             TouchEvent event = touchEvents.get(i);
             if(event.type == TouchEvent.TOUCH_UP) {
@@ -43,7 +44,7 @@ public class MainMenuScreen extends AbstractScreen {
 //                }
             	
             	// if "Play" clicked
-                if(inBounds(event, 4*unit, 2*unit, 4*unit, 4*unit)) {
+                if(inBounds(event, 4*unit, height/3-2*unit, 4*unit, 4*unit)) {
                     game.setScreen(new GameScreen(game));
                     if(Settings.soundEnabled)
 //                        Assets.click.play(1);
@@ -51,7 +52,7 @@ public class MainMenuScreen extends AbstractScreen {
                 }
             	
             	// if "Settings" clicked
-                if(inBounds(event, 4*unit, 8*unit, 4*unit, 4*unit)) {
+                if(inBounds(event, 4*unit, 2*height/3-2*unit, 4*unit, 4*unit)) {
                     game.setScreen(new SettingsScreen(game));
                     if(Settings.soundEnabled)
 //                        Assets.click.play(1);
@@ -86,6 +87,7 @@ public class MainMenuScreen extends AbstractScreen {
         Graphics g = game.getGraphics();
         
         int unit = g.getWidth()/12;
+        int height = g.getHeight();
         // background
         g.drawRect(0, 0, g.getWidth(), g.getHeight(), 0xffffce9e);
 
@@ -95,7 +97,7 @@ public class MainMenuScreen extends AbstractScreen {
 
         
         // Play button
-        g.drawPixmap(Assets.buttonPlay, 4*unit, 2*unit);
+        g.drawPixmap(Assets.buttonPlay, 4*unit, height/3-2*unit);
 
 //        here would be more abstract art ;)
 //        g.drawRect(4*unit, 2*unit, 4*unit, 4*unit, 0xffb57554);
@@ -104,7 +106,7 @@ public class MainMenuScreen extends AbstractScreen {
         
         
         // Settings button
-        g.drawPixmap(Assets.buttonSettings, 4*unit, 8*unit);
+        g.drawPixmap(Assets.buttonSettings, 4*unit, 2*height/3-2*unit);
         
 //        here would be more abstract art ;)
 //        g.drawRect(4*unit, 8*unit, 4*unit, 4*unit, 0xffb57554);
