@@ -64,8 +64,8 @@ public class GameScreen extends AbstractScreen {
         List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
         game.getInput().getKeyEvents();       
         
-        if(((CheckItGame)game).backPressed) {
-        	((CheckItGame)game).backPressed = false;
+        if(((CheckItGame)game).isBackPressed) {
+        	((CheckItGame)game).isBackPressed = false;
         	if(Settings.soundEnabled){
                 //Assets.click.play(1);
         	}

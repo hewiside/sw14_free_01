@@ -93,6 +93,12 @@ public class AndroidGraphics implements Graphics {
         paint.setStyle(Style.FILL);
         canvas.drawRect(x, y, x + width - 1, y + height - 1, paint);
     }
+    
+    public void drawCirc(int x, int y, int radius, int color){
+    	paint.setColor(color);
+    	paint.setStyle(Style.FILL);
+    	canvas.drawCircle(x, y, radius, paint);
+    }
 
     public void drawPixmap(Pixmap pixmap, int x, int y, int srcX, int srcY,
             int srcWidth, int srcHeight) {

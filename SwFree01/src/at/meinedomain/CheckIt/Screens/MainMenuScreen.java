@@ -2,6 +2,7 @@ package at.meinedomain.CheckIt.Screens;
 
 import android.util.Log;
 import at.meinedomain.CheckIt.Assets;
+import at.meinedomain.CheckIt.CheckItGame;
 import at.meinedomain.CheckIt.Settings;
 
 import java.util.List;
@@ -12,6 +13,9 @@ import com.badlogic.androidgames.framework.Input.TouchEvent;
 import com.badlogic.androidgames.framework.Screen;
 
 public class MainMenuScreen extends AbstractScreen {
+	
+    private static final int NUM_WIDTH = 135; // a number's width in the picture Assets.numbers
+    private static final int NUM_HEIGHT = 180;
 	
     public MainMenuScreen(Game game) {
         super(game);               
@@ -98,6 +102,12 @@ public class MainMenuScreen extends AbstractScreen {
         
         // Play button
         g.drawPixmap(Assets.buttonPlay, 4*unit, height/3-2*unit);
+        if(((CheckItGame)game).getWifiCheckPossible() == false){
+        	g.drawCirc(6*unit, height/3, 2*unit, 0x40ff0000);
+        } else{
+        	// TODO Test if this method works as intended
+        	drawNumberOfPeers(g);
+        }
 
 //        here would be more abstract art ;)
 //        g.drawRect(4*unit, 2*unit, 4*unit, 4*unit, 0xffb57554);
@@ -129,7 +139,18 @@ public class MainMenuScreen extends AbstractScreen {
 //        else
 //            g.drawPixmap(Assets.buttons, 0, 416, 64, 0, 64, 64);
     }
-
+    
+    // this method draws the number of peers in the center of the bottom bar. (it is only called if wifi-check successful)
+    private void drawNumberOfPeers(Graphics g){
+    	int number = ((CheckItGame)game).getPeers().size();
+    	int length = String.valueOf(number).length();
+    	int x = (int) (g.getWidth()/2 + (length/2.0-1) * NUM_WIDTH);
+    	int y = g.getHeight() - NUM_HEIGHT;
+    	for(int i=0; i<length; i++){
+        	g.drawPixmap(Assets.numbers, x, y, (number%10)*NUM_WIDTH, 0, NUM_WIDTH, NUM_HEIGHT);
+        	number /= 10;
+    	}
+    }
     @Override
     public void pause() {        
         Settings.save(game.getFileIO());
