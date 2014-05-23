@@ -3,6 +3,8 @@ package at.meinedomain.CheckIt;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
@@ -123,6 +125,15 @@ public class CheckItGame extends AndroidGame {
     }
     public List getPeers(){
     	return peers;
+    }
+    public void showPeerList(){
+//    	FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+    	PeerListFragment fragment = new PeerListFragment();
+//    	// not
+//    	// fragmentTransaction.add(R.id.fragment_container, fragment);
+//    	// but (to avoid having a container)
+//    	fragmentTransaction.add(fragment, "PeerList").commit();
+    	fragment.show(getFragmentManager(), "PeerList");
     }
 } 
 

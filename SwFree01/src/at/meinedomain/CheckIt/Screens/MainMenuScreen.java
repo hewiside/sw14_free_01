@@ -1,8 +1,11 @@
 package at.meinedomain.CheckIt.Screens;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.util.Log;
 import at.meinedomain.CheckIt.Assets;
 import at.meinedomain.CheckIt.CheckItGame;
+import at.meinedomain.CheckIt.PeerListFragment;
 import at.meinedomain.CheckIt.Settings;
 
 import java.util.List;
@@ -11,6 +14,7 @@ import com.badlogic.androidgames.framework.Game;
 import com.badlogic.androidgames.framework.Graphics;
 import com.badlogic.androidgames.framework.Input.TouchEvent;
 import com.badlogic.androidgames.framework.Screen;
+import com.badlogic.androidgames.framework.impl.AndroidGame;
 
 public class MainMenuScreen extends AbstractScreen {
 	
@@ -49,9 +53,11 @@ public class MainMenuScreen extends AbstractScreen {
             	
             	// if "Play" clicked
                 if(inBounds(event, 4*unit, height/3-2*unit, 4*unit, 4*unit)) {
-                    game.setScreen(new GameScreen(game));
-                    if(Settings.soundEnabled)
-//                        Assets.click.play(1);
+                	((CheckItGame)game).showPeerList();
+//                    
+//                	game.setScreen(new GameScreen(game));
+//                    if(Settings.soundEnabled)
+////                        Assets.click.play(1);
                     return;
                 }
             	
