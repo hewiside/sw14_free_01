@@ -7,27 +7,27 @@
     <TextView android:id="@+id/peer_list_title"
 		android:layout_width="match_parent"
 	    android:layout_height="match_parent"
-	    android:background="#ffce9e"
+	    android:background="@color/light"
 	    android:gravity="center"
 	    android:padding="14sp"
-	    android:textColor="#b57554"
+	    android:textColor="@color/dark"
 	    android:textSize="32sp"
 	    android:text="@string/peer_list_frag_title"/>
     
     <ListView android:id="@+id/peer_list"
         android:layout_width="match_parent"
         android:layout_height="0dip"
-        android:background="#b57554"
-        android:divider="#80ffce9e"
+        android:background="@color/dark"
+        android:divider="@color/light_transperent"
         android:dividerHeight="1sp"
         android:layout_weight="1"
         android:drawSelectorOnTop="false"
-        android:listSelector="#4000FF00"/>
+        android:listSelector="@color/selector_overlay"/>
 
 	<TextView android:id="@+id/empty"
 	    android:layout_width="match_parent"
 	    android:layout_height="match_parent"
-	    android:background="#b55034"
+	    android:background="@color/dark"
 	    android:visibility="gone"
 	    android:text="No peers."
 	    />

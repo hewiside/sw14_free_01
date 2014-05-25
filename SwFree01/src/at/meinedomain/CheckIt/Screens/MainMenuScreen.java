@@ -1,5 +1,6 @@
 package at.meinedomain.CheckIt.Screens;
 
+import android.R;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.util.Log;
@@ -20,9 +21,19 @@ public class MainMenuScreen extends AbstractScreen {
 	
     private static final int NUM_WIDTH = 135; // a number's width in the picture Assets.numbers
     private static final int NUM_HEIGHT = 180;
+    
+    int colorLight;
+    int colorDark;
+    int colorForbidden;
 	
     public MainMenuScreen(Game game) {
-        super(game);               
+        super(game);
+        colorLight = ((CheckItGame)game).getResources().
+    			getColor(at.meinedomain.CheckIt.R.color.light);
+        colorDark  = ((CheckItGame)game).getResources().
+    			getColor(at.meinedomain.CheckIt.R.color.dark);
+        colorForbidden = ((CheckItGame)game).getResources().
+        		getColor(at.meinedomain.CheckIt.R.color.forbidden_overlay);
     }   
 
 	// overriden from AbstractScreen--------------------------------------------
@@ -99,17 +110,17 @@ public class MainMenuScreen extends AbstractScreen {
         int unit = g.getWidth()/12;
         int height = g.getHeight();
         // background
-        g.drawRect(0, 0, g.getWidth(), g.getHeight(), 0xffffce9e);
+        g.drawRect(0, 0, g.getWidth(), g.getHeight(), colorLight);
 
         // bars at top and bottom
-        g.drawRect(0, 0, 12*unit, 2*unit, 0xffb57554);
-        g.drawRect(0, g.getHeight()-2*unit, 12*unit, 2*unit, 0xffb57554);
+        g.drawRect(0, 0, 12*unit, 2*unit, colorDark);
+        g.drawRect(0, g.getHeight()-2*unit, 12*unit, 2*unit, colorDark);
 
         
         // Play button
         g.drawPixmap(Assets.buttonPlay, 4*unit, height/3-2*unit);
         if(((CheckItGame)game).getWifiCheckPossible() == false){
-        	g.drawCirc(6*unit, height/3, 2*unit, 0x40ff0000);
+        	g.drawCirc(6*unit, height/3, 2*unit, colorForbidden);
         } else{
         	// TODO Test if this method works as intended
         	drawNumberOfPeers(g);

@@ -15,7 +15,7 @@
          android:textSize="20sp"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:textColor="#ffce9e"
+         android:textColor="@color/light"
          android:text=""
          android:gravity="center"
          android:layout_weight="1"/>

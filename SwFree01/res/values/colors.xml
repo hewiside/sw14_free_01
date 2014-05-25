@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="dark"  >#b57554</color>
+    <color name="light" >#ffce9e</color>
+    <color name="medium">#daa179</color>
+    <color name="light_transperent">#80ffce9e</color>
+    <color name="selector_overlay">#4000FF00</color>
+    <color name="forbidden_overlay">#40FF0000</color>
+	<color name="dark_overlay">#20000000</color>
+</resources>

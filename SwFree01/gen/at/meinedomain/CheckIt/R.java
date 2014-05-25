@@ -10,26 +10,35 @@ package at.meinedomain.CheckIt;
 public final class R {
     public static final class attr {
     }
+    public static final class color {
+        public static final int dark=0x7f040000;
+        public static final int dark_overlay=0x7f040006;
+        public static final int forbidden_overlay=0x7f040005;
+        public static final int light=0x7f040001;
+        public static final int light_transperent=0x7f040003;
+        public static final int medium=0x7f040002;
+        public static final int selector_overlay=0x7f040004;
+    }
     public static final class drawable {
         public static final int ic_launcher=0x7f020000;
         public static final int peer_bw=0x7f020001;
         public static final int peer_wb=0x7f020002;
     }
     public static final class id {
-        public static final int empty=0x7f060005;
-        public static final int image_view_b=0x7f060002;
-        public static final int image_view_w=0x7f060000;
-        public static final int peer_list=0x7f060004;
-        public static final int peer_list_title=0x7f060003;
-        public static final int text_view_peer=0x7f060001;
+        public static final int empty=0x7f070005;
+        public static final int image_view_b=0x7f070002;
+        public static final int image_view_w=0x7f070000;
+        public static final int peer_list=0x7f070004;
+        public static final int peer_list_title=0x7f070003;
+        public static final int text_view_peer=0x7f070001;
     }
     public static final class layout {
         public static final int peer_list_entry=0x7f030000;
         public static final int peer_list_fragment=0x7f030001;
     }
     public static final class string {
-        public static final int app_name=0x7f040000;
-        public static final int peer_list_frag_title=0x7f040001;
+        public static final int app_name=0x7f050000;
+        public static final int peer_list_frag_title=0x7f050001;
     }
     public static final class style {
         /** 
@@ -53,10 +62,10 @@ public final class R {
     
  API 14 theme customizations can go here. 
          */
-        public static final int AppBaseTheme=0x7f050000;
+        public static final int AppBaseTheme=0x7f060000;
         /**  Application theme. 
  All customizations that are NOT specific to a particular API-level can go here. 
          */
-        public static final int AppTheme=0x7f050001;
+        public static final int AppTheme=0x7f060001;
     }
 }

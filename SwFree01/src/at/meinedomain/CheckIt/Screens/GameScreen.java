@@ -4,6 +4,7 @@ import at.meinedomain.CheckIt.Assets;
 import at.meinedomain.CheckIt.Board;
 import at.meinedomain.CheckIt.Color;
 import at.meinedomain.CheckIt.CheckItGame;
+import at.meinedomain.CheckIt.R;
 import at.meinedomain.CheckIt.Settings;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 import com.badlogic.androidgames.framework.Game;
 import com.badlogic.androidgames.framework.Graphics;
 import com.badlogic.androidgames.framework.Input.TouchEvent;
+import com.badlogic.androidgames.framework.impl.AndroidGame;
 
 public class GameScreen extends AbstractScreen {
 	
@@ -22,6 +24,8 @@ public class GameScreen extends AbstractScreen {
 	}
 	
 	GameState state = GameState.Ready;
+	
+	AndroidGame game;
 	Board board;
 	Color player;
 	
@@ -35,9 +39,14 @@ public class GameScreen extends AbstractScreen {
     private static final int NUM_WIDTH = 135; // a number's width in the picture Assets.numbers
     private static final int NUM_HEIGHT = 180;
 	private static final int COLON_WIDTH = 45; // width of colon in Assets.numbers 
+	private int colorTable = game.getResources().getColor(R.color.medium);
+	private int colorDark  = game.getResources().getColor(R.color.dark);
+	private int colorLight = game.getResources().getColor(R.color.light);
+	private int darkOverlay = game.getResources().getColor(R.color.dark_overlay);
 	
     public GameScreen(Game game) {
         super(game);
+        this.game = (AndroidGame) game;
         board = new Board();
         player = Color.WHITE;
 
@@ -139,19 +148,19 @@ public class GameScreen extends AbstractScreen {
     }
     
     private void drawBackground(Graphics g){
-        g.drawRect(0, 0, g.getWidth(), g.getHeight(), 0xffdaa179);
+        g.drawRect(0, 0, g.getWidth(), g.getHeight(), colorTable);
     }
     
     private void drawBoard(Graphics g){
         // Dark tiles
         g.drawRect(0, firstRankY - 7*tileSize, 
-        		   g.getWidth(), g.getWidth(), 0xffb57554);
+        		   g.getWidth(), g.getWidth(), colorDark);
         for(int i=0; i<board.getWidth(); i++){
         	for(int j=0; j<board.getHeight(); j++){
         		// Light tiles
         		if((i+j)%2 == offset){
         			g.drawRect(i*tileSize, firstRankY - j*tileSize, 
-        					   tileSize, tileSize, 0xffffce9e);
+        					   tileSize, tileSize, colorLight);
         		}
         		// Pieces
         		if(board.pieceAt(i,j) != null){
@@ -206,7 +215,7 @@ public class GameScreen extends AbstractScreen {
     }
     private void drawGameOverUI(Graphics g){
     	// TODO play-again-button & go-back-button
-    	g.drawRect(0, 0, g.getWidth(), g.getHeight(), 0x20000000);
+    	g.drawRect(0, 0, g.getWidth(), g.getHeight(), darkOverlay);
     }
 
     @Override
