@@ -29,7 +29,7 @@ public class CheckItGame extends AndroidGame {
 	private boolean isWifiP2PEnabled;
 	public boolean isBackPressed = false;
 	private boolean wifiCheckPossible = false;	
-	private List peers = new ArrayList();
+	private ArrayList peers = new ArrayList();
     private PeerListListener peerListListener = new PeerListListener() {
         @Override
         public void onPeersAvailable(WifiP2pDeviceList peerList) {
@@ -68,6 +68,9 @@ public class CheckItGame extends AndroidGame {
         wifiIntentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
         wifiIntentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
         wifiIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
+        
+        peers.add(0,"1. peer (onCreate of CheckItGame)");	// TODO delete this static code
+        peers.add(1,"2. peer");								// TODO delete this static code
 	}
 	
 	@Override
@@ -123,16 +126,11 @@ public class CheckItGame extends AndroidGame {
     public boolean getWifiCheckPossible(){
     	return wifiCheckPossible;
     }
-    public List getPeers(){
+    public ArrayList getPeers(){
     	return peers;
     }
     public void showPeerList(){
-//    	FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
     	PeerListFragment fragment = new PeerListFragment();
-//    	// not
-//    	// fragmentTransaction.add(R.id.fragment_container, fragment);
-//    	// but (to avoid having a container)
-//    	fragmentTransaction.add(fragment, "PeerList").commit();
     	fragment.show(getFragmentManager(), "PeerList");
     }
 } 

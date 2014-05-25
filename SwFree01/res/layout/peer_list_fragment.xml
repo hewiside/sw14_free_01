@@ -4,17 +4,32 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <ListView android:id="@id/android:list"
+    <TextView android:id="@+id/peer_list_title"
+		android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:background="#ffce9e"
+	    android:gravity="center"
+	    android:padding="14sp"
+	    android:textColor="#b57554"
+	    android:textSize="32sp"
+	    android:text="@string/peer_list_frag_title"/>
+    
+    <ListView android:id="@+id/peer_list"
         android:layout_width="match_parent"
         android:layout_height="0dip"
-        android:background="#00FF00"
+        android:background="#b57554"
+        android:divider="#80ffce9e"
+        android:dividerHeight="1sp"
         android:layout_weight="1"
-        android:drawSelectorOnTop="false"/>
+        android:drawSelectorOnTop="false"
+        android:listSelector="#4000FF00"/>
 
-    <TextView android:id="@id/android:empty"
+	<TextView android:id="@+id/empty"
 	    android:layout_width="match_parent"
 	    android:layout_height="match_parent"
-	    android:background="#FF0000"
-	    android:text="No peers."/>
+	    android:background="#b55034"
+	    android:visibility="gone"
+	    android:text="No peers."
+	    />
     
 </LinearLayout>

@@ -1,5 +1,6 @@
 <resources>
 
     <string name="app_name">SwFree01</string>
+    <string name="peer_list_frag_title">Choose opponent!</string>
 
 </resources>
