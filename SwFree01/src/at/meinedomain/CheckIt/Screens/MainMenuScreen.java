@@ -6,6 +6,7 @@ import android.app.FragmentTransaction;
 import android.util.Log;
 import at.meinedomain.CheckIt.Assets;
 import at.meinedomain.CheckIt.CheckItGame;
+import at.meinedomain.CheckIt.Color;
 import at.meinedomain.CheckIt.PeerListFragment;
 import at.meinedomain.CheckIt.Settings;
 
@@ -48,6 +49,11 @@ public class MainMenuScreen extends AbstractScreen {
         Graphics g = game.getGraphics();
         List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
         game.getInput().getKeyEvents();       
+        
+        if(((CheckItGame)game).getPlayerColor() != null){
+        	((CheckItGame)game).setPlayerColor(null);
+        	game.setScreen(new GameScreen(game));
+        }
         
         int len = touchEvents.size();
         int unit = g.getWidth()/12;
@@ -122,7 +128,6 @@ public class MainMenuScreen extends AbstractScreen {
         if(((CheckItGame)game).getWifiCheckPossible() == false){
         	g.drawCirc(6*unit, height/3, 2*unit, colorForbidden);
         } else{
-        	// TODO Test if this method works as intended
         	drawNumberOfPeers(g);
         }
 

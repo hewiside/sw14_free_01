@@ -25,7 +25,7 @@ public class GameScreen extends AbstractScreen {
 	
 	GameState state = GameState.Ready;
 	
-	AndroidGame game;
+	CheckItGame game;
 	Board board;
 	Color player;
 	
@@ -46,9 +46,9 @@ public class GameScreen extends AbstractScreen {
 	
     public GameScreen(Game game) {
         super(game);
-        this.game = (AndroidGame) game;
+        this.game = (CheckItGame) game;
         board = new Board();
-        player = Color.WHITE;
+        player = this.game.getPlayerColor();
 
         myTime = 300;
         opponentsTime = 300;
@@ -73,8 +73,8 @@ public class GameScreen extends AbstractScreen {
         List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
         game.getInput().getKeyEvents();       
         
-        if(((CheckItGame)game).isBackPressed) {
-        	((CheckItGame)game).isBackPressed = false;
+        if(game.isBackPressed) {
+        	game.isBackPressed = false;
         	if(Settings.soundEnabled){
                 //Assets.click.play(1);
         	}

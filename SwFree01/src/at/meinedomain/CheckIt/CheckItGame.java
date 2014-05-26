@@ -8,28 +8,34 @@ import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
+import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
 import android.os.Bundle;
 import android.util.Log;
+import at.meinedomain.CheckIt.PeerListFragment.OnOpponentSelectedListener;
 import at.meinedomain.CheckIt.Screens.AbstractScreen;
 import at.meinedomain.CheckIt.Screens.LoadingScreen;
 
 import com.badlogic.androidgames.framework.Screen;
 import com.badlogic.androidgames.framework.impl.AndroidGame;
 
-public class CheckItGame extends AndroidGame {
-    
-    WifiP2pManager wifiManager;
-    Channel wifiChannel;
+public class CheckItGame extends AndroidGame 
+						 implements OnOpponentSelectedListener {
+	
+	private Color playerColor; // TODO: ensure reset of variable after a game.
+	
+	private FragmentManager fragManager;
+    private WifiP2pManager  wifiManager;
+    private Channel wifiChannel;
     BroadcastReceiver wifiReceiver;
     private final IntentFilter wifiIntentFilter = new IntentFilter();
 	private boolean isWifiP2PEnabled;
 	public boolean isBackPressed = false;
-	private boolean wifiCheckPossible = false;	
-	private ArrayList peers = new ArrayList();
+	private boolean wifiCheckPossible = false;	// used in MainMenuScreen
+	private ArrayList<WifiP2pDevice> peers = new ArrayList<WifiP2pDevice>();
     private PeerListListener peerListListener = new PeerListListener() {
         @Override
         public void onPeersAvailable(WifiP2pDeviceList peerList) {
@@ -39,12 +45,11 @@ public class CheckItGame extends AndroidGame {
             // If an AdapterView is backed by this data, notify it
             // of the change.  For instance, if you have a ListView of available
             // peers, trigger an update.
-            // TODO:
-//            ((WiFiPeerListAdapter) getListAdapter()).notifyDataSetChanged();
-//            if (peers.size() == 0) {
-//                Log.d(WiFiDirectActivity.TAG, "No devices found");
-//                return;
-//            }
+            if(fragManager.findFragmentByTag("PeerList") != null){
+            	((PeerListFragment) fragManager.
+            			findFragmentByTag("PeerList")).getPeerAdapter().
+            			notifyDataSetChanged();
+            }
         }
     };
 
@@ -56,28 +61,32 @@ public class CheckItGame extends AndroidGame {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		playerColor = null;
+		
+		fragManager = getFragmentManager();
 
 		isWifiP2PEnabled = false;
-		
-        wifiManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
-        wifiChannel = wifiManager.initialize(this, getMainLooper(), null);
-        wifiReceiver = new WifiBroadcastReceiver(wifiManager, wifiChannel, 
-        										 this, peerListListener);
         
         wifiIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
         wifiIntentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
         wifiIntentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
         wifiIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
         
-        peers.add(0,"1. peer (onCreate of CheckItGame)");	// TODO delete this static code
-        peers.add(1,"2. peer");								// TODO delete this static code
+        wifiManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
+        wifiChannel = wifiManager.initialize(this, getMainLooper(), null);
+        
+//        peers.add(0,"1. peer (onCreate of CheckItGame)");	// TODO delete this static code
+//        peers.add(1,"2. peer");								// TODO delete this static code
 	}
 	
 	@Override
 	public void onResume(){
 		super.onResume();
+		fragManager = getFragmentManager();
 		// TODO determine whether it's safe to register broadcast receiver after super.onResume() which sets the screen.
-        registerReceiver(wifiReceiver, wifiIntentFilter);
+		wifiReceiver = new WifiBroadcastReceiver(wifiManager, wifiChannel, 
+				 								 this, peerListListener);
+		registerReceiver(wifiReceiver, wifiIntentFilter);
         
         wifiManager.discoverPeers(wifiChannel, new WifiP2pManager.ActionListener() {
             @Override
@@ -86,7 +95,7 @@ public class CheckItGame extends AndroidGame {
                 // No services have actually been discovered yet, so this method
                 // can often be left blank.  Code for peer discovery goes in the
                 // onReceive method of the broadcast receiver.
-            	wifiCheckPossible = true;
+            	setWifiCheckPossible(true);
             }
 
             @Override
@@ -94,7 +103,8 @@ public class CheckItGame extends AndroidGame {
             	// TODO
                 // Code for when the discovery initiation fails goes here.
                 // Alert the user that something went wrong.
-            	wifiCheckPossible = false;
+            	setWifiCheckPossible(false);
+            	Log.w("CheckItGame", "discoverPeers FAILS!");
             }
         });
 	}
@@ -116,7 +126,12 @@ public class CheckItGame extends AndroidGame {
     	isBackPressed = true;	
     }
     
-    
+    public WifiP2pManager getWifiManager(){
+    	return wifiManager;
+    }
+    public Channel getWifiChannel(){
+    	return wifiChannel;
+    }
     public boolean getIsWifiP2PEnabled(){
     	return isWifiP2PEnabled;
     }
@@ -126,12 +141,27 @@ public class CheckItGame extends AndroidGame {
     public boolean getWifiCheckPossible(){
     	return wifiCheckPossible;
     }
-    public ArrayList getPeers(){
+    public void setWifiCheckPossible(boolean b){
+    	this.wifiCheckPossible = b;
+    }
+    public ArrayList<WifiP2pDevice> getPeers(){
     	return peers;
     }
     public void showPeerList(){
     	PeerListFragment fragment = new PeerListFragment();
-    	fragment.show(getFragmentManager(), "PeerList");
+    	fragment.show(fragManager, "PeerList");
+    }
+    @Override
+    public void onOpponentSelected(Color color){
+    	fragManager.beginTransaction().
+    						remove(fragManager.findFragmentByTag("PeerList"));
+    	playerColor = Color.WHITE;
+    }
+    public Color getPlayerColor(){
+    	return playerColor;
+    }
+    public void setPlayerColor(Color c){
+    	playerColor = c;
     }
 } 
 
