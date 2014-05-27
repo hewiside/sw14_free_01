@@ -70,8 +70,14 @@ public class MainMenuScreen extends AbstractScreen {
             	
             	// if "Play" clicked
                 if(inBounds(event, 4*unit, height/3-2*unit, 4*unit, 4*unit)) {
+                	if(((CheckItGame)game).getWifiCheckPossible() == false){
+                		Log.e("MainMenuScreen", "try to find peers...");
+                		((CheckItGame)game).discoverPeers();
+                		Log.e("MainMenuScreen", "tried to find peers...");
+                	}
+                	else{
                 	((CheckItGame)game).showPeerList();
-//                    
+                  }  
 //                	game.setScreen(new GameScreen(game));
 //                    if(Settings.soundEnabled)
 ////                        Assets.click.play(1);

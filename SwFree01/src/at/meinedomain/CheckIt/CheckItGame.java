@@ -88,25 +88,26 @@ public class CheckItGame extends AndroidGame
 				 								 this, peerListListener);
 		registerReceiver(wifiReceiver, wifiIntentFilter);
         
-        wifiManager.discoverPeers(wifiChannel, new WifiP2pManager.ActionListener() {
-            @Override
-            public void onSuccess() {
-                // Code for when the discovery initiation is successful goes here.
-                // No services have actually been discovered yet, so this method
-                // can often be left blank.  Code for peer discovery goes in the
-                // onReceive method of the broadcast receiver.
-            	setWifiCheckPossible(true);
-            }
-
-            @Override
-            public void onFailure(int reasonCode) {
-            	// TODO
-                // Code for when the discovery initiation fails goes here.
-                // Alert the user that something went wrong.
-            	setWifiCheckPossible(false);
-            	Log.w("CheckItGame", "discoverPeers FAILS!");
-            }
-        });
+		discoverPeers();
+//        wifiManager.discoverPeers(wifiChannel, new WifiP2pManager.ActionListener() {
+//            @Override
+//            public void onSuccess() {
+//                // Code for when the discovery initiation is successful goes here.
+//                // No services have actually been discovered yet, so this method
+//                // can often be left blank.  Code for peer discovery goes in the
+//                // onReceive method of the broadcast receiver.
+//            	setWifiCheckPossible(true);
+//            }
+//
+//            @Override
+//            public void onFailure(int reasonCode) {
+//            	// TODO
+//                // Code for when the discovery initiation fails goes here.
+//                // Alert the user that something went wrong.
+//            	setWifiCheckPossible(false);
+//            	Log.w("CheckItGame", "discoverPeers FAILS!");
+//            }
+//        });
 	}
 	@Override
 	public void onPause(){
@@ -126,6 +127,28 @@ public class CheckItGame extends AndroidGame
     	isBackPressed = true;	
     }
     
+    
+    public void discoverPeers(){
+        wifiManager.discoverPeers(wifiChannel, new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess() {
+                // Code for when the discovery initiation is successful goes here.
+                // No services have actually been discovered yet, so this method
+                // can often be left blank.  Code for peer discovery goes in the
+                // onReceive method of the broadcast receiver.
+            	setWifiCheckPossible(true);
+            }
+
+            @Override
+            public void onFailure(int reasonCode) {
+            	// TODO
+                // Code for when the discovery initiation fails goes here.
+                // Alert the user that something went wrong.
+            	setWifiCheckPossible(false);
+            	Log.w("CheckItGame", "discoverPeers FAILS!");
+            }
+        });
+    }
     public WifiP2pManager getWifiManager(){
     	return wifiManager;
     }
@@ -153,8 +176,19 @@ public class CheckItGame extends AndroidGame
     }
     @Override
     public void onOpponentSelected(Color color){
+    	if(fragManager.findFragmentByTag("PeerList")==null){
+    		Log.e("CheckItGame", "OH NO!!!");
+    	}
     	fragManager.beginTransaction().
     						remove(fragManager.findFragmentByTag("PeerList"));
+    	Log.e("CheckItGame", "Fragment gone.");
+    	
+    	try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     	playerColor = Color.WHITE;
     }
     public Color getPlayerColor(){
@@ -162,6 +196,7 @@ public class CheckItGame extends AndroidGame
     }
     public void setPlayerColor(Color c){
     	playerColor = c;
+    	Log.e("CheckItGame", "playerColor: "+playerColor);
     }
 } 
 

@@ -1,5 +1,6 @@
 package at.meinedomain.CheckIt.Screens;
 
+import android.util.Log;
 import at.meinedomain.CheckIt.Assets;
 import at.meinedomain.CheckIt.Board;
 import at.meinedomain.CheckIt.Color;
@@ -39,14 +40,21 @@ public class GameScreen extends AbstractScreen {
     private static final int NUM_WIDTH = 135; // a number's width in the picture Assets.numbers
     private static final int NUM_HEIGHT = 180;
 	private static final int COLON_WIDTH = 45; // width of colon in Assets.numbers 
-	private int colorTable = game.getResources().getColor(R.color.medium);
-	private int colorDark  = game.getResources().getColor(R.color.dark);
-	private int colorLight = game.getResources().getColor(R.color.light);
-	private int darkOverlay = game.getResources().getColor(R.color.dark_overlay);
+	private int colorTable;
+	private int colorDark; 
+	private int colorLight; 
+	private int darkOverlay; 
 	
     public GameScreen(Game game) {
         super(game);
+        colorTable = ((AndroidGame)game).getResources().getColor(R.color.medium);
+        colorDark  = ((AndroidGame)game).getResources().getColor(R.color.dark);
+        colorLight = ((AndroidGame)game).getResources().getColor(R.color.light);
+        darkOverlay = ((AndroidGame)game).getResources().getColor(R.color.dark_overlay);
+        
+        Log.e("GameScreen", "VOR");
         this.game = (CheckItGame) game;
+        Log.e("GameScreen", "DANACH");
         board = new Board();
         player = this.game.getPlayerColor();
 
