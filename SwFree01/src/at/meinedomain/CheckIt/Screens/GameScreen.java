@@ -52,9 +52,7 @@ public class GameScreen extends AbstractScreen {
         colorLight = ((AndroidGame)game).getResources().getColor(R.color.light);
         darkOverlay = ((AndroidGame)game).getResources().getColor(R.color.dark_overlay);
         
-        Log.e("GameScreen", "VOR");
         this.game = (CheckItGame) game;
-        Log.e("GameScreen", "DANACH");
         board = new Board();
         player = this.game.getPlayerColor();
 
@@ -81,11 +79,12 @@ public class GameScreen extends AbstractScreen {
         List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
         game.getInput().getKeyEvents();       
         
-        if(game.isBackPressed) {
-        	game.isBackPressed = false;
+        if(game.getIsBackPressed()) {
+        	game.setIsBackPressed(false);
         	if(Settings.soundEnabled){
                 //Assets.click.play(1);
         	}
+        	game.setPlayerColor(null);
             game.setScreen(new MainMenuScreen(game)); 
             return;
         }

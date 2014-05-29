@@ -33,7 +33,7 @@ public class CheckItGame extends AndroidGame
     BroadcastReceiver wifiReceiver;
     private final IntentFilter wifiIntentFilter = new IntentFilter();
 	private boolean isWifiP2PEnabled;
-	public boolean isBackPressed = false;
+	private boolean isBackPressed = false;
 	private boolean wifiCheckPossible = false;	// used in MainMenuScreen
 	private ArrayList<WifiP2pDevice> peers = new ArrayList<WifiP2pDevice>();
     private PeerListListener peerListListener = new PeerListListener() {
@@ -149,6 +149,9 @@ public class CheckItGame extends AndroidGame
             }
         });
     }
+    public boolean getIsBackPressed(){
+    	return isBackPressed;
+    }
     public WifiP2pManager getWifiManager(){
     	return wifiManager;
     }
@@ -157,6 +160,12 @@ public class CheckItGame extends AndroidGame
     }
     public boolean getIsWifiP2PEnabled(){
     	return isWifiP2PEnabled;
+    }
+    public void logConnectionInfo(Object o){
+    	Log.wtf("CONNECTION CHANGED TO:", ""+o);
+    }
+    public void setIsBackPressed(boolean backStatus){
+    	isBackPressed = backStatus;
     }
     public void setIsWifiP2PEnabled(boolean wifiStatus){
     	this.isWifiP2PEnabled = wifiStatus;
@@ -174,21 +183,22 @@ public class CheckItGame extends AndroidGame
     	PeerListFragment fragment = new PeerListFragment();
     	fragment.show(fragManager, "PeerList");
     }
+
     @Override
     public void onOpponentSelected(Color color){
     	if(fragManager.findFragmentByTag("PeerList")==null){
     		Log.e("CheckItGame", "OH NO!!!");
     	}
     	fragManager.beginTransaction().
-    						remove(fragManager.findFragmentByTag("PeerList"));
-    	Log.e("CheckItGame", "Fragment gone.");
+    						remove(fragManager.findFragmentByTag("PeerList")).
+    						commitAllowingStateLoss();
     	
-    	try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//    	try {
+//			Thread.sleep(2000);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
     	playerColor = Color.WHITE;
     }
     public Color getPlayerColor(){
