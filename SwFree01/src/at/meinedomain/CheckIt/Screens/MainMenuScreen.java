@@ -72,10 +72,10 @@ public class MainMenuScreen extends AbstractScreen {
                 if(inBounds(event, 4*unit, height/3-2*unit, 4*unit, 4*unit)) {
                 	if(((CheckItGame)game).getWifiCheckPossible() == false){
                 		((CheckItGame)game).discoverPeers();
-                	}
-                	else{
+                	}                	
+                	
                 	((CheckItGame)game).showPeerList();
-                  }  
+ 
 //                	game.setScreen(new GameScreen(game));
 //                    if(Settings.soundEnabled)
 ////                        Assets.click.play(1);

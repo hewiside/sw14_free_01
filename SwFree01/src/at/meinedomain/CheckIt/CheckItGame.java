@@ -32,7 +32,7 @@ public class CheckItGame extends AndroidGame
     private Channel wifiChannel;
     BroadcastReceiver wifiReceiver;
     private final IntentFilter wifiIntentFilter = new IntentFilter();
-	private boolean isWifiP2PEnabled;
+	private boolean isWifiP2PEnabled; // used (set) in WifiBroadcastReceiver TODO: needed?
 	private boolean isBackPressed = false;
 	private boolean wifiCheckPossible = false;	// used in MainMenuScreen
 	private ArrayList<WifiP2pDevice> peers = new ArrayList<WifiP2pDevice>();

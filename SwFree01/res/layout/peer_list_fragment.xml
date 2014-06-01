@@ -32,7 +32,15 @@
 	    android:textSize="20sp"
 	    android:textColor="@color/light"
 	    android:padding="10sp"
-	    android:text="No peers."
-	    />
-    
+	    android:text="@string/no_peers"/>
+	
+    	<TextView android:id="@+id/no_wifi"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:background="@color/dark"
+	    android:visibility="gone"
+	    android:textSize="20sp"
+	    android:textColor="@color/light"
+	    android:padding="10sp"
+	    android:text="@string/no_wifi"/>
 </LinearLayout>

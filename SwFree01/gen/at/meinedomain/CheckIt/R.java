@@ -28,6 +28,7 @@ public final class R {
         public static final int empty=0x7f070005;
         public static final int image_view_b=0x7f070002;
         public static final int image_view_w=0x7f070000;
+        public static final int no_wifi=0x7f070006;
         public static final int peer_list=0x7f070004;
         public static final int peer_list_title=0x7f070003;
         public static final int text_view_peer=0x7f070001;
@@ -38,6 +39,8 @@ public final class R {
     }
     public static final class string {
         public static final int app_name=0x7f050000;
+        public static final int no_peers=0x7f050002;
+        public static final int no_wifi=0x7f050003;
         public static final int peer_list_frag_title=0x7f050001;
     }
     public static final class style {

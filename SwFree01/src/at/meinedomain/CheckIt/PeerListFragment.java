@@ -58,7 +58,12 @@ public class PeerListFragment extends DialogFragment{
 		// Inflate the layout for this fragment
 		View fragLayout = inflater.inflate(R.layout.peer_list_fragment, container, false);
 		ListView listView = (ListView) fragLayout.findViewById(R.id.peer_list);
-		listView.setEmptyView(fragLayout.findViewById(R.id.empty));
+		if(gameActivity.getWifiCheckPossible() == false){
+			listView.setEmptyView(fragLayout.findViewById(R.id.no_wifi));
+		}
+		else{
+			listView.setEmptyView(fragLayout.findViewById(R.id.empty));
+		}
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View viewInAdapter,
@@ -76,7 +81,8 @@ public class PeerListFragment extends DialogFragment{
 								// TODO Auto-generated method stub
 								// BroadcastReceiver will notify us. Ignore for now.
 								Log.e("PeerListFragment", "connect() SUCCESS!");
-								activity.onOpponentSelected(Color.WHITE);
+								activity.onOpponentSelected(Color.WHITE); // TODO: isn't this line better
+																		  // for Broadcast-Receiver?
 							}
 							
 							@Override
