@@ -169,6 +169,9 @@ public class CheckItGame extends AndroidGame
     }
     public void setIsWifiP2PEnabled(boolean wifiStatus){
     	this.isWifiP2PEnabled = wifiStatus;
+    	if(wifiStatus==false){
+    		peers.clear();
+    	}
     }
     public boolean getWifiCheckPossible(){
     	return wifiCheckPossible;

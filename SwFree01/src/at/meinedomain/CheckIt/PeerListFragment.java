@@ -94,7 +94,7 @@ public class PeerListFragment extends DialogFragment{
 			}
 		});
 		
-		peerAdapter = new ArrayAdapter<WifiP2pDevice>(gameActivity, 
+		peerAdapter = new WifiDeviceArrayAdapter(gameActivity, 
 		        R.layout.peer_list_entry, R.id.text_view_peer, peers);
 		listView.setAdapter(peerAdapter);
 		       

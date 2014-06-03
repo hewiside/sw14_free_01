@@ -71,7 +71,7 @@ public class MainMenuScreen extends AbstractScreen {
             	// if "Play" clicked
                 if(inBounds(event, 4*unit, height/3-2*unit, 4*unit, 4*unit)) {
                 	if(((CheckItGame)game).getWifiCheckPossible() == false){
-                		((CheckItGame)game).discoverPeers();
+                		((CheckItGame)game).discoverPeers(); // TODO: I can't expect that discoverPeers() (async) leads to an updated List peers before the next statement (showPeerList()) is reached!!!
                 	}                	
                 	
                 	((CheckItGame)game).showPeerList();
@@ -129,7 +129,8 @@ public class MainMenuScreen extends AbstractScreen {
         
         // Play button
         g.drawPixmap(Assets.buttonPlay, 4*unit, height/3-2*unit);
-        if(((CheckItGame)game).getWifiCheckPossible() == false){
+        if((((CheckItGame)game).getWifiCheckPossible() ||
+        	((CheckItGame)game).getIsWifiP2PEnabled() )== false){
         	g.drawCirc(6*unit, height/3, 2*unit, colorForbidden);
         } else{
         	drawNumberOfPeers(g);

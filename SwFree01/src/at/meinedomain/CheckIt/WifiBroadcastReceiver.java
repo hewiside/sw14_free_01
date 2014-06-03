@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
+import android.util.Log;
 
 import com.badlogic.androidgames.framework.impl.AndroidGame;
 
@@ -43,6 +44,9 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
             // callback on PeerListListener.onPeersAvailable()
             if (wifiManager != null) {
                 wifiManager.requestPeers(wifiChannel, peerListListener);
+            }
+            else{
+            	Log.wtf("WifiBroadcastReceiver", "member wifiManager is null in WIFI_P2P_PEERS_CHANGED_ACTION");
             }
 
         } else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
