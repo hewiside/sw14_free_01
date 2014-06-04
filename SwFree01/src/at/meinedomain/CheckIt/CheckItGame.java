@@ -162,7 +162,7 @@ public class CheckItGame extends AndroidGame
     	return isWifiP2PEnabled;
     }
     public void logConnectionInfo(Object o){
-    	Log.wtf("CONNECTION CHANGED TO:", ""+o);
+    	Log.d("CONNECTION CHANGED TO:", ""+o);
     }
     public void setIsBackPressed(boolean backStatus){
     	isBackPressed = backStatus;
@@ -187,22 +187,22 @@ public class CheckItGame extends AndroidGame
     	fragment.show(fragManager, "PeerList");
     }
 
-    @Override
     public void onOpponentSelected(Color color){
     	if(fragManager.findFragmentByTag("PeerList")==null){
-    		Log.e("CheckItGame", "OH NO!!!");
+    		Log.d("CheckItGame", "Fragment not findable (This is often the case for invited devices.)");
     	}
-    	fragManager.beginTransaction().
+    	else{
+    		fragManager.beginTransaction().
     						remove(fragManager.findFragmentByTag("PeerList")).
     						commitAllowingStateLoss();
-    	
+    	}
 //    	try {
 //			Thread.sleep(2000);
 //		} catch (InterruptedException e) {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
-    	playerColor = Color.WHITE;
+    	playerColor = color;
     }
     public Color getPlayerColor(){
     	return playerColor;
