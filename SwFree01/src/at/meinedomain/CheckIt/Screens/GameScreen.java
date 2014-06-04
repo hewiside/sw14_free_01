@@ -60,6 +60,8 @@ public class GameScreen extends AbstractScreen {
         opponentsTime = 300;
         
         offset = (player==Color.WHITE ? 1 : 0);
+        Log.wtf("GameScreen", "player plays with: "+player);
+        Log.wtf("GameScreen", "offset is: "+offset);
         unit = game.getGraphics().getWidth()/12;
         tileSize = game.getGraphics().getWidth() / board.getWidth();
         firstRankY = game.getGraphics().getHeight()/2 +

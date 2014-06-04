@@ -196,13 +196,8 @@ public class CheckItGame extends AndroidGame
     						remove(fragManager.findFragmentByTag("PeerList")).
     						commitAllowingStateLoss();
     	}
-//    	try {
-//			Thread.sleep(2000);
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
     	playerColor = color;
+    	Log.wtf("CheckItGame", "onOpponentSelected() -> I play with "+color);
     }
     public Color getPlayerColor(){
     	return playerColor;

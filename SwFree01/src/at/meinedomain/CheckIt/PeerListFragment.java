@@ -81,8 +81,6 @@ public class PeerListFragment extends DialogFragment{
 								// TODO Auto-generated method stub
 								// BroadcastReceiver will notify us. Ignore for now.
 								Log.d("PeerListFragment", "connect() SUCCESS!");
-//								activity.onOpponentSelected(Color.WHITE); // TODO: isn't this line better
-//																		  // for Broadcast-Receiver?
 							}
 							
 							@Override

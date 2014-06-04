@@ -80,6 +80,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
 								        // incoming connections. (TODO)
 								    	
 								    	// ...
+								    	Log.d("WifiBroadCastReceiver", "I am the group owner.");
 										gameActivity.onOpponentSelected(Color.WHITE);
 								    } else if (info.groupFormed){
 								        // The other device acts as the client. In this case,
@@ -87,17 +88,20 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
 								        // owner. (TODO)
 								    	
 								    	// ...
+								    	Log.d("WifiBroadCastReceiver", "I am the client.");
 										gameActivity.onOpponentSelected(Color.BLACK);
 								    }
 
 								}
 							});
             	}
-
+            	else{
+            		// TODO? This probably means that we're no longer connected.
+            		// Should any clean-up take place here?
+            	}
             }
             else{
             	Log.wtf("WifiBroadcastReceiver", "member wifiManager is null in WIFI_P2P_PEERS_CHANGED_ACTION");
-            	return;
             }
 
         } else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
