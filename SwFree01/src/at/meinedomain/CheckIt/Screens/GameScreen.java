@@ -33,7 +33,7 @@ public class GameScreen extends AbstractScreen {
 	float myTime;
 	float opponentsTime;
 	
-	int offset; // determines whether A8 is a light or dark tile?	
+	int lightTileOffset; // determines whether A8 is a light or dark tile?	
     int unit;
     int tileSize;
     int firstRankY;
@@ -59,9 +59,8 @@ public class GameScreen extends AbstractScreen {
         myTime = 300;
         opponentsTime = 300;
         
-        offset = (player==Color.WHITE ? 1 : 0);
-        Log.wtf("GameScreen", "player plays with: "+player);
-        Log.wtf("GameScreen", "offset is: "+offset);
+        lightTileOffset = 1;
+        Log.d("GameScreen", "player plays with: "+player);
         unit = game.getGraphics().getWidth()/12;
         tileSize = game.getGraphics().getWidth() / board.getWidth();
         firstRankY = game.getGraphics().getHeight()/2 +
@@ -162,15 +161,29 @@ public class GameScreen extends AbstractScreen {
     
     private void drawBoard(Graphics g){
         // Dark tiles
-        g.drawRect(0, firstRankY - 7*tileSize, 
+        g.drawRect(0, firstRankY - (board.getHeight()-1)*tileSize, 
         		   g.getWidth(), g.getWidth(), colorDark);
         for(int i=0; i<board.getWidth(); i++){
         	for(int j=0; j<board.getHeight(); j++){
         		// Light tiles
-        		if((i+j)%2 == offset){
+        		if((i+j)%2 == lightTileOffset){
         			g.drawRect(i*tileSize, firstRankY - j*tileSize, 
         					   tileSize, tileSize, colorLight);
         		}
+        	}
+        }
+    	// draw pieces
+    	if(player == Color.WHITE){
+    		drawWhitePieces(g);
+    	}
+    	else{
+    		drawBlackPieces(g);
+    	}
+    }
+    
+    private void drawWhitePieces(Graphics g){
+        for(int i=0; i<board.getWidth(); i++){
+        	for(int j=0; j<board.getHeight(); j++){
         		// Pieces
         		if(board.pieceAt(i,j) != null){
         			g.drawPixmap(board.pieceAt(i,j).getPixmap(), 
@@ -179,6 +192,20 @@ public class GameScreen extends AbstractScreen {
         	}
         }
     }
+    
+    private void drawBlackPieces(Graphics g){
+        for(int i=0; i<board.getWidth(); i++){
+        	for(int j=0; j<board.getHeight(); j++){
+        		// Pieces
+        		int k = board.getWidth() -1-i;
+        		int l = board.getHeight()-1-j;
+        		if(board.pieceAt(k,l) != null){
+        			g.drawPixmap(board.pieceAt(k,l).getPixmap(), 
+        					i*tileSize, firstRankY - j*tileSize);
+        		}
+        	}
+        }
+    }    
     
     private void drawTimes(Graphics g){
     	int x = g.getWidth()/2-2*NUM_WIDTH-COLON_WIDTH/2;

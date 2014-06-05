@@ -31,7 +31,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
     }
 
     @Override
-    public void onReceive(Context context, final Intent intent) {
+    public void onReceive(Context context, Intent intent) {
         
     	String action = intent.getAction();
 
@@ -60,6 +60,11 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
                         .getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
             	
             	if (networkInfo.isConnected()) {
+					// Log...
+		        	gameActivity.logConnectionInfo(intent.getParcelableExtra("wifiP2pInfo"));
+		        	gameActivity.logConnectionInfo(intent.getParcelableExtra("networkInfo"));
+
+            		
             		// We are connected with the other device, request connection
             		// info to find group owner IP:
             		wifiManager.requestConnectionInfo(wifiChannel, 
@@ -67,9 +72,6 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
 								
 								@Override
 								public void onConnectionInfoAvailable(WifiP2pInfo info) {
-									// Log...
-						        	gameActivity.logConnectionInfo(intent.getParcelableExtra("wifiP2pInfo"));
-						        	gameActivity.logConnectionInfo(intent.getParcelableExtra("networkInfo"));
 								    
 								    InetAddress groupOwnerAddress = info.groupOwnerAddress;
 
