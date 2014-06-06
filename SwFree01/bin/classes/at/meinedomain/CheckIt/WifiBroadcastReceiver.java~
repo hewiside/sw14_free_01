@@ -41,7 +41,6 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
             	gameActivity.setIsWifiP2PEnabled(true);
             } else {
             	gameActivity.setIsWifiP2PEnabled(false);
-				// TODO: Tell the activity to clear its list of peers.
             }
         } else if (WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)) {
             // request available peers from the wifi p2p manager. This is an
@@ -68,7 +67,35 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
             		
             		// We are connected with the other device, request connection
             		// info to find group owner IP:
-            		wifiManager.requestConnectionInfo(wifiChannel, gameActivity);
+            		wifiManager.requestConnectionInfo(wifiChannel, 
+            				new WifiP2pManager.ConnectionInfoListener() {
+								
+								@Override
+								public void onConnectionInfoAvailable(WifiP2pInfo info) {
+								    
+								    InetAddress groupOwnerAddress = info.groupOwnerAddress;
+
+								    // After the group negotiation, we can determine the group owner.
+								    if (info.groupFormed && info.isGroupOwner){
+								        // Do whatever tasks are specific to the group owner.
+								        // One common case is creating a server thread and accepting
+								        // incoming connections. (TODO)
+								    	
+								    	// ...
+								    	Log.d("WifiBroadCastReceiver", "I am the group owner.");
+										gameActivity.onOpponentSelected(Color.WHITE);
+								    } else if (info.groupFormed){
+								        // The other device acts as the client. In this case,
+								        // you'll want to create a client thread that connects to the group
+								        // owner. (TODO)
+								    	
+								    	// ...
+								    	Log.d("WifiBroadCastReceiver", "I am the client.");
+										gameActivity.onOpponentSelected(Color.BLACK);
+								    }
+
+								}
+							});
             	}
             	else{
             		// TODO? This probably means that we're no longer connected.

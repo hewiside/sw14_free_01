@@ -1,21 +1,20 @@
 package at.meinedomain.CheckIt;
 
+import java.net.InetAddress;
 import java.util.ArrayList;
-import java.util.List;
 
 import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
+import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
 import android.os.Bundle;
 import android.util.Log;
-import at.meinedomain.CheckIt.PeerListFragment.OnOpponentSelectedListener;
 import at.meinedomain.CheckIt.Screens.AbstractScreen;
 import at.meinedomain.CheckIt.Screens.LoadingScreen;
 
@@ -23,7 +22,7 @@ import com.badlogic.androidgames.framework.Screen;
 import com.badlogic.androidgames.framework.impl.AndroidGame;
 
 public class CheckItGame extends AndroidGame 
-						 implements OnOpponentSelectedListener {
+						 implements WifiP2pManager.ConnectionInfoListener{
 	
 	private Color playerColor; // TODO: ensure reset of variable after a game.
 	
@@ -74,9 +73,6 @@ public class CheckItGame extends AndroidGame
         
         wifiManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
         wifiChannel = wifiManager.initialize(this, getMainLooper(), null);
-        
-//        peers.add(0,"1. peer (onCreate of CheckItGame)");	// TODO delete this static code
-//        peers.add(1,"2. peer");								// TODO delete this static code
 	}
 	
 	@Override
@@ -89,25 +85,6 @@ public class CheckItGame extends AndroidGame
 		registerReceiver(wifiReceiver, wifiIntentFilter);
         
 		discoverPeers();
-//        wifiManager.discoverPeers(wifiChannel, new WifiP2pManager.ActionListener() {
-//            @Override
-//            public void onSuccess() {
-//                // Code for when the discovery initiation is successful goes here.
-//                // No services have actually been discovered yet, so this method
-//                // can often be left blank.  Code for peer discovery goes in the
-//                // onReceive method of the broadcast receiver.
-//            	setWifiCheckPossible(true);
-//            }
-//
-//            @Override
-//            public void onFailure(int reasonCode) {
-//            	// TODO
-//                // Code for when the discovery initiation fails goes here.
-//                // Alert the user that something went wrong.
-//            	setWifiCheckPossible(false);
-//            	Log.w("CheckItGame", "discoverPeers FAILS!");
-//            }
-//        });
 	}
 	@Override
 	public void onPause(){
@@ -127,6 +104,29 @@ public class CheckItGame extends AndroidGame
     	isBackPressed = true;	
     }
     
+    @Override
+    public void onConnectionInfoAvailable(WifiP2pInfo info) {
+	    InetAddress groupOwnerAddress = info.groupOwnerAddress;
+	    // After the group negotiation, we can determine the group owner.
+	    
+	    if (info.groupFormed && info.isGroupOwner){
+	        // Do whatever tasks are specific to the group owner.
+	        // One common case is creating a server thread and accepting
+	        // incoming connections. (TODO)
+	    	
+	    	// ...
+	    	Log.d("WifiBroadCastReceiver", "I am the group owner.");
+			onOpponentSelected(Color.WHITE);
+	    } else if (info.groupFormed){
+	        // The other device acts as the client. In this case,
+	        // you'll want to create a client thread that connects to the group
+	        // owner. (TODO)
+	    	
+	    	// ...
+	    	Log.d("WifiBroadCastReceiver", "I am the client.");
+			onOpponentSelected(Color.BLACK);
+	    }
+    }
     
     public void discoverPeers(){
         wifiManager.discoverPeers(wifiChannel, new WifiP2pManager.ActionListener() {

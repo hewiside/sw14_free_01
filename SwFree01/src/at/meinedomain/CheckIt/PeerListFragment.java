@@ -24,22 +24,12 @@ public class PeerListFragment extends DialogFragment{
 	
 	private ArrayList<WifiP2pDevice> peers;
 	private ArrayAdapter<WifiP2pDevice> peerAdapter;
-	private OnOpponentSelectedListener activity;
-	
-	// the activity containing this fragment must implement this interface
-	public interface OnOpponentSelectedListener {
-		public void onOpponentSelected(Color color);
-	}
+	private CheckItGame gameActivity;
 	
 	@Override
 	public void onAttach(Activity activity){
 		super.onAttach(activity);
-		try{
-			this.activity = (OnOpponentSelectedListener) activity;
-		} catch(ClassCastException e){
-			throw new ClassCastException(activity.toString()+
-							" must implement OnOpponentSelectedListener!");
-		}
+		this.gameActivity = (CheckItGame) activity;
 	}
 	
 	@Override
@@ -52,8 +42,7 @@ public class PeerListFragment extends DialogFragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
 		
-		final CheckItGame gameActivity = (CheckItGame) getActivity();
-		peers = gameActivity.getPeers();  // PROBLEM, BECAUSE peers-ELEMENTS ARE NOT STRINGS???????????????????????????
+		peers = gameActivity.getPeers();
 		
 		// Inflate the layout for this fragment
 		View fragLayout = inflater.inflate(R.layout.peer_list_fragment, container, false);
@@ -71,14 +60,13 @@ public class PeerListFragment extends DialogFragment{
 				WifiP2pDevice device = peers.get(positionOfViewInAdapter);
 				WifiP2pConfig config = new WifiP2pConfig();
 				config.deviceAddress = device.deviceAddress;
-				config.wps.setup = WpsInfo.PBC; // TODO: Check if necessary (only 1 of 2 Google docs has this line.)
+				config.wps.setup = WpsInfo.PBC;
 				
 				gameActivity.getWifiManager().connect(
 						gameActivity.getWifiChannel(), config, 
 						new ActionListener() {
 							@Override
 							public void onSuccess() {
-								// TODO Auto-generated method stub
 								// BroadcastReceiver will notify us. Ignore for now.
 								Log.d("PeerListFragment", "connect() SUCCESS!");
 							}

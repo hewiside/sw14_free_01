@@ -47,17 +47,13 @@ public class WifiDeviceArrayAdapter extends ArrayAdapter<WifiP2pDevice> {
                 text = (TextView) view.findViewById(textViewResourceId_);
             }
         } catch (ClassCastException e) {
-            Log.e("ArrayAdapter", "You must supply a resource ID for a TextView");
+            Log.e("WifiDeviceArrayAdapter", "You must supply a resource ID for a TextView");
             throw new IllegalStateException(
-                    "ArrayAdapter requires the resource ID to be a TextView", e);
+                    "WifiDeviceArrayAdapter requires the resource ID to be a TextView", e);
         }
 
-        WifiP2pDevice item = getItem(position);
-        if (item instanceof CharSequence) {
-            text.setText((CharSequence)item);
-        } else {
-            text.setText(item.deviceName); //TODO: change to desired string.
-        }
+        WifiP2pDevice peer = getItem(position);
+        text.setText(peer.deviceName); // show only device name and not all information as in peer.toString()
 
         return view;
     }
