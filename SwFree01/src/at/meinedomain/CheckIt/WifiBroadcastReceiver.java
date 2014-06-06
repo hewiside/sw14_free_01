@@ -67,7 +67,10 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
 
             		
             		// We are connected with the other device, request connection
-            		// info to find group owner IP:
+            		// info to find group owner IP: (the info is then given to
+		        	// the 2nd arg (=gameActivity)of the following method.
+		        	// (the gameActivity listens for that, since it implements
+		        	// OnConnenctionInfoListener.
             		wifiManager.requestConnectionInfo(wifiChannel, gameActivity);
             	}
             	else{

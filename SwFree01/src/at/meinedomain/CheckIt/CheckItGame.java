@@ -197,14 +197,14 @@ public class CheckItGame extends AndroidGame
     						commitAllowingStateLoss();
     	}
     	playerColor = color;
-    	Log.wtf("CheckItGame", "onOpponentSelected() -> I play with "+color);
+    	Log.d("CheckItGame", "onOpponentSelected() -> I play with "+color);
     }
     public Color getPlayerColor(){
     	return playerColor;
     }
     public void setPlayerColor(Color c){
     	playerColor = c;
-    	Log.e("CheckItGame", "playerColor: "+playerColor);
+    	Log.d("CheckItGame", "playerColor: "+playerColor);
     }
 } 
 
