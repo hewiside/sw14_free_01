@@ -1,6 +1,10 @@
 package at.meinedomain.CheckIt;
 
+import java.io.IOException;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
 
 import android.app.FragmentManager;
@@ -24,6 +28,7 @@ import com.badlogic.androidgames.framework.impl.AndroidGame;
 public class CheckItGame extends AndroidGame 
 						 implements WifiP2pManager.ConnectionInfoListener{
 	
+	private static final int SERVER_PORT = 8864;
 	private Color playerColor; // TODO: ensure reset of variable after a game.
 	
 	private FragmentManager fragManager;
@@ -113,9 +118,9 @@ public class CheckItGame extends AndroidGame
 	        // Do whatever tasks are specific to the group owner.
 	        // One common case is creating a server thread and accepting
 	        // incoming connections. (TODO)
-	    	
-	    	// ...
 	    	Log.d("WifiBroadCastReceiver", "I am the group owner.");
+	    	Thread serverThread = new ServerThread();
+	    	serverThread.start();
 			onOpponentSelected(Color.WHITE);
 	    } else if (info.groupFormed){
 	        // The other device acts as the client. In this case,
@@ -124,7 +129,9 @@ public class CheckItGame extends AndroidGame
 	    	
 	    	// ...
 	    	Log.d("WifiBroadCastReceiver", "I am the client.");
-			onOpponentSelected(Color.BLACK);
+			Thread clientThread = new ClientThread(info);
+			clientThread.start();
+	    	onOpponentSelected(Color.BLACK);
 	    }
     }
     
@@ -206,5 +213,81 @@ public class CheckItGame extends AndroidGame
     	playerColor = c;
     	Log.d("CheckItGame", "playerColor: "+playerColor);
     }
+    
+    private class ServerThread extends Thread{
+    	public ServerThread(){
+    		super();
+    	}
+    	
+    	@Override
+    	public void run(){
+    		ServerSocket serverSocket = null;
+    		Socket client = null;
+    		try{
+    			serverSocket = new ServerSocket(SERVER_PORT);
+    			Log.d("CheckItGame", "Server: Socket opened.");
+    			client = serverSocket.accept();
+    			Log.d("CheckItGame", "Server: Connected.");
+    		}
+    		catch(IOException e){
+    			Log.wtf("CheckItGame", e.getMessage());
+    		}		
+    		finally{
+    			if(serverSocket != null){
+    				try {
+						serverSocket.close();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+    			}
+    			if(client != null){
+    				if(client.isConnected()){
+    					try {
+							client.close();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+    				}
+    			}
+    		}	
+    	}
+    }
+    private class ClientThread extends Thread{
+    	private WifiP2pInfo info;
+    	
+    	public ClientThread(WifiP2pInfo info){
+    		super();
+    		this.info = info;
+    	}
+    	
+    	@Override
+    	public void run(){
+    		Socket client = null;
+    		try{
+    			client = new Socket(info.groupOwnerAddress.getHostAddress(),
+    									   SERVER_PORT);
+    			Log.d("CheckItGame", "Connected to the Server.");
+    			
+    		}
+    		catch(IOException e){
+    			Log.wtf("CheckItGame", e.getMessage());
+    		}
+    		finally{
+    			if(client != null){
+    				if(client.isConnected()){
+    					try{
+    						client.close();
+    					}
+    					catch(IOException e){
+    						// TODO: maybe we could do more to save the day...
+    						e.printStackTrace();
+    					}
+    				}
+    			}
+    		}
+    	}
+    }    
 } 
 
