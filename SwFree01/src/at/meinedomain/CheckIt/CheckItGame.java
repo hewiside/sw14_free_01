@@ -224,13 +224,10 @@ public class CheckItGame extends AndroidGame
 
     
 //------------------------------------------------------------------------------
-    private class ServerThread extends Thread{
-    	private boolean stopRequested;
-    	
+    private class ServerThread extends ConnectionThread{    	
     	
     	public ServerThread(){
     		super();
-    		stopRequested = false;
     	}
     	
     	@Override
@@ -248,7 +245,7 @@ public class CheckItGame extends AndroidGame
     								 " connected to "+client.getInetAddress());
     			
     			in = client.getInputStream();
-//    			out = new BufferedOutputStream(client.getOutputStream(), 8);   			
+    			out = client.getOutputStream();
     			client.setSoTimeout(50);
     			
     			byte[] b = new byte[8];
@@ -320,22 +317,16 @@ public class CheckItGame extends AndroidGame
     			}
     		}	
     	}
-    	
-    	public synchronized void requestStop(){
-    		stopRequested = true;
-    	}
     }
     
     
 //------------------------------------------------------------------------------
-    private class ClientThread extends Thread{
+    private class ClientThread extends ConnectionThread{
     	private WifiP2pInfo info;
-    	private boolean stopRequested;
     	
     	public ClientThread(WifiP2pInfo info){
     		super();
     		this.info = info;
-    		stopRequested = false;
     	}
     	
     	@Override
@@ -350,7 +341,7 @@ public class CheckItGame extends AndroidGame
     			Log.d("CheckItGame", "Client: "+client.getLocalAddress()+
     								 " connected to "+client.getInetAddress());
     			
-//    			in = new BufferedInputStream(client.getInputStream(), 8);
+    			in = client.getInputStream();
     			out = client.getOutputStream();    			
     			client.setSoTimeout(50);
     			
@@ -401,10 +392,6 @@ public class CheckItGame extends AndroidGame
     				}
     			}
     		}
-    	}
-    	
-    	public synchronized void requestStop(){
-    		stopRequested = true;
     	}
     }    
 } 
