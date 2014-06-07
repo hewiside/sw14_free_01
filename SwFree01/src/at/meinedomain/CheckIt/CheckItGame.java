@@ -35,6 +35,8 @@ public class CheckItGame extends AndroidGame
 						 implements WifiP2pManager.ConnectionInfoListener{
 	
 	private static final int SERVER_PORT = 8864;
+	public Thread connectionThread;
+	
 	private Color playerColor; // TODO: ensure reset of variable after a game.
 	
 	private FragmentManager fragManager;
@@ -125,8 +127,8 @@ public class CheckItGame extends AndroidGame
 	        // One common case is creating a server thread and accepting
 	        // incoming connections. (TODO)
 	    	Log.d("WifiBroadCastReceiver", "I am the group owner.");
-	    	Thread serverThread = new ServerThread();
-	    	serverThread.start();
+	    	connectionThread = new ServerThread();
+	    	connectionThread.start();
 			onOpponentSelected(Color.WHITE);
 	    } else if (info.groupFormed){
 	        // The other device acts as the client. In this case,
@@ -135,8 +137,8 @@ public class CheckItGame extends AndroidGame
 	    	
 	    	// ...
 	    	Log.d("WifiBroadCastReceiver", "I am the client.");
-			Thread clientThread = new ClientThread(info);
-			clientThread.start();
+			connectionThread = new ClientThread(info);
+			connectionThread.start();
 	    	onOpponentSelected(Color.BLACK);
 	    }
     }
@@ -225,6 +227,7 @@ public class CheckItGame extends AndroidGame
     private class ServerThread extends Thread{
     	private boolean stopRequested;
     	
+    	
     	public ServerThread(){
     		super();
     		stopRequested = false;
@@ -255,17 +258,23 @@ public class CheckItGame extends AndroidGame
 					if((length = in.read(b)) != -1){
 						System.out.write(b,0,length);
 						Log.wtf("ServerThread", "length:"+length+", "+new String(b, "UTF-8"));
-//						Log.wtf("ServerThread", IOUtils.toString(b, "UTF-8"));
-						Log.wtf("ServerThread", "end reached");
-						stopRequested = true;
 					}
-//					else{
-//						Log.wtf("ServerThread", "end not reached");
-//						if(b[0]=="S".getBytes()[0] &&
-//						   b[1]=="T".getBytes()[1]){
-//							Log.wtf("ServerThread", "OK, I will start.");
-//						}
-//					}
+					else{
+						stopRequested = true; 
+					}
+					
+					while(true){
+						// TODO TODO TODO 1. move (out) 2. listen for move (in)
+						while(!stopRequested){
+							
+						}
+						while(!stopRequested){
+							
+						}
+						if(stopRequested){
+							break;
+						}
+					}
 				}
 				catch(InterruptedIOException e){
 					// try again
@@ -283,7 +292,7 @@ public class CheckItGame extends AndroidGame
     				try {
 						in.close();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
+						// Auto-generated catch block
 						e.printStackTrace();
 					}
     			}
@@ -291,7 +300,7 @@ public class CheckItGame extends AndroidGame
     				try {
 						out.close();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
+						// Auto-generated catch block
 						e.printStackTrace();
 					}
     			}
@@ -300,7 +309,7 @@ public class CheckItGame extends AndroidGame
     					try {
 							client.close();
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
+							// Auto-generated catch block
 							e.printStackTrace();
 						}
     				}
@@ -309,7 +318,7 @@ public class CheckItGame extends AndroidGame
     				try {
 						serverSocket.close();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
+						// Auto-generated catch block
 						e.printStackTrace();
 					}
     			}
@@ -352,7 +361,7 @@ public class CheckItGame extends AndroidGame
     			out.write("START".getBytes("UTF-8"));
     			Log.wtf("Client Thread", "Please start!");
     			while(!stopRequested){
-    				stopRequested = true;
+    				// TODO TODO TODO 1. listen for move (in) 2. move (out)
     			}
     		}
     		catch(IOException e){
@@ -363,7 +372,7 @@ public class CheckItGame extends AndroidGame
     				try {
 						in.close();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
+						// Auto-generated catch block
 						e.printStackTrace();
 					}
     			}
@@ -371,7 +380,7 @@ public class CheckItGame extends AndroidGame
     				try {
 						out.close();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
+						// Auto-generated catch block
 						e.printStackTrace();
 					}
     			}
@@ -381,7 +390,7 @@ public class CheckItGame extends AndroidGame
     						client.close();
     					}
     					catch(IOException e){
-    						// TODO: maybe we could do more to save the day...
+    						// maybe we could do more to save the day...
     						e.printStackTrace();
     					}
     				}
