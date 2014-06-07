@@ -1,12 +1,18 @@
 package at.meinedomain.CheckIt;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InterruptedIOException;
+import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import android.R.bool;
 import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -213,29 +219,77 @@ public class CheckItGame extends AndroidGame
     	playerColor = c;
     	Log.d("CheckItGame", "playerColor: "+playerColor);
     }
+
     
+//------------------------------------------------------------------------------
     private class ServerThread extends Thread{
+    	private boolean stopRequested;
+    	
     	public ServerThread(){
     		super();
+    		stopRequested = false;
     	}
     	
     	@Override
     	public void run(){
     		ServerSocket serverSocket = null;
     		Socket client = null;
+    		InputStream in = null;
+    		OutputStream out = null;
+    		
     		try{
     			serverSocket = new ServerSocket(SERVER_PORT);
-    			Log.d("CheckItGame", "Server: Socket opened.");
+    			Log.d("ServerThread", "Server: ServerSocket opened.");
     			client = serverSocket.accept();
-    			Log.d("CheckItGame", "Server: Connected.");
+    			Log.d("ServerThread", "Server: "+client.getLocalAddress()+
+    								 " connected to "+client.getInetAddress());
+    			
+    			in = client.getInputStream();
+//    			out = new BufferedOutputStream(client.getOutputStream(), 8);   			
+    			client.setSoTimeout(50);
+    			
+    			byte[] b = new byte[8];
+    			int length;
+    			
+				try{
+					if((length = in.read(b)) != -1){
+						System.out.write(b,0,length);
+						Log.wtf("ServerThread", "length:"+length+", "+new String(b, "UTF-8"));
+//						Log.wtf("ServerThread", IOUtils.toString(b, "UTF-8"));
+						Log.wtf("ServerThread", "end reached");
+						stopRequested = true;
+					}
+//					else{
+//						Log.wtf("ServerThread", "end not reached");
+//						if(b[0]=="S".getBytes()[0] &&
+//						   b[1]=="T".getBytes()[1]){
+//							Log.wtf("ServerThread", "OK, I will start.");
+//						}
+//					}
+				}
+				catch(InterruptedIOException e){
+					// try again
+				}
+    			
+    			while(!stopRequested){
+    				requestStop(); //TODO
+    			}
     		}
     		catch(IOException e){
     			Log.wtf("CheckItGame", e.getMessage());
     		}		
     		finally{
-    			if(serverSocket != null){
+    			if(in != null){
     				try {
-						serverSocket.close();
+						in.close();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+    			}
+    			if(out != null){
+    				try {
+						out.close();
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -251,30 +305,76 @@ public class CheckItGame extends AndroidGame
 						}
     				}
     			}
+    			if(serverSocket != null){
+    				try {
+						serverSocket.close();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+    			}
     		}	
     	}
+    	
+    	public synchronized void requestStop(){
+    		stopRequested = true;
+    	}
     }
+    
+    
+//------------------------------------------------------------------------------
     private class ClientThread extends Thread{
     	private WifiP2pInfo info;
+    	private boolean stopRequested;
     	
     	public ClientThread(WifiP2pInfo info){
     		super();
     		this.info = info;
+    		stopRequested = false;
     	}
     	
     	@Override
     	public void run(){
     		Socket client = null;
+    		InputStream in = null;
+    		OutputStream out = null;
+    		
     		try{
     			client = new Socket(info.groupOwnerAddress.getHostAddress(),
     									   SERVER_PORT);
-    			Log.d("CheckItGame", "Connected to the Server.");
+    			Log.d("CheckItGame", "Client: "+client.getLocalAddress()+
+    								 " connected to "+client.getInetAddress());
     			
+//    			in = new BufferedInputStream(client.getInputStream(), 8);
+    			out = client.getOutputStream();    			
+    			client.setSoTimeout(50);
+    			
+    			out.write("START".getBytes("UTF-8"));
+    			Log.wtf("Client Thread", "Please start!");
+    			while(!stopRequested){
+    				stopRequested = true;
+    			}
     		}
     		catch(IOException e){
     			Log.wtf("CheckItGame", e.getMessage());
     		}
     		finally{
+    			if(in != null){
+    				try {
+						in.close();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+    			}
+    			if(out != null){
+    				try {
+						out.close();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+    			}
     			if(client != null){
     				if(client.isConnected()){
     					try{
@@ -287,6 +387,10 @@ public class CheckItGame extends AndroidGame
     				}
     			}
     		}
+    	}
+    	
+    	public synchronized void requestStop(){
+    		stopRequested = true;
     	}
     }    
 } 
