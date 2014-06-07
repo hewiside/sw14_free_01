@@ -279,10 +279,6 @@ public class CheckItGame extends AndroidGame
 				catch(InterruptedIOException e){
 					// try again
 				}
-    			
-    			while(!stopRequested){
-    				requestStop(); //TODO
-    			}
     		}
     		catch(IOException e){
     			Log.wtf("CheckItGame", e.getMessage());
@@ -360,8 +356,17 @@ public class CheckItGame extends AndroidGame
     			
     			out.write("START".getBytes("UTF-8"));
     			Log.wtf("Client Thread", "Please start!");
-    			while(!stopRequested){
+    			while(true){
     				// TODO TODO TODO 1. listen for move (in) 2. move (out)
+					while(!stopRequested){
+						
+					}
+					while(!stopRequested){
+						
+					}
+					if(stopRequested){
+						break;
+					}
     			}
     		}
     		catch(IOException e){
