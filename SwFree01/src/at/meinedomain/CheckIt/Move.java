@@ -9,6 +9,11 @@ public class Move {
 		this.to = to;
 	}
 	
+	public Move(int fromX, int fromY, int toX, int toY){
+		this.from = new Point(fromX, fromY);
+		this.to   = new Point(toX,   toY  );
+	}
+	
 	public Point getFrom(){
 		return from;
 	}

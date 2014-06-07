@@ -4,6 +4,8 @@ public class ConnectionThread extends Thread {
 	protected boolean stopRequested;
 	protected Move move;
 	protected boolean moveMade;
+	// TODO: There will be the need for a Board-member which we can notify of new moves.
+	
 	
 	public ConnectionThread() {
 		super();

@@ -25,13 +25,11 @@ public final class R {
         public static final int peer_wb=0x7f020002;
     }
     public static final class id {
-        public static final int empty=0x7f070005;
-        public static final int image_view_b=0x7f070002;
-        public static final int image_view_w=0x7f070000;
-        public static final int no_wifi=0x7f070006;
-        public static final int peer_list=0x7f070004;
-        public static final int peer_list_title=0x7f070003;
-        public static final int text_view_peer=0x7f070001;
+        public static final int empty=0x7f070003;
+        public static final int no_wifi=0x7f070004;
+        public static final int peer_list=0x7f070002;
+        public static final int peer_list_title=0x7f070001;
+        public static final int text_view_peer=0x7f070000;
     }
     public static final class layout {
         public static final int peer_list_entry=0x7f030000;
