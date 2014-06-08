@@ -54,7 +54,7 @@ public class GameScreen extends AbstractScreen {
         
         this.game = (CheckItGame) game;
         board = ((CheckItGame)game).getBoard(); // TODO is it good to have two board instances (here and in CheckItGame)? --> Caution! Reset of the board with board = new Board() has to occur on *both* places!!
-        player = this.game.getPlayerColor();
+        player = this.game.getPlayerColor(); // TODO change!
 
         myTime = 300;
         opponentsTime = 300;
@@ -89,6 +89,8 @@ public class GameScreen extends AbstractScreen {
             game.setScreen(new MainMenuScreen(game)); 
             return;
         }
+        
+//        if(state == GameState.MyTurn)
         
         int len = touchEvents.size();
         int unit = g.getWidth()/12;

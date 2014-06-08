@@ -3,14 +3,18 @@ package at.meinedomain.CheckIt;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.Socket;
 
 import android.util.Log;
 
 public class ConnectionThread extends Thread {
+	protected InputStream in;
+	protected OutputStream out;
+	protected Socket client;
+	protected Board board;
 	protected boolean stopRequested;
 	protected Move myMove;
 	protected boolean moveMade;
-	protected Board board;
 	protected static final int INITIAL_SOCKET_TIMEOUT = 10000;
 	protected static final int SOCKET_TIMEOUT = 2000; // TODO TODO set to 50
 	protected static final int BUFFER_SIZE = 8;
@@ -18,6 +22,9 @@ public class ConnectionThread extends Thread {
 	
 	public ConnectionThread(Board board) {
 		super();
+		in = null;
+		out = null;
+		client = null;
 		this.board = board;
 		stopRequested = false;
 		myMove = null;

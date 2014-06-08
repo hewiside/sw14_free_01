@@ -54,24 +54,39 @@ public class Board {
 	public int getHeight(){
 		return height;
 	}
+	
 	public AbstractPiece pieceAt(Point pt){
 		return pieceAt(pt.getX(), pt.getY());
 	}
 	public AbstractPiece pieceAt(int i, int j){
 		return board[i][j];
 	}
+	
+	// change location in the piece
 	public void placePiece(AbstractPiece p, Point pt){
-		// TODO
+		// TODO p.setLocation(pt);
 	}
-	public void move(Point pt1, Point pt2){
-		// TODO
+	
+	// move without testing for correctness of the move.
+	public void move(Point from, Point to){
+		move(from, to, null);
 	}
-	public void move(Point pt1, Point pt2, Point ep){
-		// TODO
+	public void move(Point from, Point to, Point ep){
+		enPassant = ep;
+		
+		board[  to.getX()][  to.getY()] = pieceAt(from); 
+		board[from.getX()][from.getY()] = null;
+		
+		placePiece(pieceAt(to), to);
+		
+		turn = (turn.equals(Color.WHITE)) ? Color.BLACK : Color.WHITE;
 	}
-	public void tryToMove(Point pt1, Point pt2){
-		// TODO
+	
+	public void tryToMove(Point from, Point to){
+		AbstractPiece tempPiece = pieceAt(from);
+		tempPiece.tryToMove(to);
 	}
+	
 	public Point getEnPassant(){
 		return enPassant;
 	}

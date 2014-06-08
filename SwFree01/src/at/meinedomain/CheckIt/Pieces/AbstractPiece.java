@@ -21,21 +21,26 @@ public abstract class AbstractPiece {
 	
 	protected abstract MoveType CanMove(Point pt);
 	
-	public Point getLocation(){
-		return location;
-	}
 	public Color getColor(){
 		return color;
 	}
+	
+	public Point getLocation(){
+		return location;
+	}
+	
+	public Pixmap getPixmap(){
+		return pixmap;
+	}
+	
 	public void setLocation(Point pt){
 		location = pt;
 	}
+	
 	public void setLocation(int i, int j){
 		location.setX(i);
 		location.setY(j);
 	}
+	
 	public abstract void tryToMove(Point pt);
-	public Pixmap getPixmap(){
-		return pixmap;
-	}
 }

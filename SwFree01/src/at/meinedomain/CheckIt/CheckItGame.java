@@ -233,17 +233,15 @@ public class CheckItGame extends AndroidGame
 //------------------------------------------------------------------------------
     private class ServerThread extends ConnectionThread{    	
     	
+    	private ServerSocket serverSocket;
+    	
     	public ServerThread(Board board){
     		super(board);
+    		serverSocket = null;
     	}
     	
     	@Override
-    	public void run(){
-    		ServerSocket serverSocket = null;
-    		Socket client = null;
-    		InputStream in = null;
-    		OutputStream out = null;
-    		
+    	public void run(){    		
     		try{
     			serverSocket = new ServerSocket(SERVER_PORT);
     			Log.d("ServerThread", "Server: ServerSocket opened.");
@@ -345,9 +343,6 @@ public class CheckItGame extends AndroidGame
     	
     	@Override
     	public void run(){
-    		Socket client = null;
-    		InputStream in = null;
-    		OutputStream out = null;
     		
     		try{
     			client = new Socket(info.groupOwnerAddress.getHostAddress(),
