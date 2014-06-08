@@ -15,8 +15,10 @@ public class ConnectionThread extends Thread {
 	protected boolean stopRequested;
 	protected Move myMove;
 	protected boolean moveMade;
+	protected static final int SERVER_PORT = 8864;
 	protected static final int INITIAL_SOCKET_TIMEOUT = 10000;
 	protected static final int SOCKET_TIMEOUT = 2000; // TODO TODO set to 50
+	protected static final String START_TAG = "STARTNOW";
 	protected static final int BUFFER_SIZE = 8;
 	
 	
