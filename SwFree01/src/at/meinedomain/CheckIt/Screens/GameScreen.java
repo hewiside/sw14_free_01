@@ -16,22 +16,21 @@ import java.util.List;
 import com.badlogic.androidgames.framework.Game;
 import com.badlogic.androidgames.framework.Graphics;
 import com.badlogic.androidgames.framework.Input.TouchEvent;
-import com.badlogic.androidgames.framework.impl.AndroidGame;
 
 public class GameScreen extends AbstractScreen {
 	
-	enum GameState{
-		Ready,
-		MyTurn,
-		OpponentsTurn,		
-		GameOver
+	private enum GameState{
+		READY,
+		MY_TURN,
+		OPPONENTS_TURN,		
+		GAME_OVER
 	}
 	
-	GameState state = GameState.Ready;
+	GameState state = GameState.READY;
 	
-	CheckItGame game;
-	Board board;
-	Color player;
+	private CheckItGame game;
+	private Board board;
+	private Color player;
 	
 	ConnectionThread connectionThread;
 	
@@ -46,6 +45,9 @@ public class GameScreen extends AbstractScreen {
     private static final int NUM_WIDTH = 135; // a number's width in the picture Assets.numbers
     private static final int NUM_HEIGHT = 180;
 	private static final int COLON_WIDTH = 45; // width of colon in Assets.numbers 
+	private final int HEIGHT; // of screen
+	private final int WIDTH;
+	private final int BUTTON_SIZE;
 	private int colorTable;
 	private int colorDark; 
 	private int colorLight; 
@@ -70,10 +72,13 @@ public class GameScreen extends AbstractScreen {
         
         lightTileOffset = 1;
         Log.d("GameScreen", "player plays with: "+player);
-        unit = game.getGraphics().getWidth()/12;
-        tileSize = game.getGraphics().getWidth() / board.getWidth();
-        firstRankY = game.getGraphics().getHeight()/2 +
-        									(board.getHeight()/2-1)*tileSize;
+        
+        HEIGHT = game.getGraphics().getHeight();
+        WIDTH  = game.getGraphics().getWidth();
+        BUTTON_SIZE = Assets.buttonPlay.getWidth();
+        unit = WIDTH/12;
+        tileSize = WIDTH / board.getWidth();
+        firstRankY = HEIGHT/2 + (board.getHeight()/2-1)*tileSize;
         
         if(player==Color.WHITE){
         	connectionThread = new ServerThread(board);
@@ -102,9 +107,23 @@ public class GameScreen extends AbstractScreen {
         	if(Settings.soundEnabled){
                 //Assets.click.play(1);
         	}
+        	connectionThread.requestStop();
         	game.setPlayerColor(null);
             game.setScreen(new MainMenuScreen(game)); 
             return;
+        }
+        
+        if(state == GameState.READY){ 
+            updateReady(deltaTime, touchEvents);
+        }
+        else if(state == GameState.MY_TURN){
+            upateMyTurn(deltaTime, touchEvents);
+        }
+        else if(state == GameState.OPPONENTS_TURN){
+            updateOpponentsTurn(deltaTime, touchEvents);
+        }
+        else if(state == GameState.GAME_OVER){
+            updateGameOver(deltaTime, touchEvents);
         }
         
 //        if(state == GameState.MyTurn)
@@ -144,6 +163,58 @@ public class GameScreen extends AbstractScreen {
 //        }
     }
     
+    private void updateReady(float deltaTime, List<TouchEvent> touchEvents){
+    	// TODO FOR BLACK PLAYER: if screen is tapped, trigger the sending of START_TAG in the socket and set the state to OpponentsTurn.
+    	// for black player
+    	if(player == Color.BLACK){
+	    	for(int i = 0; i < touchEvents.size(); i++) {
+	    		TouchEvent event = touchEvents.get(i);
+	    		if(event.type == TouchEvent.TOUCH_UP){
+	    			connectionThread.requestStart();
+	    			state = GameState.OPPONENTS_TURN;
+	    		}
+	    	}
+    	}
+    	// for white player
+    	else{
+    		if(connectionThread.getStartRequested()){
+    			state = GameState.MY_TURN;
+    		}
+    	}
+    	
+    	// TODO FOR WHITE PLAYER: check if we have received the START_TAG. If so, set state to MyTurn.
+    }
+    private void upateMyTurn(float deltaTime, List<TouchEvent> touchEvents){
+    	if(checkForGameOver()){
+    		return;
+    	}
+//    	if(board.getTurn() == )
+    }
+    private void updateOpponentsTurn(float deltaTime, List<TouchEvent> touchEvents){
+    	if(checkForGameOver()){
+    		return;
+    	}
+    	
+    	if(board.getTurn() == null){
+    		Log.wtf("GameScreen","Current color in board is null!");
+    	}
+    	if(board.getTurn() != player){
+    		state = GameState.MY_TURN;
+    		// TODO opponentsTime = connectionThread.getOpponentsTime();
+    	}
+    }
+    private void updateGameOver(float deltaTime, List<TouchEvent> touchEvents){
+    	// TODO check if some replay-button (or back-button) has been clicked.
+    }
+    
+    private boolean checkForGameOver(){
+    	if(board.getMatchState() != Board.MatchState.RUNNING){
+    		state = GameState.GAME_OVER;
+    		return true;
+    	}
+    	return false;
+    }
+    
     private boolean inBounds(TouchEvent event, int x, int y, int width, int height) {
         if(event.x > x && event.x < x + width - 1 && 
            event.y > y && event.y < y + height - 1) 
@@ -160,16 +231,16 @@ public class GameScreen extends AbstractScreen {
         drawBoard(g);
         drawTimes(g);
         
-        if(state == GameState.Ready){ 
+        if(state == GameState.READY){ 
             drawReadyUI(g);
         }
-        if(state == GameState.MyTurn){
+        else if(state == GameState.MY_TURN){
             drawMyTurnUI(g);
         }
-        if(state == GameState.OpponentsTurn){
+        else if(state == GameState.OPPONENTS_TURN){
             drawOpponentsTurnUI(g);
         }
-        if(state == GameState.GameOver){
+        else if(state == GameState.GAME_OVER){
             drawGameOverUI(g);
         }
     }
@@ -181,7 +252,7 @@ public class GameScreen extends AbstractScreen {
     private void drawBoard(Graphics g){
         // Dark tiles
         g.drawRect(0, firstRankY - (board.getHeight()-1)*tileSize, 
-        		   g.getWidth(), g.getWidth(), colorDark);
+        		   WIDTH, WIDTH, colorDark);
         for(int i=0; i<board.getWidth(); i++){
         	for(int j=0; j<board.getHeight(); j++){
         		// Light tiles
@@ -227,10 +298,10 @@ public class GameScreen extends AbstractScreen {
     }    
     
     private void drawTimes(Graphics g){
-    	int x = g.getWidth()/2-2*NUM_WIDTH-COLON_WIDTH/2;
+    	int x = WIDTH/2-2*NUM_WIDTH-COLON_WIDTH/2;
     	
     	drawTime(g, (int) opponentsTime, x, 0);
-    	drawTime(g, (int) myTime, x, g.getHeight()-NUM_HEIGHT);
+    	drawTime(g, (int) myTime, x, HEIGHT-NUM_HEIGHT);
     }
     
     private void drawTime(Graphics g, int time, int x, int y){
@@ -255,10 +326,12 @@ public class GameScreen extends AbstractScreen {
     
     private void drawReadyUI(Graphics g){
     	if(player == Color.WHITE){
-    		// TODO show that we wait for black to start the countdown
+    		drawDarkOverlay(g, 5, HEIGHT/2);
     	}
     	if(player == Color.BLACK){
-    		// TODO show a picture that makes player start the countdown
+    		drawDarkOverlay(g, 5, HEIGHT);
+    		g.drawPixmap(Assets.buttonPlay, WIDTH /2 - BUTTON_SIZE/2, 
+    										HEIGHT/2 - BUTTON_SIZE/2);
     	}
     }
     private void drawMyTurnUI(Graphics g){
@@ -270,9 +343,15 @@ public class GameScreen extends AbstractScreen {
     }
     private void drawGameOverUI(Graphics g){
     	// TODO play-again-button & go-back-button
-    	g.drawRect(0, 0, g.getWidth(), g.getHeight(), darkOverlay);
+    	drawDarkOverlay(g, 10, HEIGHT);
     }
 
+    private void drawDarkOverlay(Graphics g, int howOften, int height){
+    	for(int i=0; i<howOften; i++){
+    		g.drawRect(0, 0, WIDTH, height, darkOverlay);
+    	}
+    }
+    
     @Override
     public void pause() {        
         Settings.save(game.getFileIO());

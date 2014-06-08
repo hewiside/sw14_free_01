@@ -124,24 +124,16 @@ public class CheckItGame extends AndroidGame
 	    if (info.groupFormed && info.isGroupOwner){
 	        // Do whatever tasks are specific to the group owner.
 	        // One common case is creating a server thread and accepting
-	        // incoming connections. (TODO)
+	        // incoming connections.
 	    	Log.d("WifiBroadCastReceiver", "I am the group owner.");
-//	    	board = new Board();
-//	    	connectionThread = new ServerThread(board);
-//	    	connectionThread.start();
-			onOpponentSelected(Color.WHITE);
+			onOpponentSelected(Color.WHITE); // GameScreen will start ServerThread.
 	    } else if (info.groupFormed){
 	        // The other device acts as the client. In this case,
 	        // you'll want to create a client thread that connects to the group
-	        // owner. (TODO)
-	    	
-	    	// ...
+	        // owner.
 	    	Log.d("WifiBroadCastReceiver", "I am the client.");
-//	    	board = new Board(); TODO TODO TODO TODO TODO
-//			connectionThread = new ClientThread(info, board);
-//			connectionThread.start();
 	    	this.info = info;
-	    	onOpponentSelected(Color.BLACK);
+	    	onOpponentSelected(Color.BLACK); // GameScreen will start ClientThread.
 	    }
     }
     

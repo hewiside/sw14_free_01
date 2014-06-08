@@ -34,6 +34,7 @@ public class ServerThread extends ConnectionThread{
 			try{
 				if((length = in.read(b)) != -1){
 					if(START_TAG.equals(new String(b, "UTF-8"))){
+						startRequested = true;
 						Log.d("ServerThread", "START_TAG received.");
 					}
 					else{
@@ -50,7 +51,7 @@ public class ServerThread extends ConnectionThread{
 				while(true){
 					while(!stopRequested){
 						sendMoveWhenMade(out, b);
-						// TODO maybe listen for opponent giving up
+						CheckForExitingOpponent(in, b);
 					}
 					while(!stopRequested){
 						processIncommingMove(in, b);
@@ -59,6 +60,7 @@ public class ServerThread extends ConnectionThread{
 						break;
 					}
 				}
+				sendExitTag(out, b);
 			}
 			catch(InterruptedIOException e){
 				// try again

@@ -29,6 +29,13 @@ public class ClientThread extends ConnectionThread{
 			
 			byte[] b = new byte[BUFFER_SIZE];
 			
+			while(!startRequested){
+				if(stopRequested){
+					Log.wtf("ClientThread", "Stop requested before start");
+					return;
+				}
+			}
+			
 			out.write(START_TAG.getBytes("UTF-8"));
 			Log.wtf("Client Thread", "Please start!");
 			while(true){
@@ -37,12 +44,13 @@ public class ClientThread extends ConnectionThread{
 				}
 				while(!stopRequested){
 					sendMoveWhenMade(out, b);
-					// TODO maybe listen for opponent giving up
+					CheckForExitingOpponent(in, b);
 				}
 				if(stopRequested){
 					break;
 				}
 			}
+			sendExitTag(out, b);
 		}
 		catch(IOException e){
 			Log.wtf("CheckItGame", e.getMessage());

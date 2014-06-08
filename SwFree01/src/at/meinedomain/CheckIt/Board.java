@@ -4,13 +4,22 @@ import android.util.Log;
 import at.meinedomain.CheckIt.Pieces.*;
 
 public class Board {
+	public enum MatchState{
+		RUNNING,
+		WON,
+		LOST,
+		DRAW
+	}
+	
+	private MatchState matchState;
 	private int width;
 	private int height;
 	private AbstractPiece[][] board;
-	Color turn;
+	private Color turn;
 	Point enPassant;
 	
 	public Board(){
+		matchState = MatchState.RUNNING;
 		width = 8;
 		height = 8;
 		turn = Color.WHITE;
@@ -89,5 +98,20 @@ public class Board {
 	
 	public Point getEnPassant(){
 		return enPassant;
+	}
+	
+	public MatchState getMatchState(){
+		return matchState;
+	}
+	
+	public Color getTurn(){
+		return turn;
+	}
+	
+	public void setMatchState(MatchState ms){
+		matchState = ms;
+	}
+	public void toggleTurn(){
+		turn = (turn==Color.WHITE) ? Color.BLACK : Color.WHITE;
 	}
 }
