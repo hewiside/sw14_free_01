@@ -3,9 +3,12 @@ package at.meinedomain.CheckIt.Screens;
 import android.util.Log;
 import at.meinedomain.CheckIt.Assets;
 import at.meinedomain.CheckIt.Board;
+import at.meinedomain.CheckIt.ClientThread;
 import at.meinedomain.CheckIt.Color;
 import at.meinedomain.CheckIt.CheckItGame;
+import at.meinedomain.CheckIt.ConnectionThread;
 import at.meinedomain.CheckIt.R;
+import at.meinedomain.CheckIt.ServerThread;
 import at.meinedomain.CheckIt.Settings;
 
 import java.util.List;
@@ -30,9 +33,12 @@ public class GameScreen extends AbstractScreen {
 	Board board;
 	Color player;
 	
+	ConnectionThread connectionThread;
+	
 	float myTime;
 	float opponentsTime;
 	
+	// members used in present()
 	int lightTileOffset; // determines whether A8 is a light or dark tile?	
     int unit;
     int tileSize;
@@ -45,18 +51,21 @@ public class GameScreen extends AbstractScreen {
 	private int colorLight; 
 	private int darkOverlay; 
 	
-    public GameScreen(Game game) {
-        super(game);
-        colorTable = ((AndroidGame)game).getResources().getColor(R.color.medium);
-        colorDark  = ((AndroidGame)game).getResources().getColor(R.color.dark);
-        colorLight = ((AndroidGame)game).getResources().getColor(R.color.light);
-        darkOverlay = ((AndroidGame)game).getResources().getColor(R.color.dark_overlay);
+    public GameScreen(Game game_) {
+        super(game_);
+        game = (CheckItGame) game_;
         
-        this.game = (CheckItGame) game;
-        board = ((CheckItGame)game).getBoard(); // TODO is it good to have two board instances (here and in CheckItGame)? --> Caution! Reset of the board with board = new Board() has to occur on *both* places!!
-        player = this.game.getPlayerColor(); // TODO change!
+        colorTable = game.getResources().getColor(R.color.medium);
+        colorDark  = game.getResources().getColor(R.color.dark);
+        colorLight = game.getResources().getColor(R.color.light);
+        darkOverlay = game.getResources().getColor(R.color.dark_overlay);
+        
 
-        myTime = 300;
+        board = new Board();
+        player = game.getPlayerColor(); // is set because this Screen is only
+        		// set if MainMenu Screen recognizes a color in CheckItGame.
+
+        myTime = 300; // TODO allow custom times
         opponentsTime = 300;
         
         lightTileOffset = 1;
@@ -65,6 +74,14 @@ public class GameScreen extends AbstractScreen {
         tileSize = game.getGraphics().getWidth() / board.getWidth();
         firstRankY = game.getGraphics().getHeight()/2 +
         									(board.getHeight()/2-1)*tileSize;
+        
+        if(player==Color.WHITE){
+        	connectionThread = new ServerThread(board);
+        }
+        else{
+        	connectionThread = new ClientThread(game.getWifiP2pInfo(), board);
+        }
+    	connectionThread.start();
     }   
 
 	// overriden from AbstractScreen--------------------------------------------

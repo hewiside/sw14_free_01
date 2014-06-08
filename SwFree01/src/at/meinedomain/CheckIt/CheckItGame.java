@@ -34,9 +34,8 @@ import com.badlogic.androidgames.framework.impl.AndroidGame;
 public class CheckItGame extends AndroidGame 
 						 implements WifiP2pManager.ConnectionInfoListener{
 	
-	public Thread connectionThread;
+	private WifiP2pInfo info;
 	
-	private Board board;
 	private Color playerColor; // TODO: ensure reset of variable after a game.
 	
 	private FragmentManager fragManager;
@@ -127,9 +126,9 @@ public class CheckItGame extends AndroidGame
 	        // One common case is creating a server thread and accepting
 	        // incoming connections. (TODO)
 	    	Log.d("WifiBroadCastReceiver", "I am the group owner.");
-	    	board = new Board();
-	    	connectionThread = new ServerThread(board);
-	    	connectionThread.start();
+//	    	board = new Board();
+//	    	connectionThread = new ServerThread(board);
+//	    	connectionThread.start();
 			onOpponentSelected(Color.WHITE);
 	    } else if (info.groupFormed){
 	        // The other device acts as the client. In this case,
@@ -138,9 +137,10 @@ public class CheckItGame extends AndroidGame
 	    	
 	    	// ...
 	    	Log.d("WifiBroadCastReceiver", "I am the client.");
-	    	board = new Board();
-			connectionThread = new ClientThread(info, board);
-			connectionThread.start();
+//	    	board = new Board(); TODO TODO TODO TODO TODO
+//			connectionThread = new ClientThread(info, board);
+//			connectionThread.start();
+	    	this.info = info;
 	    	onOpponentSelected(Color.BLACK);
 	    }
     }
@@ -165,9 +165,6 @@ public class CheckItGame extends AndroidGame
             	Log.w("CheckItGame", "discoverPeers FAILS!");
             }
         });
-    }
-    public Board getBoard(){
-    	return board;
     }
     public boolean getIsBackPressed(){
     	return isBackPressed;
@@ -198,6 +195,9 @@ public class CheckItGame extends AndroidGame
     }
     public void setWifiCheckPossible(boolean b){
     	this.wifiCheckPossible = b;
+    }
+    public WifiP2pInfo getWifiP2pInfo(){
+    	return info;
     }
     public ArrayList<WifiP2pDevice> getPeers(){
     	return peers;
