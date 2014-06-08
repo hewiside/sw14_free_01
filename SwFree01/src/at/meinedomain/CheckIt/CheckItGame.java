@@ -36,7 +36,9 @@ public class CheckItGame extends AndroidGame
 	
 	private static final int SERVER_PORT = 8864;
 	public Thread connectionThread;
+	private static final String START_TAG = "STARTNOW";
 	
+	private Board board;
 	private Color playerColor; // TODO: ensure reset of variable after a game.
 	
 	private FragmentManager fragManager;
@@ -127,7 +129,8 @@ public class CheckItGame extends AndroidGame
 	        // One common case is creating a server thread and accepting
 	        // incoming connections. (TODO)
 	    	Log.d("WifiBroadCastReceiver", "I am the group owner.");
-	    	connectionThread = new ServerThread();
+	    	board = new Board();
+	    	connectionThread = new ServerThread(board);
 	    	connectionThread.start();
 			onOpponentSelected(Color.WHITE);
 	    } else if (info.groupFormed){
@@ -137,7 +140,8 @@ public class CheckItGame extends AndroidGame
 	    	
 	    	// ...
 	    	Log.d("WifiBroadCastReceiver", "I am the client.");
-			connectionThread = new ClientThread(info);
+	    	board = new Board();
+			connectionThread = new ClientThread(info, board);
 			connectionThread.start();
 	    	onOpponentSelected(Color.BLACK);
 	    }
@@ -163,6 +167,9 @@ public class CheckItGame extends AndroidGame
             	Log.w("CheckItGame", "discoverPeers FAILS!");
             }
         });
+    }
+    public Board getBoard(){
+    	return board;
     }
     public boolean getIsBackPressed(){
     	return isBackPressed;
@@ -226,8 +233,8 @@ public class CheckItGame extends AndroidGame
 //------------------------------------------------------------------------------
     private class ServerThread extends ConnectionThread{    	
     	
-    	public ServerThread(){
-    		super();
+    	public ServerThread(Board board){
+    		super(board);
     	}
     	
     	@Override
@@ -246,27 +253,34 @@ public class CheckItGame extends AndroidGame
     			
     			in = client.getInputStream();
     			out = client.getOutputStream();
-    			client.setSoTimeout(50);
+    			client.setSoTimeout(INITIAL_SOCKET_TIMEOUT);
     			
-    			byte[] b = new byte[8];
+    			byte[] b = new byte[BUFFER_SIZE];
     			int length;
     			
 				try{
 					if((length = in.read(b)) != -1){
-						System.out.write(b,0,length);
-						Log.wtf("ServerThread", "length:"+length+", "+new String(b, "UTF-8"));
+						if(START_TAG.equals(new String(b, "UTF-8"))){
+							Log.d("ServerThread", "START_TAG received.");
+						}
+						else{
+							Log.wtf("ServerThread", "Wrong start tag!!!");
+							return;
+						}
 					}
 					else{
-						stopRequested = true; 
+						Log.wtf("ServerThread", "No start tag received!!!");
+						return; 
 					}
 					
+					client.setSoTimeout(SOCKET_TIMEOUT);
 					while(true){
-						// TODO TODO TODO 1. move (out) 2. listen for move (in)
 						while(!stopRequested){
-							
+							sendMoveWhenMade(out, b);
+							// TODO maybe listen for opponent giving up
 						}
 						while(!stopRequested){
-							
+							processIncommingMove(in, b);
 						}
 						if(stopRequested){
 							break;
@@ -324,8 +338,8 @@ public class CheckItGame extends AndroidGame
     private class ClientThread extends ConnectionThread{
     	private WifiP2pInfo info;
     	
-    	public ClientThread(WifiP2pInfo info){
-    		super();
+    	public ClientThread(WifiP2pInfo info, Board board){
+    		super(board);
     		this.info = info;
     	}
     	
@@ -343,17 +357,19 @@ public class CheckItGame extends AndroidGame
     			
     			in = client.getInputStream();
     			out = client.getOutputStream();    			
-    			client.setSoTimeout(50);
+    			client.setSoTimeout(SOCKET_TIMEOUT);
     			
-    			out.write("START".getBytes("UTF-8"));
+    			byte[] b = new byte[BUFFER_SIZE];
+    			
+    			out.write(START_TAG.getBytes("UTF-8"));
     			Log.wtf("Client Thread", "Please start!");
     			while(true){
-    				// TODO TODO TODO 1. listen for move (in) 2. move (out)
 					while(!stopRequested){
-						
+						processIncommingMove(in, b);
 					}
 					while(!stopRequested){
-						
+						sendMoveWhenMade(out, b);
+						// TODO maybe listen for opponent giving up
 					}
 					if(stopRequested){
 						break;

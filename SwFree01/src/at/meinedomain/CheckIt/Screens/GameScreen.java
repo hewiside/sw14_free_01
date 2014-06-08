@@ -53,7 +53,7 @@ public class GameScreen extends AbstractScreen {
         darkOverlay = ((AndroidGame)game).getResources().getColor(R.color.dark_overlay);
         
         this.game = (CheckItGame) game;
-        board = new Board();
+        board = ((CheckItGame)game).getBoard(); // TODO is it good to have two board instances (here and in CheckItGame)? --> Caution! Reset of the board with board = new Board() has to occur on *both* places!!
         player = this.game.getPlayerColor();
 
         myTime = 300;
