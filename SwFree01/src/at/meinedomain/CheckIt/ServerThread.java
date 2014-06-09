@@ -5,13 +5,14 @@ import java.io.InterruptedIOException;
 import java.net.ServerSocket;
 
 import android.util.Log;
+import at.meinedomain.CheckIt.Screens.GameScreen;
 
 public class ServerThread extends ConnectionThread{    	
 	
 	private ServerSocket serverSocket;
 	
-	public ServerThread(Board board){
-		super(board);
+	public ServerThread(Board board, GameScreen gs){
+		super(board, gs);
 		serverSocket = null;
 	}
 	

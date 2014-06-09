@@ -5,12 +5,13 @@ import java.net.Socket;
 
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.util.Log;
+import at.meinedomain.CheckIt.Screens.GameScreen;
 
 public class ClientThread extends ConnectionThread{
 	private WifiP2pInfo info;
 	
-	public ClientThread(WifiP2pInfo info, Board board){
-		super(board);
+	public ClientThread(WifiP2pInfo info, Board board, GameScreen gs){
+		super(board, gs);
 		this.info = info;
 	}
 	

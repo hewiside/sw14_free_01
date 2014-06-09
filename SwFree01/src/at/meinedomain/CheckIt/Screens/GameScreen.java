@@ -81,10 +81,11 @@ public class GameScreen extends AbstractScreen {
         firstRankY = HEIGHT/2 + (board.getHeight()/2-1)*tileSize;
         
         if(player==Color.WHITE){
-        	connectionThread = new ServerThread(board);
+        	connectionThread = new ServerThread(board, this);
         }
         else{
-        	connectionThread = new ClientThread(game.getWifiP2pInfo(), board);
+        	connectionThread = new ClientThread(game.getWifiP2pInfo(), 
+        										board, this);
         }
     	connectionThread.start();
     }   
@@ -126,46 +127,13 @@ public class GameScreen extends AbstractScreen {
             updateGameOver(deltaTime, touchEvents);
         }
         
-//        if(state == GameState.MyTurn)
-        
-        int len = touchEvents.size();
-        int unit = g.getWidth()/12;
-//        for(int i = 0; i < len; i++) {
-//            TouchEvent event = touchEvents.get(i);
-//            if(event.type == TouchEvent.TOUCH_UP) {
-////                if(inBounds(event, 0, g.getHeight() - 64, 64, 64)) {
-////                    Settings.soundEnabled = !Settings.soundEnabled;
-////                    if(Settings.soundEnabled){
-////                        Assets.click.play(1);
-////                    }
-////                }
-//            	
-//            	// if "Settings" clicked
-//                if(inBounds(event, 4*unit, 8*unit, 4*unit, 4*unit)) {
-//                    game.setScreen(new SettingsScreen(game));
-//                    if(Settings.soundEnabled)
-////                        Assets.click.play(1);
-//                    return;
-//                }
-////                if(inBounds(event, 64, 220 + 42, 192, 42) ) {
-////                    game.setScreen(new HighscoreScreen(game));
-////                    if(Settings.soundEnabled)
-////                        Assets.click.play(1);
-////                    return;
-////                }
-////                if(inBounds(event, 64, 220 + 84, 192, 42) ) {
-////                    game.setScreen(new HelpScreen(game));
-////                    if(Settings.soundEnabled)
-////                        Assets.click.play(1);
-////                    return;
-////                }
-//            }
-//        }
+        int len = touchEvents.size();// TODO TODO delete this line if not needed
+        int unit = g.getWidth()/12;  // TODO TODO delete this line if not needed
     }
     
     private void updateReady(float deltaTime, List<TouchEvent> touchEvents){
-    	// TODO FOR BLACK PLAYER: if screen is tapped, trigger the sending of START_TAG in the socket and set the state to OpponentsTurn.
-    	// for black player
+    	// for black player - if screen is tapped, trigger the sending of
+    	// 					  START_TAG and set the state to OpponentsTurn.
     	if(player == Color.BLACK){
 	    	for(int i = 0; i < touchEvents.size(); i++) {
 	    		TouchEvent event = touchEvents.get(i);
@@ -175,32 +143,38 @@ public class GameScreen extends AbstractScreen {
 	    		}
 	    	}
     	}
-    	// for white player
+    	// for white player - check if black sent the START_TAG
     	else{
     		if(connectionThread.getStartRequested()){
     			state = GameState.MY_TURN;
     		}
     	}
-    	
-    	// TODO FOR WHITE PLAYER: check if we have received the START_TAG. If so, set state to MyTurn.
     }
     private void upateMyTurn(float deltaTime, List<TouchEvent> touchEvents){
     	if(checkForGameOver()){
-    		return;
+    		state = GameState.GAME_OVER;
     	}
-//    	if(board.getTurn() == )
+    	else if(board.getTurn() != player){
+    		state = GameState.OPPONENTS_TURN;
+    	}
+    	else{
+    		myTime -= deltaTime;
+    	}
     }
     private void updateOpponentsTurn(float deltaTime, List<TouchEvent> touchEvents){
     	if(checkForGameOver()){
-    		return;
+    		state = GameState.GAME_OVER;
     	}
     	
-    	if(board.getTurn() == null){
+    	else if(board.getTurn() == null){
     		Log.wtf("GameScreen","Current color in board is null!");
     	}
-    	if(board.getTurn() != player){
+    	else if(board.getTurn() == player){
     		state = GameState.MY_TURN;
     		// TODO opponentsTime = connectionThread.getOpponentsTime();
+    	}
+    	else{
+    		opponentsTime -= deltaTime;
     	}
     }
     private void updateGameOver(float deltaTime, List<TouchEvent> touchEvents){
@@ -208,11 +182,7 @@ public class GameScreen extends AbstractScreen {
     }
     
     private boolean checkForGameOver(){
-    	if(board.getMatchState() != Board.MatchState.RUNNING){
-    		state = GameState.GAME_OVER;
-    		return true;
-    	}
-    	return false;
+    	return (board.getMatchState()!=Board.MatchState.RUNNING) ? true : false;
     }
     
     private boolean inBounds(TouchEvent event, int x, int y, int width, int height) {
@@ -305,13 +275,13 @@ public class GameScreen extends AbstractScreen {
     }
     
     private void drawTime(Graphics g, int time, int x, int y){
-    	int minutes = (int) time / 60;
-    	int minutes10 = (int) minutes / 10;
-    	int minutes01 = (int) minutes - minutes10;
+    	int minutes = (int) (time / 60);
+    	int minutes10 = (int) (minutes / 10);
+    	int minutes01 = minutes - 10*minutes10;
     	
-    	int seconds = (int) time - 60*minutes;
-    	int seconds10 = (int) seconds / 10;
-    	int seconds01 = (int) seconds - seconds/10;
+    	int seconds = (int) (time - 60*minutes);
+    	int seconds10 = (int) (seconds / 10);
+    	int seconds01 = seconds - 10*seconds10;
     	
     	g.drawPixmap(Assets.numbers, x, y, minutes10*NUM_WIDTH, 0, NUM_WIDTH, NUM_HEIGHT);
     	x += NUM_WIDTH;

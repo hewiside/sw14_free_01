@@ -7,12 +7,14 @@ import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 
 import android.util.Log;
+import at.meinedomain.CheckIt.Screens.GameScreen;
 
 public class ConnectionThread extends Thread {
 	protected InputStream in;
 	protected OutputStream out;
 	protected Socket client;
 	protected Board board;
+	protected GameScreen gs;
 	
 	protected boolean startRequested;
 	protected boolean stopRequested;
@@ -29,12 +31,13 @@ public class ConnectionThread extends Thread {
 	protected static final int BUFFER_SIZE = 8;
 	public static final float DUMMY_OPPONENTS_TIME = Float.MAX_VALUE;
 	
-	public ConnectionThread(Board board) {
+	public ConnectionThread(Board board, GameScreen gs) {
 		super();
 		in = null;
 		out = null;
 		client = null;
 		this.board = board;
+		this.gs    = gs;
 		startRequested = false;
 		stopRequested  = false;
 		myMove = null;
