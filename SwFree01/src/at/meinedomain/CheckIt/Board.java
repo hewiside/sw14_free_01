@@ -11,6 +11,7 @@ public class Board {
 		DRAW
 	}
 	
+	private SendMoveListener sml;
 	private MatchState matchState;
 	private int width;
 	private int height;
@@ -18,7 +19,8 @@ public class Board {
 	private Color turn;
 	Point enPassant;
 	
-	public Board(){
+	public Board(SendMoveListener sml){
+		this.sml = sml;
 		matchState = MatchState.RUNNING;
 		width = 8;
 		height = 8;
@@ -71,9 +73,12 @@ public class Board {
 		return board[i][j];
 	}
 	
-	// change location in the piece
-	public void placePiece(AbstractPiece p, Point pt){
-		// TODO p.setLocation(pt);
+	// for rook-placing (castling) and piece-placing (pawn reaches last rank)
+	public void placePiece(Point from, Point to){
+		pieceAt(from).setLocation(to);
+		
+		board[  to.getX()][  to.getY()] = pieceAt(from); 
+		board[from.getX()][from.getY()] = null;
 	}
 	
 	// move without testing for correctness of the move.
@@ -82,18 +87,18 @@ public class Board {
 	}
 	public void move(Point from, Point to, Point ep){
 		enPassant = ep;
-		
-		board[  to.getX()][  to.getY()] = pieceAt(from); 
-		board[from.getX()][from.getY()] = null;
-		
-		placePiece(pieceAt(to), to);
-		
+		placePiece(from, to);
 		turn = (turn.equals(Color.WHITE)) ? Color.BLACK : Color.WHITE;
 	}
 	
 	public void tryToMove(Point from, Point to){
 		AbstractPiece tempPiece = pieceAt(from);
-		tempPiece.tryToMove(to);
+		if(tempPiece == null){
+			tempPiece.tryToMove(to);
+		}
+		else{
+			Log.e("Board", "Trying to move null!");
+		}
 	}
 	
 	public Point getEnPassant(){

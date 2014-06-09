@@ -7,7 +7,9 @@ import at.meinedomain.CheckIt.ClientThread;
 import at.meinedomain.CheckIt.Color;
 import at.meinedomain.CheckIt.CheckItGame;
 import at.meinedomain.CheckIt.ConnectionThread;
+import at.meinedomain.CheckIt.Move;
 import at.meinedomain.CheckIt.R;
+import at.meinedomain.CheckIt.SendMoveListener;
 import at.meinedomain.CheckIt.ServerThread;
 import at.meinedomain.CheckIt.Settings;
 
@@ -17,7 +19,7 @@ import com.badlogic.androidgames.framework.Game;
 import com.badlogic.androidgames.framework.Graphics;
 import com.badlogic.androidgames.framework.Input.TouchEvent;
 
-public class GameScreen extends AbstractScreen {
+public class GameScreen extends AbstractScreen implements SendMoveListener{
 	
 	private enum GameState{
 		READY,
@@ -63,7 +65,7 @@ public class GameScreen extends AbstractScreen {
         darkOverlay = game.getResources().getColor(R.color.dark_overlay);
         
 
-        board = new Board();
+        board = new Board(this);
         player = game.getPlayerColor(); // is set because this Screen is only
         		// set if MainMenu Screen recognizes a color in CheckItGame.
 
@@ -94,6 +96,12 @@ public class GameScreen extends AbstractScreen {
     @Override
 	public AbstractScreen.ScreenType getScreenType(){
     	return AbstractScreen.ScreenType.GAME_SCREEN;
+    }
+    
+    // overriden from SendMoveListener------------------------------------------
+    @Override
+	public void sendMove(Move move){
+    	connectionThread.setMove(move);
     }
     
     // overriden from Screen----------------------------------------------------
