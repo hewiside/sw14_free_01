@@ -25,4 +25,14 @@ public class Point {
 		x = i;
 		y = j;
 	}
+	
+	@Override
+	public boolean equals(Object P){
+		if(x == ((Point)P).getX()  &&  y == ((Point)P).getY()){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
 }

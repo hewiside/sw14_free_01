@@ -20,7 +20,9 @@ public class ConnectionThread extends Thread {
 	protected boolean stopRequested;
 	
 	protected Move myMove;
-	protected boolean moveMade;
+	protected boolean myMoveMade;
+	protected boolean myMoveSent;
+	protected boolean opponentsMoveMade;
 	protected float opponentsTime;
 	
 	protected static final int SERVER_PORT = 8864;
@@ -41,7 +43,8 @@ public class ConnectionThread extends Thread {
 		startRequested = false;
 		stopRequested  = false;
 		myMove = null;
-		moveMade = false;
+		myMoveMade = false;
+		opponentsMoveMade = false;
 	}
 	
 	// Getters/Setters ---------------------------------------------------------
@@ -59,27 +62,22 @@ public class ConnectionThread extends Thread {
 	
 	public void setMove(Move move){
 		this.myMove = move;
-		moveMade = true;
+		myMoveMade = true;
 	}
 	
 	// Sending/Receiving -------------------------------------------------------
 	protected void processIncommingMove(InputStream in, byte[] b){
 		int length;
 		try {
-			while(true){
-				if((length = in.read(b)) != -1){
-					if(length == 4){
-						Point from = new Point(b[0], b[1]);
-						Point to   = new Point(b[2], b[3]);
-						board.move(from, to);
-						break;
-					}
-					else{
-						compareToExitTagAndProcess(b);
-					}
+			if((length = in.read(b)) != -1){
+				if(length == 4){
+					Point from = new Point(b[0], b[1]);
+					Point to   = new Point(b[2], b[3]);
+					board.move(from, to);
+					opponentsMoveMade = true;
 				}
-				if(stopRequested){
-					break;
+				else{
+					compareToExitTagAndProcess(b);
 				}
 			}
 		} catch (IOException e) {
@@ -89,8 +87,9 @@ public class ConnectionThread extends Thread {
 	}
 	
 	protected void sendMoveWhenMade(OutputStream out, byte[] b){
-		if(moveMade){
-			moveMade = false;
+//		Log.wtf("sendMoveWhenMade()", "moveMade? --> "+myMoveMade);
+		if(myMoveMade){
+			myMoveMade = false;
 			if(myMove==null){
 				Log.wtf("ConnectionThread", "Oh no! myMove is null!!!");
 			}
@@ -100,6 +99,8 @@ public class ConnectionThread extends Thread {
 			b[3] = (byte)myMove.getToY();
 			try {
 				out.write(b, 0, 4);
+				myMoveSent = true;
+				Log.i("ConnectionThread","Move sent.");
 			} catch (IOException e) {
 				// Auto-generated catch block
 				e.printStackTrace();

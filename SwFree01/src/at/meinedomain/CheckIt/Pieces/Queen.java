@@ -17,16 +17,16 @@ public class Queen extends AbstractPiece {
 		}
 	}
 	
-	@Override
-	protected MoveType CanMove(Point pt) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void tryToMove(Point pt) {
-		// TODO Auto-generated method stub
-
-	}
+//	@Override
+//	protected MoveType CanMove(Point pt) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//
+//	@Override
+//	public void tryToMove(Point pt) {
+//		// TODO Auto-generated method stub
+//
+//	}
 
 }

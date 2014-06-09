@@ -50,13 +50,21 @@ public class ServerThread extends ConnectionThread{
 				
 				client.setSoTimeout(SOCKET_TIMEOUT);
 				while(true){
-					while(!stopRequested){
+					Log.i("ServerThread", "entering send-Loop.");
+					while(!stopRequested && !myMoveSent){
 						sendMoveWhenMade(out, b);
+						if(myMoveSent){
+							break;
+						}
 						CheckForExitingOpponent(in, b);
 					}
-					while(!stopRequested){
+					myMoveSent = false;
+					Log.i("ServerThread", "left send-Loop.");
+					Log.i("ClientThread", "entering receive-Loop.");
+					while(!stopRequested && !opponentsMoveMade){
 						processIncommingMove(in, b);
 					}
+					opponentsMoveMade = false;
 					if(stopRequested){
 						break;
 					}

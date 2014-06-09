@@ -40,13 +40,28 @@ public class ClientThread extends ConnectionThread{
 			out.write(START_TAG.getBytes("UTF-8"));
 			Log.wtf("Client Thread", "Please start!");
 			while(true){
-				while(!stopRequested){
+				
+				Log.i("ClientThread", "entering receive-Loop.");
+				
+				
+				while(!stopRequested && !opponentsMoveMade){
 					processIncommingMove(in, b);
 				}
-				while(!stopRequested){
+				opponentsMoveMade = false;
+				
+				
+				Log.i("ClientThread", "entering send-Loop.");
+				
+				
+				while(!stopRequested && !myMoveSent){
 					sendMoveWhenMade(out, b);
+					if(myMoveSent){
+						break;
+					}
 					CheckForExitingOpponent(in, b);
 				}
+				myMoveSent = false;
+				Log.i("ClientThread", "left send-Loop.");
 				if(stopRequested){
 					break;
 				}

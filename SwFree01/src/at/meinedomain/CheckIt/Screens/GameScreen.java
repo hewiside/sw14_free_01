@@ -8,8 +8,9 @@ import at.meinedomain.CheckIt.Color;
 import at.meinedomain.CheckIt.CheckItGame;
 import at.meinedomain.CheckIt.ConnectionThread;
 import at.meinedomain.CheckIt.Move;
+import at.meinedomain.CheckIt.Point;
 import at.meinedomain.CheckIt.R;
-import at.meinedomain.CheckIt.SendMoveListener;
+import at.meinedomain.CheckIt.SendMoveListenerAndColorTeller;
 import at.meinedomain.CheckIt.ServerThread;
 import at.meinedomain.CheckIt.Settings;
 
@@ -19,7 +20,7 @@ import com.badlogic.androidgames.framework.Game;
 import com.badlogic.androidgames.framework.Graphics;
 import com.badlogic.androidgames.framework.Input.TouchEvent;
 
-public class GameScreen extends AbstractScreen implements SendMoveListener{
+public class GameScreen extends AbstractScreen implements SendMoveListenerAndColorTeller{
 	
 	private enum GameState{
 		READY,
@@ -44,16 +45,19 @@ public class GameScreen extends AbstractScreen implements SendMoveListener{
     int unit;
     int tileSize;
     int firstRankY;
+    int boardTop;
     private static final int NUM_WIDTH = 135; // a number's width in the picture Assets.numbers
     private static final int NUM_HEIGHT = 180;
 	private static final int COLON_WIDTH = 45; // width of colon in Assets.numbers 
 	private final int HEIGHT; // of screen
 	private final int WIDTH;
+	private final int BOARD_SIZE_PX; // TODO change WIDTH to this int where appropriate
 	private final int BUTTON_SIZE;
 	private int colorTable;
 	private int colorDark; 
 	private int colorLight; 
 	private int darkOverlay; 
+	private int highlightOverlay;
 	
     public GameScreen(Game game_) {
         super(game_);
@@ -63,7 +67,7 @@ public class GameScreen extends AbstractScreen implements SendMoveListener{
         colorDark  = game.getResources().getColor(R.color.dark);
         colorLight = game.getResources().getColor(R.color.light);
         darkOverlay = game.getResources().getColor(R.color.dark_overlay);
-        
+        highlightOverlay = game.getResources().getColor(R.color.selector_overlay);
 
         board = new Board(this);
         player = game.getPlayerColor(); // is set because this Screen is only
@@ -77,10 +81,12 @@ public class GameScreen extends AbstractScreen implements SendMoveListener{
         
         HEIGHT = game.getGraphics().getHeight();
         WIDTH  = game.getGraphics().getWidth();
+        BOARD_SIZE_PX = WIDTH;
         BUTTON_SIZE = Assets.buttonPlay.getWidth();
         unit = WIDTH/12;
         tileSize = WIDTH / board.getWidth();
         firstRankY = HEIGHT/2 + (board.getHeight()/2-1)*tileSize;
+        boardTop   = HEIGHT/2 - (board.getHeight()/2)  *tileSize;
         
         if(player==Color.WHITE){
         	connectionThread = new ServerThread(board, this);
@@ -98,10 +104,14 @@ public class GameScreen extends AbstractScreen implements SendMoveListener{
     	return AbstractScreen.ScreenType.GAME_SCREEN;
     }
     
-    // overriden from SendMoveListener------------------------------------------
+    // overriden from SendMoveListenerAndColorTeller----------------------------
     @Override
 	public void sendMove(Move move){
     	connectionThread.setMove(move);
+    }
+    @Override
+    public Color getPlayerColor(){
+    	return player;
     }
     
     // overriden from Screen----------------------------------------------------
@@ -134,9 +144,6 @@ public class GameScreen extends AbstractScreen implements SendMoveListener{
         else if(state == GameState.GAME_OVER){
             updateGameOver(deltaTime, touchEvents);
         }
-        
-        int len = touchEvents.size();// TODO TODO delete this line if not needed
-        int unit = g.getWidth()/12;  // TODO TODO delete this line if not needed
     }
     
     private void updateReady(float deltaTime, List<TouchEvent> touchEvents){
@@ -165,8 +172,36 @@ public class GameScreen extends AbstractScreen implements SendMoveListener{
     	else if(board.getTurn() != player){
     		state = GameState.OPPONENTS_TURN;
     	}
-    	else{
+    	else{ // I am expected to move
     		myTime -= deltaTime;
+	    	
+    		for(int k = 0; k < touchEvents.size(); k++) {
+	    		TouchEvent event = touchEvents.get(k);
+	    		if(event.type == TouchEvent.TOUCH_UP){
+	    			if(inBoard(event)){
+	    				Point P = new Point(xToFile(event.x), yToRank(event.y));
+	    				
+	    				if(board.getMarkedPoint() != null){
+	    					if(board.getMarkedPoint().equals(P)){
+	    						board.setMarkedPoint(null);
+	    					}
+	    					else if(board.pieceAt(P) != null &&
+	    							board.pieceAt(P).getColor() == player){
+	    						board.setMarkedPoint(P);
+	    					}
+	    					else{
+	    						board.tryToMove(board.getMarkedPoint(), P);
+	    					}
+	    				}
+	    				else{ // markedPosition is still null
+	    					if(board.pieceAt(P) != null && 
+	    					   board.pieceAt(P).getColor() == player){
+	    						board.setMarkedPoint(P);
+	    					}
+	    				}
+	    			}
+	    		}
+	    	}
     	}
     }
     private void updateOpponentsTurn(float deltaTime, List<TouchEvent> touchEvents){
@@ -201,6 +236,52 @@ public class GameScreen extends AbstractScreen implements SendMoveListener{
             return false;
     }
     
+    private boolean inBoard(TouchEvent event){
+    	return inBounds(event, 0, boardTop, BOARD_SIZE_PX, BOARD_SIZE_PX);
+    }
+    
+    private Point getPoint(TouchEvent event){
+    		return new Point(xToFile(event.x), yToRank(event.y));
+    }
+    
+    private int xToFile(float x){
+    	return (player == Color.WHITE) ? xToFileWhite(x) : xToFileBlack(x);
+    }
+    private int yToRank(float y){
+    	return (player == Color.WHITE) ? yToRankWhite(y) : yToRankBlack(y);
+    }
+    private int fileToX(int file){
+    	return (player == Color.WHITE) ? fileToXWhite(file) : fileToXBlack(file);
+    }
+    private int rankToY(int rank){
+    	return (player == Color.WHITE) ? rankToYWhite(rank) : rankToYBlack(rank);
+    }
+    
+    private int xToFileWhite(float x){
+    	return (int) (x/tileSize);
+    }
+    private int yToRankWhite(float y){
+    	return board.getHeight()-1-(int) ((y-boardTop)/tileSize);
+    }
+    private int fileToXWhite(int file){
+    	return (int) (file*tileSize);
+    }
+    private int rankToYWhite(int rank){
+    	return (int) (firstRankY - rank*tileSize);
+    }
+    private int xToFileBlack(float x){
+		return board.getWidth()-1-(int)(x/tileSize);
+	}
+	private int yToRankBlack(float y){
+		return (int) ((y-boardTop)/tileSize);
+	}
+	private int fileToXBlack(int file){
+		return (int) ((board.getWidth()-1-file)*tileSize);
+	}
+	private int rankToYBlack(int rank){
+		return (int) (boardTop + rank*tileSize);
+	}    
+	
     @Override
     public void present(float deltaTime) {
         Graphics g = game.getGraphics();
@@ -240,36 +321,65 @@ public class GameScreen extends AbstractScreen implements SendMoveListener{
         		}
         	}
         }
+
     	// draw pieces
     	if(player == Color.WHITE){
-    		drawWhitePieces(g);
+    		drawWhitePiecesAndMarkedPoints(g);
     	}
     	else{
-    		drawBlackPieces(g);
+    		drawBlackPiecesAndMarkedPoints(g);
     	}
     }
     
-    private void drawWhitePieces(Graphics g){
+    private void drawWhitePiecesAndMarkedPoints(Graphics g){
+        // highlight overlay (markedPoint)
+    	if(board.getMarkedPoint() != null){      	
+        	g.drawRect(fileToXWhite(board.getMarkedPoint().getX()),
+        			   rankToYWhite(board.getMarkedPoint().getY()),
+        			   tileSize, tileSize, highlightOverlay);
+        }
+    	
+    	// highlight overlay (markedPointOpponent)
+    	if(board.getMarkedPointOpponent() != null){
+        	g.drawRect(fileToXWhite(board.getMarkedPointOpponent().getX()), 
+        			   rankToYWhite(board.getMarkedPointOpponent().getY()),
+        			   tileSize, tileSize, highlightOverlay);
+        }
+    	
+    	// pieces
+    	for(int i=0; i<board.getWidth(); i++){
+        	for(int j=0; j<board.getHeight(); j++){
+        		// Pieces
+        		if(board.pieceAt(i,j) != null){
+        			g.drawPixmap(board.pieceAt(i,j).getPixmap(), 
+        						 fileToXWhite(i), rankToYWhite(j));
+        		}
+        	}
+        }
+    }    
+    
+	private void drawBlackPiecesAndMarkedPoints(Graphics g){
+        // highlight overlay (markedPoint) TODO use the utility-methods!
+    	if(board.getMarkedPoint() != null){
+        	g.drawRect(fileToXBlack(board.getMarkedPoint().getX()),
+        			   rankToYBlack(board.getMarkedPoint().getY()),
+        			   tileSize, tileSize, highlightOverlay);
+        }
+    	
+        // highlight overlay (markedPointOpponent) TODO use the utility-methods!
+    	if(board.getMarkedPointOpponent() != null){
+        	g.drawRect(fileToXBlack(board.getMarkedPointOpponent().getX()), 
+        			   rankToYBlack(board.getMarkedPointOpponent().getY()),
+        			   tileSize, tileSize, highlightOverlay);
+        }
+    	
+    	//pieces
         for(int i=0; i<board.getWidth(); i++){
         	for(int j=0; j<board.getHeight(); j++){
         		// Pieces
         		if(board.pieceAt(i,j) != null){
         			g.drawPixmap(board.pieceAt(i,j).getPixmap(), 
-        						 i*tileSize, firstRankY - j*tileSize);
-        		}
-        	}
-        }
-    }
-    
-    private void drawBlackPieces(Graphics g){
-        for(int i=0; i<board.getWidth(); i++){
-        	for(int j=0; j<board.getHeight(); j++){
-        		// Pieces
-        		int k = board.getWidth() -1-i;
-        		int l = board.getHeight()-1-j;
-        		if(board.pieceAt(k,l) != null){
-        			g.drawPixmap(board.pieceAt(k,l).getPixmap(), 
-        					i*tileSize, firstRankY - j*tileSize);
+        					fileToXBlack(i), rankToYBlack(j));
         		}
         	}
         }
@@ -282,7 +392,8 @@ public class GameScreen extends AbstractScreen implements SendMoveListener{
     	drawTime(g, (int) myTime, x, HEIGHT-NUM_HEIGHT);
     }
     
-    private void drawTime(Graphics g, int time, int x, int y){
+    private void drawTime(Graphics g, int t, int x, int y){
+    	int time = (t>0) ? t : 0;
     	int minutes = (int) (time / 60);
     	int minutes10 = (int) (minutes / 10);
     	int minutes01 = minutes - 10*minutes10;

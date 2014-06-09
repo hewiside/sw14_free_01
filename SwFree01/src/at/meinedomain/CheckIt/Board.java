@@ -11,20 +11,24 @@ public class Board {
 		DRAW
 	}
 	
-	private SendMoveListener sml;
+	private SendMoveListenerAndColorTeller sendMoveListenerAndColorTeller;
 	private MatchState matchState;
 	private int width;
 	private int height;
 	private AbstractPiece[][] board;
 	private Color turn;
-	Point enPassant;
+	private Point markedPoint;
+	private Point markedPointOpponent;
+	private Point enPassant;
 	
-	public Board(SendMoveListener sml){
-		this.sml = sml;
+	public Board(SendMoveListenerAndColorTeller sml){
+		this.sendMoveListenerAndColorTeller = sml;
 		matchState = MatchState.RUNNING;
 		width = 8;
 		height = 8;
 		turn = Color.WHITE;
+		markedPoint = null;
+		markedPointOpponent = null;
 		enPassant = null;
 		board = new AbstractPiece[width][height];
 		for(int i=0; i<width; i++){
@@ -87,13 +91,23 @@ public class Board {
 	}
 	public void move(Point from, Point to, Point ep){
 		enPassant = ep;
+		if(turn.equals(sendMoveListenerAndColorTeller.getPlayerColor())){
+			sendMoveListenerAndColorTeller.sendMove(new Move(from, to));
+			markedPointOpponent = null;
+		}
+		else{
+			markedPointOpponent = to;
+		}
+		Log.wtf("Board", "now placePiece() with from.x="+from.getX()+", from.y="+from.getY());
 		placePiece(from, to);
+		markedPoint = null;
+		
 		turn = (turn.equals(Color.WHITE)) ? Color.BLACK : Color.WHITE;
 	}
 	
 	public void tryToMove(Point from, Point to){
 		AbstractPiece tempPiece = pieceAt(from);
-		if(tempPiece == null){
+		if(tempPiece != null){
 			tempPiece.tryToMove(to);
 		}
 		else{
@@ -105,12 +119,24 @@ public class Board {
 		return enPassant;
 	}
 	
+	public Point getMarkedPoint(){
+		return markedPoint;
+	}
+	
+	public Point getMarkedPointOpponent(){
+		return markedPointOpponent;
+	}
+	
 	public MatchState getMatchState(){
 		return matchState;
 	}
 	
 	public Color getTurn(){
 		return turn;
+	}
+	
+	public void setMarkedPoint(Point P){
+		markedPoint = P;
 	}
 	
 	public void setMatchState(MatchState ms){

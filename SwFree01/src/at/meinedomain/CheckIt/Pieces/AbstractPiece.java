@@ -19,7 +19,9 @@ public abstract class AbstractPiece {
 		location = pt;
 	}
 	
-	protected abstract MoveType CanMove(Point pt);
+	protected MoveType CanMove(Point pt){
+		return MoveType.NORMAL;
+	}
 	
 	public Color getColor(){
 		return color;
@@ -42,5 +44,9 @@ public abstract class AbstractPiece {
 		location.setY(j);
 	}
 	
-	public abstract void tryToMove(Point pt);
+	public void tryToMove(Point to){
+		if(CanMove(to) != MoveType.ILLEGAL){
+			board.move(location, to);
+		}
+	}
 }
