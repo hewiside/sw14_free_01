@@ -13,6 +13,7 @@ import at.meinedomain.CheckIt.R;
 import at.meinedomain.CheckIt.SendMoveListener;
 import at.meinedomain.CheckIt.ServerThread;
 import at.meinedomain.CheckIt.Settings;
+import at.meinedomain.CheckIt.TimeTeller;
 
 import java.util.List;
 
@@ -20,7 +21,8 @@ import com.badlogic.androidgames.framework.Game;
 import com.badlogic.androidgames.framework.Graphics;
 import com.badlogic.androidgames.framework.Input.TouchEvent;
 
-public class GameScreen extends AbstractScreen implements SendMoveListener{
+public class GameScreen extends AbstractScreen implements SendMoveListener,
+														  TimeTeller{
 	
 	private enum GameState{
 		READY,
@@ -108,6 +110,16 @@ public class GameScreen extends AbstractScreen implements SendMoveListener{
     @Override
 	public void sendMove(Move move){
     	connectionThread.setMove(move);
+    }
+    
+	// overriden from TimeTeller------------------------------------------------
+    @Override
+	public int getMinutes(){
+    	return (int) (opponentsTime/60);
+    }
+    @Override
+	public int getSeconds(){
+    	return (int) (opponentsTime%60);
     }
     
     // overriden from Screen----------------------------------------------------

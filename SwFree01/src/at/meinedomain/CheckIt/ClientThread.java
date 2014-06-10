@@ -10,8 +10,8 @@ import at.meinedomain.CheckIt.Screens.GameScreen;
 public class ClientThread extends ConnectionThread{
 	private WifiP2pInfo info;
 	
-	public ClientThread(WifiP2pInfo info, Board board, GameScreen gs){
-		super(board, gs);
+	public ClientThread(WifiP2pInfo info, Board board, TimeTeller tt){
+		super(board, tt);
 		this.info = info;
 	}
 	

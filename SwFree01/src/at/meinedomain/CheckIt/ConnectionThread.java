@@ -14,7 +14,7 @@ public class ConnectionThread extends Thread {
 	protected OutputStream out;
 	protected Socket client;
 	protected Board board;
-	protected GameScreen gs;
+	protected TimeTeller timeTeller;
 	
 	protected boolean startRequested;
 	protected boolean stopRequested;
@@ -33,13 +33,13 @@ public class ConnectionThread extends Thread {
 	protected static final int BUFFER_SIZE = 8;
 	public static final float DUMMY_OPPONENTS_TIME = Float.MAX_VALUE;
 	
-	public ConnectionThread(Board board, GameScreen gs) {
+	public ConnectionThread(Board board, TimeTeller tt) {
 		super();
 		in = null;
 		out = null;
 		client = null;
 		this.board = board;
-		this.gs    = gs;
+		this.timeTeller= tt;
 		startRequested = false;
 		stopRequested  = false;
 		myMove = null;

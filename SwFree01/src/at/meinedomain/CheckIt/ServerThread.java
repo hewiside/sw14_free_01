@@ -11,8 +11,8 @@ public class ServerThread extends ConnectionThread{
 	
 	private ServerSocket serverSocket;
 	
-	public ServerThread(Board board, GameScreen gs){
-		super(board, gs);
+	public ServerThread(Board board, TimeTeller tt){
+		super(board, tt);
 		serverSocket = null;
 	}
 	
