@@ -28,45 +28,32 @@ public class Pawn extends AbstractPiece {
 		//      looking we are in check on a board where this piece is missing!
 		
 		// - go 1 step ahead
-		if(isEmpty(to) && 
-		   location.getX()==to.getX() && 
-		   to.getY()-location.getY()==direction){
-			
-			log(to, MoveType.NORMAL);
+		if(isEmpty(to) && isOnSameFile(to) && verticalDiff(to)==direction){
 			return MoveType.NORMAL;
 			// TODO let Pawn turn into a queen or something other, when last rank is reached
 		}
 		
 		// - capture piece
-		if(Math.abs(to.getX()-location.getX()) == 1 &&
-		   to.getY()-location.getY() == direction){
-			
-			if(board.pieceAt(to) != null && 
-			   board.pieceAt(to).getColor() != color){
-				
-				log(to, MoveType.NORMAL);
+		if(horizontalDist(to) == 1 && verticalDiff(to) == direction){
+			if(isOccupiedByOpponent(to)){
 				return MoveType.NORMAL;
 			}
-			if(board.getEnPassant() != null &&
-			   to.equals(board.getEnPassant())){
-				
-				log(to, MoveType.EN_PASSANT);
+			if(isEnPassant(to)){
 				return MoveType.EN_PASSANT;
 			}
 		}
 
 		// - go 2 steps ahead
-		if(board.pieceAt(to) == null && 
-		   location.getX()==to.getX() && 
-		   to.getY()-location.getY()==2*direction &&
-		   isOnBaseline() &&
-		   board.pieceAt(location.getX(), location.getY()+direction) == null){
+		if(isEmpty(to) && 
+		   isOnSameFile(to) && 
+		   verticalDiff(to)==2*direction &&
+		   isOnBaseline() && 
+		   isEmpty(location.getX(), location.getY()+direction)){
 			
-			log(to, MoveType.DOUBLE_STEP);  
-			return MoveType.DOUBLE_STEP; // TODO set EN_PASSANT-Point on the board DO THIS IN MOVE TO GET THE EN_PASSANT POSSIBILIETIES AFTER OPPONENTS TURN!!!
+			return MoveType.DOUBLE_STEP;	// TODO set EN_PASSANT-Point on the board DO THIS IN MOVE TO GET THE EN_PASSANT POSSIBILIETIES AFTER OPPONENTS TURN!!!
+											// TODO set flag, that opponent gets notified of en-passant-possibility
 		}
 
-		log(to, MoveType.ILLEGAL);
 		return MoveType.ILLEGAL;
 		
 	}

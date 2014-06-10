@@ -58,6 +58,8 @@ public abstract class AbstractPiece {
 	public MoveType tryToMove(Point to){
 		MoveType mt = CanMove(to); 
 		
+		log(to, mt);
+		
 		if(mt == MoveType.ILLEGAL){
 			// nothing to do
 		}
@@ -69,9 +71,13 @@ public abstract class AbstractPiece {
 	
 	// UTILITY METHODS:---------------------------------------------------------
 	
-	// test tiles for pieces:
+	// test tiles for emptiness, pieces, or en passant:
 	public boolean isEmpty(Point to){
 		return (board.pieceAt(to) == null) ? true : false;
+	}
+	
+	public boolean isEmpty(int toX, int toY){
+		return (board.pieceAt(toX, toY) == null) ? true : false;
 	}
 	
 	public boolean isOccupiedByOpponent(Point to){
@@ -87,6 +93,11 @@ public abstract class AbstractPiece {
 		}
 		return false;
 	}
+	
+	public boolean isEnPassant(Point to){
+		return board.getEnPassant() != null && to.equals(board.getEnPassant());
+	}
+	
 	
 	// test same file, rank, diagonal
 	public boolean isOnSameFile(Point to){
@@ -104,6 +115,26 @@ public abstract class AbstractPiece {
 	public boolean isOnSameDownwardDiagonal(Point to){
 		return to.getX()-location.getX() == -(to.getY()-location.getY());
 	}
+	
+	
+	// horizontal and vertical differences (signed) / distances (positive)
+	public int horizontalDiff(Point to){
+		return to.getX()-location.getX();
+	}
+	
+	public int verticalDiff(Point to){
+		return to.getY()-location.getY();
+	}
+	
+	public int horizontalDist(Point to){
+		return Math.abs(horizontalDiff(to));
+	}
+	
+	public int verticalDist(Point to){
+		return Math.abs(verticalDiff(to));
+	}
+	
+	
 	
 	
 	// TODO TODO TODO
