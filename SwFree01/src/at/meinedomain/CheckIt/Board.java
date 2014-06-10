@@ -1,5 +1,7 @@
 package at.meinedomain.CheckIt;
 
+import java.util.ArrayList;
+
 import android.util.Log;
 import at.meinedomain.CheckIt.Pieces.*;
 
@@ -17,6 +19,8 @@ public class Board {
 	private int width;
 	private int height;
 	private AbstractPiece[][] board;
+//	private AbstractPiece[][] whitePieces;
+//	private AbstractPiece[][] blackPieces;
 	private Color turn;
 	private Point markedPoint;
 	private Point markedPointOpponent;
@@ -33,6 +37,8 @@ public class Board {
 		markedPointOpponent = null;
 		enPassant = null;
 		board = new AbstractPiece[width][height];
+//		whitePieces = new AbstractPiece[width][height];
+//		blackPieces = new AbstractPiece[width][height];
 		for(int i=0; i<width; i++){
 			for(int j=0; j<height; j++){
 				board[i][j] = null;
@@ -64,7 +70,26 @@ public class Board {
 		board[4][0] = new King(this, Color.WHITE, new Point(4,0));
 		board[3][7] = new Queen(this, Color.BLACK, new Point(3,7));
 		board[4][7] = new King(this, Color.BLACK, new Point(4,7));
+		
+//		// init Piece-ArrayLists
+//		for(int i=0; i<width; i++){
+//			for(int j=0; j<height; j++){
+//				if(board[i][j] != null){
+//					if(board[i][j].getColor() == Color.WHITE){
+//						whitePieces[i][j] = board[i][j];
+//					}
+//					else{
+//						blackPieces[i][j] = board[i][j];
+//					}
+//				}
+//			}
+//		}
 	}
+	
+//	public AbstractPiece[][] getBoard(){
+//		return board;
+//	}
+	
 	public int getWidth(){
 		return width;
 	}
@@ -91,10 +116,12 @@ public class Board {
 	public void move(Point from, Point to){
 		move(from, to, null);
 	}
+	// move without testing for correctness of the move.
 	public void move(Point from, Point to, Point ep){
 		enPassant = ep;
 		if(turn.equals(player)){
 			sendMoveListener.sendMove(new Move(from, to));
+			markedPoint = null;
 			markedPointOpponent = null;
 		}
 		else{
@@ -102,18 +129,22 @@ public class Board {
 		}
 		Log.d("Board", "now placePiece() with from.x="+from.getX()+", from.y="+from.getY());
 		placePiece(from, to);
-		markedPoint = null;
 		
 		turn = (turn.equals(Color.WHITE)) ? Color.BLACK : Color.WHITE;
 	}
 	
 	public void tryToMove(Point from, Point to){
 		AbstractPiece tempPiece = pieceAt(from);
-		if(tempPiece != null){
-			tempPiece.tryToMove(to);
+		if(tempPiece == null){
+			Log.wtf("Board", "Trying to move null!");
+			return;
+		}
+		else if(to.getX() >= width  ||  to.getY() >= height){
+			Log.wtf("Board", "Trying to move outside the board");
+			return;
 		}
 		else{
-			Log.wtf("Board", "Trying to move null!");
+			tempPiece.tryToMove(to);
 		}
 	}
 	

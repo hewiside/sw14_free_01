@@ -9,7 +9,7 @@ import at.meinedomain.CheckIt.Point;
 public class Knight extends AbstractPiece {
 
 	public Knight(Board b, Color c, Point pt){
-		super(b, c, pt);
+		super(b, c, pt, "KNIGHT");
 		if(c == Color.WHITE){
 			pixmap = Assets.wn;
 		} else{

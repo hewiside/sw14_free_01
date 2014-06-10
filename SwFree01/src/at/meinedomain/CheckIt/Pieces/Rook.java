@@ -9,7 +9,7 @@ import at.meinedomain.CheckIt.Point;
 public class Rook extends AbstractPiece {
 
 	public Rook(Board b, Color c, Point pt){
-		super(b, c, pt);
+		super(b, c, pt, "ROOK");
 		if(c == Color.WHITE){
 			pixmap = Assets.wr;
 		} else{

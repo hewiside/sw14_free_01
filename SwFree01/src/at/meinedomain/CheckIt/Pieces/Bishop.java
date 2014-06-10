@@ -9,7 +9,7 @@ import at.meinedomain.CheckIt.Point;
 public class Bishop extends AbstractPiece {
 
 	public Bishop(Board b, Color c, Point pt){
-		super(b, c, pt);
+		super(b, c, pt, "BISHOP");
 		if(c == Color.WHITE){
 			pixmap = Assets.wb;
 		} else{
