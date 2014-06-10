@@ -50,7 +50,7 @@ public class ServerThread extends ConnectionThread{
 				
 				client.setSoTimeout(SOCKET_TIMEOUT);
 				while(true){
-					Log.i("ServerThread", "entering send-Loop.");
+					Log.d("ServerThread", "arriving at send-Loop.");
 					while(!stopRequested && !myMoveSent){
 						sendMoveWhenMade(out, b);
 						if(myMoveSent){
@@ -59,8 +59,8 @@ public class ServerThread extends ConnectionThread{
 						CheckForExitingOpponent(in, b);
 					}
 					myMoveSent = false;
-					Log.i("ServerThread", "left send-Loop.");
-					Log.i("ClientThread", "entering receive-Loop.");
+					Log.d("ServerThread", "left send-Loop.");
+					Log.d("ClientThread", "entering receive-Loop.");
 					while(!stopRequested && !opponentsMoveMade){
 						processIncommingMove(in, b);
 					}

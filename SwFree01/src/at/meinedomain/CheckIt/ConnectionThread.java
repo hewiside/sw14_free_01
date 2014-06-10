@@ -100,7 +100,7 @@ public class ConnectionThread extends Thread {
 			try {
 				out.write(b, 0, 4);
 				myMoveSent = true;
-				Log.i("ConnectionThread","Move sent.");
+				Log.d("ConnectionThread","Move sent.");
 			} catch (IOException e) {
 				// Auto-generated catch block
 				e.printStackTrace();
@@ -113,9 +113,9 @@ public class ConnectionThread extends Thread {
 			b[i] = (byte) EXIT_TAG.charAt(i);
 		}
 		try {
-			Log.i("ConnectionThread", "I'm leaving. Bye, bye!");
+			Log.d("ConnectionThread", "I'm leaving. Bye, bye!");
 			out.write(b);
-			Log.i("ConnectionThread", "Yes, I said bye, bye!");
+			Log.d("ConnectionThread", "Yes, I said bye, bye!");
 		} catch (IOException e) {
 			// Auto-generated catch block
 			e.printStackTrace();
@@ -142,7 +142,7 @@ public class ConnectionThread extends Thread {
 		try {
 			if(EXIT_TAG.equals(new String(b, "UTF-8"))){
 				board.setMatchState(Board.MatchState.WON);
-				Log.i("ConnectionThread", "Opponent left.");
+				Log.d("ConnectionThread", "Opponent left.");
 				// TODO also call requestStop() ?
 			}
 		} catch (UnsupportedEncodingException e) {

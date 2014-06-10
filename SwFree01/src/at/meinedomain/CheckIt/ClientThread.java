@@ -50,7 +50,7 @@ public class ClientThread extends ConnectionThread{
 				opponentsMoveMade = false;
 				
 				
-				Log.i("ClientThread", "entering send-Loop.");
+				Log.i("ClientThread", "arriving at send-Loop.");
 				
 				
 				while(!stopRequested && !myMoveSent){

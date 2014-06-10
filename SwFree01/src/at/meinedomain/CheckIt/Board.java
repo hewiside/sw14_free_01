@@ -11,7 +11,8 @@ public class Board {
 		DRAW
 	}
 	
-	private SendMoveListenerAndColorTeller sendMoveListenerAndColorTeller;
+	private SendMoveListener sendMoveListener;
+	private Color player;
 	private MatchState matchState;
 	private int width;
 	private int height;
@@ -21,8 +22,9 @@ public class Board {
 	private Point markedPointOpponent;
 	private Point enPassant;
 	
-	public Board(SendMoveListenerAndColorTeller sml){
-		this.sendMoveListenerAndColorTeller = sml;
+	public Board(SendMoveListener sml, Color player){
+		this.sendMoveListener = sml;
+		this.player = player;
 		matchState = MatchState.RUNNING;
 		width = 8;
 		height = 8;
@@ -91,14 +93,14 @@ public class Board {
 	}
 	public void move(Point from, Point to, Point ep){
 		enPassant = ep;
-		if(turn.equals(sendMoveListenerAndColorTeller.getPlayerColor())){
-			sendMoveListenerAndColorTeller.sendMove(new Move(from, to));
+		if(turn.equals(player)){
+			sendMoveListener.sendMove(new Move(from, to));
 			markedPointOpponent = null;
 		}
 		else{
 			markedPointOpponent = to;
 		}
-		Log.wtf("Board", "now placePiece() with from.x="+from.getX()+", from.y="+from.getY());
+		Log.d("Board", "now placePiece() with from.x="+from.getX()+", from.y="+from.getY());
 		placePiece(from, to);
 		markedPoint = null;
 		
@@ -111,7 +113,7 @@ public class Board {
 			tempPiece.tryToMove(to);
 		}
 		else{
-			Log.e("Board", "Trying to move null!");
+			Log.wtf("Board", "Trying to move null!");
 		}
 	}
 	
