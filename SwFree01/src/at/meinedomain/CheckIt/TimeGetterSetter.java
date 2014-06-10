@@ -1,9 +1,11 @@
 package at.meinedomain.CheckIt;
 
-public interface TimeTeller {
+public interface TimeGetterSetter {
 	
 	public int getMinutes();
 	
 	public int getSeconds();
+	
+	public void setTime(int time);
 	
 }

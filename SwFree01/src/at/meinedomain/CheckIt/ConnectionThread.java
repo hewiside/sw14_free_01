@@ -14,7 +14,7 @@ public class ConnectionThread extends Thread {
 	protected OutputStream out;
 	protected Socket client;
 	protected Board board;
-	protected TimeTeller timeTeller;
+	protected TimeGetterSetter timeGetterSetter;
 	
 	protected boolean startRequested;
 	protected boolean stopRequested;
@@ -33,13 +33,13 @@ public class ConnectionThread extends Thread {
 	protected static final int BUFFER_SIZE = 8;
 	public static final float DUMMY_OPPONENTS_TIME = Float.MAX_VALUE;
 	
-	public ConnectionThread(Board board, TimeTeller tt) {
+	public ConnectionThread(Board board, TimeGetterSetter tgs) {
 		super();
 		in = null;
 		out = null;
 		client = null;
 		this.board = board;
-		this.timeTeller= tt;
+		timeGetterSetter= tgs;
 		startRequested = false;
 		stopRequested  = false;
 		myMove = null;
@@ -70,10 +70,12 @@ public class ConnectionThread extends Thread {
 		int length;
 		try {
 			if((length = in.read(b)) != -1){
-				if(length == 4){
+				if(length == 7){
 					Point from = new Point(b[0], b[1]);
 					Point to   = new Point(b[2], b[3]);
+					// TODO process EN_PASSANT-flag
 					board.move(from, to);
+					timeGetterSetter.setTime(b[5]*60 + b[6]);
 					opponentsMoveMade = true;
 				}
 				else{
@@ -97,8 +99,11 @@ public class ConnectionThread extends Thread {
 			b[1] = (byte)myMove.getFromY();
 			b[2] = (byte)myMove.getToX();
 			b[3] = (byte)myMove.getToY();
+			b[4] = 0; // TODO this is a placeholder for EN_PASSANT-flag
+			b[5] = (byte)timeGetterSetter.getMinutes();
+			b[6] = (byte)timeGetterSetter.getSeconds();
 			try {
-				out.write(b, 0, 4);
+				out.write(b, 0, 7);
 				myMoveSent = true;
 				Log.d("ConnectionThread","Move sent.");
 			} catch (IOException e) {
