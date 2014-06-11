@@ -23,7 +23,8 @@ public class Knight extends AbstractPiece {
 		int distY = verticalDist(to);
 		
 		if(Math.max(distX, distY) == 2 && 
-		   Math.min(distX, distY) == 1){
+		   Math.min(distX, distY) == 1 &&
+		   !isOccupiedByMe(to)){
 			
 			return MoveType.NORMAL;
 		}
