@@ -100,6 +100,14 @@ public abstract class AbstractPiece {
 	
 	
 	// test same file, rank, diagonal
+	public boolean isOnSameLine(Point to){
+		return isOnSameFile(to) || isOnSameRank(to);
+	}
+	
+	public boolean isOnSameDiag(Point to){
+		return isOnSameUpwardDiag(to) || isOnSameDownwardDiag(to);
+	}
+	
 	public boolean isOnSameFile(Point to){
 		return to.getX() == location.getX();
 	}
@@ -108,11 +116,11 @@ public abstract class AbstractPiece {
 		return to.getY() == location.getY();
 	}
 	
-	public boolean isOnSameUpwardDiagonal(Point to){
+	public boolean isOnSameUpwardDiag(Point to){
 		return to.getX()-location.getX() == to.getY()-location.getY();
 	}
 	
-	public boolean isOnSameDownwardDiagonal(Point to){
+	public boolean isOnSameDownwardDiag(Point to){
 		return to.getX()-location.getX() == -(to.getY()-location.getY());
 	}
 	
