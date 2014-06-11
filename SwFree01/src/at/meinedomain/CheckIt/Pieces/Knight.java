@@ -17,12 +17,21 @@ public class Knight extends AbstractPiece {
 		}
 	}
 	
-//	@Override
-//	protected MoveType CanMove(Point pt) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
+	@Override
+	protected MoveType CanMove(Point to) {
+		int distX = horizontalDist(to);
+		int distY = verticalDist(to);
+		
+		if(Math.max(distX, distY) == 2 && 
+		   Math.min(distX, distY) == 1){
+			
+			return MoveType.NORMAL;
+		}
+		return MoveType.ILLEGAL;
+	}
+
+	
+//  // tryToMove() not needed. super-implementation sufices.
 //	@Override
 //	public void tryToMove(Point pt) {
 //		// TODO Auto-generated method stub
