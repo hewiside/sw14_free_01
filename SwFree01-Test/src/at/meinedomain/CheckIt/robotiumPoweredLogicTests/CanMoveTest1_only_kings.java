@@ -18,7 +18,7 @@ import at.meinedomain.CheckIt.Pieces.Pawn;
 import at.meinedomain.CheckIt.Pieces.Queen;
 import at.meinedomain.CheckIt.Pieces.Rook;
 
-public class CanMoveTest1_onlyKings extends
+public class CanMoveTest1_only_kings extends
 		ActivityInstrumentationTestCase2<CheckItGame> {
 
 //	private Solo solo;
@@ -31,7 +31,7 @@ public class CanMoveTest1_onlyKings extends
 	protected AbstractPiece[] pieces;
 	protected Color player;
 	
-	public CanMoveTest1_onlyKings() {
+	public CanMoveTest1_only_kings() {
 		super("at.meinedomain.CheckIt.CheckItGame", CheckItGame.class);
 	}
 

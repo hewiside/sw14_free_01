@@ -18,7 +18,7 @@ import at.meinedomain.CheckIt.Pieces.Pawn;
 import at.meinedomain.CheckIt.Pieces.Queen;
 import at.meinedomain.CheckIt.Pieces.Rook;
 
-public class CanMoveTest2_initialPosition extends
+public class CanMoveTest5_pinned_pieces___bishop___knight_BLACK extends
 		ActivityInstrumentationTestCase2<CheckItGame> {
 
 //	private Solo solo;
@@ -31,7 +31,8 @@ public class CanMoveTest2_initialPosition extends
 	protected AbstractPiece[] pieces;
 	protected Color player;
 	
-	public CanMoveTest2_initialPosition() {
+	// SEE DRAWABLE-FOLDER TO SEE THE BOARD-CONFIGURATION
+	public CanMoveTest5_pinned_pieces___bishop___knight_BLACK() {
 		super("at.meinedomain.CheckIt.CheckItGame", CheckItGame.class);
 	}
 
@@ -39,7 +40,7 @@ public class CanMoveTest2_initialPosition extends
 		super.setUp();
 
 		// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO 
-		player = Color.WHITE;
+		player = Color.BLACK;
 		
 		board = new Board(null, player, null, player); // with null-board!
 		// we need to initialize the board before pieces since they need a
@@ -49,10 +50,14 @@ public class CanMoveTest2_initialPosition extends
 		
 		// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
 		pieces = new AbstractPiece[] {
-				wr(0,0), wn(1,0), wb(2,0), wq(3,0), wk(4,0), wb(5,0), wn(6,0), wr(7,0),
-				wp(0,1), wp(1,1), wp(2,1), wp(3,1), wp(4,1), wp(5,1), wp(6,1), wp(7,1),
-				bp(0,6), bp(1,6), bp(2,6), bp(3,6), bp(4,6), bp(5,6), bp(6,6), bp(7,6),
-				br(0,7), bn(1,7), bb(2,7), bq(3,7), bk(4,7), bb(5,7), bn(6,7), br(7,7),
+				/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	bk(7,7),
+				/*---*/	/*---*/	/*---*/	bp(3,6),/*---*/	/*---*/	bb(6,6),bn(7,6),
+				/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/
+				/*---*/	bb(1,4),/*---*/	/*---*/	wb(4,4),/*---*/	/*---*/	/*---*/	
+				/*---*/	/*---*/	wp(2,3),/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	
+				/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/
+				/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	wr(7,1),
+				/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	wk(6,0) /*---*/
 				};
 		
 		b = initializeBoard();
@@ -68,72 +73,12 @@ public class CanMoveTest2_initialPosition extends
 	// =========================================================================
 	// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO	
 	
-	public void testKing(){
+	public void testPinnedKnight(){
 		assertBoardNotNull();
-		King king = (King) board.pieceAt(4, 0);
+		Knight knight = (Knight) board.pieceAt(6, 0);
 		
 		boolBoard = initializeBooleanBoard();
-		
-		for(int i=0; i<width; i++){
-			for(int j=0; j<height; j++){
-				if(boolBoard[i][j] == true){
-					assertTrue(pieceToString(king)+" can move to "+i+","+j, 
-							   king.canMoveTest(i,j));
-				}
-				else{
-					assertFalse(king.canMoveTest(i, j));
-				}
-			}
-		}
-	}
-	
-	public void testPawnE2(){
-		assertBoardNotNull();
-		Pawn pawn = (Pawn) board.pieceAt(4, 1);
-		
-		boolBoard = initializeBooleanBoard();
-		setTrueTile(4, 2);
-		setTrueTile(4, 3);
-		
-		for(int i=0; i<width; i++){
-			for(int j=0; j<height; j++){
-				if(boolBoard[i][j] == true){
-					assertTrue(pieceToString(pawn)+" can move to "+i+","+j, 
-							   pawn.canMoveTest(i,j));
-				}
-				else{
-					assertFalse(pawn.canMoveTest(i, j));
-				}
-			}
-		}
-	}
-	
-	public void testRookA1(){
-		assertBoardNotNull();
-		Rook rook = (Rook) board.pieceAt(0, 0);
-		
-		boolBoard = initializeBooleanBoard();
-		
-		for(int i=0; i<width; i++){
-			for(int j=0; j<height; j++){
-				if(boolBoard[i][j] == true){
-					assertTrue(pieceToString(rook)+" can move to "+i+","+j, 
-							   rook.canMoveTest(i,j));
-				}
-				else{
-					assertFalse(rook.canMoveTest(i, j));
-				}
-			}
-		}
-	}
-	
-	public void testKnightB1(){
-		assertBoardNotNull();
-		Knight knight = (Knight) board.pieceAt(1, 0);
-		
-		boolBoard = initializeBooleanBoard();
-		setTrueTile(0, 2);
-		setTrueTile(2, 2);
+		// no setTrueTile() because the knight is pinned!
 		
 		for(int i=0; i<width; i++){
 			for(int j=0; j<height; j++){
@@ -148,11 +93,12 @@ public class CanMoveTest2_initialPosition extends
 		}
 	}
 	
-	public void testBishopC1(){
+	public void testPinnedBishop(){
 		assertBoardNotNull();
-		Bishop bishop = (Bishop) board.pieceAt(2, 0);
+		Bishop bishop = (Bishop) board.pieceAt(4, 0);
 		
-		boolBoard = initializeBooleanBoard();
+		boolBoard = initializeBooleanBoard();		
+		// no setTrueTile() because the knight is pinned!
 		
 		for(int i=0; i<width; i++){
 			for(int j=0; j<height; j++){
@@ -167,20 +113,24 @@ public class CanMoveTest2_initialPosition extends
 		}
 	}
 	
-	public void testQueen(){
+	public void testNotPinnedBishop(){
 		assertBoardNotNull();
-		Queen queen = (Queen) board.pieceAt(3, 0);
+		Bishop bishop = (Bishop) board.pieceAt(3, 4);
 		
 		boolBoard = initializeBooleanBoard();
+		setTrueTile(0, 5);
+		setTrueTile(0, 3);
+		setTrueTile(2, 3);
+		setTrueTile(2, 5);
 		
 		for(int i=0; i<width; i++){
 			for(int j=0; j<height; j++){
 				if(boolBoard[i][j] == true){
-					assertTrue(pieceToString(queen)+" can move to "+i+","+j, 
-							   queen.canMoveTest(i,j));
+					assertTrue(pieceToString(bishop)+" can move to "+i+","+j, 
+							   bishop.canMoveTest(i,j));
 				}
 				else{
-					assertFalse(queen.canMoveTest(i, j));
+					assertFalse(bishop.canMoveTest(i, j));
 				}
 			}
 		}
