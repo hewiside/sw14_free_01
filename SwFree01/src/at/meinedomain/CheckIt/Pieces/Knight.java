@@ -18,7 +18,9 @@ public class Knight extends AbstractPiece {
 	}
 	
 	@Override
-	protected MoveType CanMove(Point to) {
+	protected MoveType canMove(Point to) {
+		// TODO test if move leaves us in check
+		
 		int distX = horizontalDist(to);
 		int distY = verticalDist(to);
 		

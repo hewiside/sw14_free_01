@@ -28,8 +28,10 @@ public abstract class AbstractPiece {
 		TAG = tag;
 	}
 	
-	protected MoveType CanMove(Point pt){
-		return MoveType.NORMAL;
+	protected MoveType canMove(Point pt){
+		Log.wtf("AbstractPiece", 
+				"Don't call the implementation of the abstract class!");
+		return MoveType.ILLEGAL;
 	}
 	
 	public Color getColor(){
@@ -56,7 +58,7 @@ public abstract class AbstractPiece {
 	// return the MoveType because Overriding methods which check for further
 	//			move types don't need to call the expensive CanMove() again.
 	public MoveType tryToMove(Point to){
-		MoveType mt = CanMove(to); 
+		MoveType mt = canMove(to); 
 		
 		log(to, mt);
 		
@@ -73,11 +75,11 @@ public abstract class AbstractPiece {
 	
 	// test tiles for emptiness, pieces, or en passant:
 	public boolean isEmpty(Point to){
-		return (board.pieceAt(to) == null) ? true : false;
+		return board.isEmpty(to);
 	}
 	
 	public boolean isEmpty(int toX, int toY){
-		return (board.pieceAt(toX, toY) == null) ? true : false;
+		return board.isEmpty(toX, toY);
 	}
 	
 	public boolean isOccupiedByOpponent(Point to){
@@ -142,7 +144,24 @@ public abstract class AbstractPiece {
 		return Math.abs(verticalDiff(to));
 	}
 	
-	
+	// get slide type
+	public SlideType slideType(Point to){
+		if(isOnSameRank(to)){
+			return SlideType.HORIZONTAL;
+		}
+		else if(isOnSameFile(to)){
+			return SlideType.VERTICAL;
+		}
+		else if(isOnSameUpwardDiag(to)){
+			return SlideType.UPWARD;
+		}
+		else if(isOnSameDownwardDiag(to)){
+			return SlideType.DOWNWARD;
+		}
+		else{
+			return null;
+		}
+	}
 	
 	
 	// TODO TODO TODO
@@ -177,6 +196,7 @@ public abstract class AbstractPiece {
 //		
 //		return false;
 //	}
+
 	
 	
 	// TODO TODO TODO use the utility functions from above (isEmpty(),...)
@@ -234,5 +254,11 @@ public abstract class AbstractPiece {
 	public void log(Point to, MoveType mt){
 		Log.i(TAG, "from: "+location.getX()+","+location.getY()+
 				   "; to: "+      to.getX()+","+      to.getY()+","+mt);
+	}
+	
+	// this *public* method is intended for testing purposes and for the board
+	// to check wether a move leaves us in check or discover check-/stale-mate.
+	public boolean canMoveTest(Point to){
+		return canMove(to)==MoveType.ILLEGAL ? false : true;
 	}
 }

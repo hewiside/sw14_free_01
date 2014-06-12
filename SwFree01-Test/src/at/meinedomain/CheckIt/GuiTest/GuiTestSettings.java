@@ -1,16 +1,16 @@
-package at.meinedomain.CheckIt.test;
+package at.meinedomain.CheckIt.GuiTest;
 
 import com.robotium.solo.Solo;
 
 import android.test.ActivityInstrumentationTestCase2;
 import at.meinedomain.CheckIt.CheckItGame;
 
-public class SettingsTests extends
+public class GuiTestSettings extends
 		ActivityInstrumentationTestCase2<CheckItGame> {
 
 	private Solo solo;
 	
-	public SettingsTests() {
+	public GuiTestSettings() {
 		super("at.meinedomain.CheckIt.CheckItGame", CheckItGame.class);
 	}
 

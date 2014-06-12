@@ -23,7 +23,7 @@ public class Pawn extends AbstractPiece {
 	}
 	
 	@Override
-	protected MoveType CanMove(Point to) {
+	protected MoveType canMove(Point to) {
 		// TODO first test if the move would leave us in check e.g. by 
 		//      looking we are in check on a board where this piece is missing!
 		

@@ -26,6 +26,7 @@ public class Board {
 	private Point markedPointOpponent;
 	private Point enPassant;
 	
+	// Constructors=============================================================
 	public Board(SendMoveListener sml, Color player){
 		this.sendMoveListener = sml;
 		this.player = player;
@@ -86,10 +87,17 @@ public class Board {
 //		}
 	}
 	
-//	public AbstractPiece[][] getBoard(){
-//		return board;
-//	}
+	//--------------------------------------------------------------------------
+	// this constructor is used for testing the canMove()-method of pieces.
+	public Board(SendMoveListener sml, Color player, 
+				 AbstractPiece[][] board, Color turn){
+		this(sml, player);
+		// redefine the board
+		this.board = board;
+		this.turn = turn;
+	}
 	
+	// Getters/Setters/move-methods=============================================
 	public int getWidth(){
 		return width;
 	}
@@ -111,7 +119,7 @@ public class Board {
 		board[  to.getX()][  to.getY()] = pieceAt(from); 
 		board[from.getX()][from.getY()] = null;
 	}
-	
+		
 	// move without testing for correctness of the move.
 	public void move(Point from, Point to){
 		move(from, to, null);
@@ -177,5 +185,28 @@ public class Board {
 	}
 	public void toggleTurn(){
 		turn = (turn==Color.WHITE) ? Color.BLACK : Color.WHITE;
+	}
+	
+	// Utility methods =========================================================
+	public boolean isEmpty(Point pt){
+		return pieceAt(pt)==null ? true : false;
+	}
+	
+	public boolean isEmpty(int x, int y){
+		return pieceAt(x,y)==null ? true : false;
+	}
+	
+	public boolean isOccupiedByTurn(Point pt){
+		if(!isEmpty(pt) && pieceAt(pt).getColor()==turn){
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isOccupiedByTurnOpponent(Point pt){
+		if(!isEmpty(pt) && pieceAt(pt).getColor()!=turn){
+			return true;
+		}
+		return false;
 	}
 }
