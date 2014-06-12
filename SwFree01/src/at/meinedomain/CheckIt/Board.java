@@ -98,6 +98,11 @@ public class Board {
 	}
 	
 	// Getters/Setters/move-methods=============================================
+	@Deprecated
+	public void setBoard(AbstractPiece[][] board){ // USED FOR TESTING ONLY!
+		this.board = board;
+	}
+	
 	public int getWidth(){
 		return width;
 	}

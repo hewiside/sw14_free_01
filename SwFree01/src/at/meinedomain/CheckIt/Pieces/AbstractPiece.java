@@ -258,7 +258,7 @@ public abstract class AbstractPiece {
 	
 	// this *public* method is intended for testing purposes and for the board
 	// to check wether a move leaves us in check or discover check-/stale-mate.
-	public boolean canMoveTest(Point to){
-		return canMove(to)==MoveType.ILLEGAL ? false : true;
+	public boolean canMoveTest(int toX, int toY){
+		return canMove(new Point(toX, toY)) == MoveType.ILLEGAL ? false : true;
 	}
 }

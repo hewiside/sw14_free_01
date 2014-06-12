@@ -18,7 +18,7 @@ import at.meinedomain.CheckIt.Pieces.Pawn;
 import at.meinedomain.CheckIt.Pieces.Queen;
 import at.meinedomain.CheckIt.Pieces.Rook;
 
-public class CanMoveTest extends
+public class CanMoveTest1_onlyKings extends
 		ActivityInstrumentationTestCase2<CheckItGame> {
 
 //	private Solo solo;
@@ -26,46 +26,63 @@ public class CanMoveTest extends
 	public int height = 8;
 	
 	protected AbstractPiece[][] b;
+	protected boolean[][] boolBoard;
 	protected Board board;
 	protected AbstractPiece[] pieces;
 	protected Color player;
 	
-	public CanMoveTest() {
+	public CanMoveTest1_onlyKings() {
 		super("at.meinedomain.CheckIt.CheckItGame", CheckItGame.class);
 	}
 
 	protected void setUp() throws Exception {
 		super.setUp();
-		
-		b = new AbstractPiece[width][height];
-		for(int i=0; i<width; i++){
-			for(int j=0; j<height; j++){
-				b[i][j] = null;
-			}
-		}
+	
 		// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO 
 		player = Color.WHITE;
+		
+		board = new Board(null, player, null, player); // with null-board!
+		// we need to initialize the board before pieces since they need a
+		// board instance in their constructor. But we can't give the board
+		// constructor with the AbstractPiece[][]-arg since there are no
+		// pieces until the next statement.
 		
 		// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
 		pieces = new AbstractPiece[] {wk(4,0), bk(4,7)};
 		
-		fillBoardWith(pieces);
+		b = initializeBoard();
+		fillBoardWithPieces(b, pieces);
 		Log.d("AbstractCanMoveTest", "Board matrix initialized:"+"\n"+
 									 boardMatrixToString(b));
 		
-		board = new Board(null, player, b, player);
-		Log.d("AbstractCanMoveTest", "Board initialized with matrix"+"\n"+
-									 boardToString(board));
-	}
-	// TESTS begin =============================================================
-	// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
-	public void testFail() {
-		fail();
+		board.setBoard(b); // now the board is not null anymore.
 	}
 	
-	public void testSucceed() {
+	// =========================================================================
+	// TESTS begin =============================================================
+	// =========================================================================
+	// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO	
+	public void testKing() {
 		assertBoardNotNull();
-		assertTrue(true);
+		King king = (King) board.pieceAt(4, 0);
+		
+		boolBoard = initializeBooleanBoard();
+		setTrueTile(3, 0);
+		setTrueTile(3, 1);
+		setTrueTile(4, 1);
+		setTrueTile(5, 1);
+		setTrueTile(5, 0);
+		
+		for(int i=0; i<width; i++){
+			for(int j=0; j<height; j++){
+				if(boolBoard[i][j] == true){
+					assertTrue("Can move to "+i+","+j, king.canMoveTest(i,j));
+				}
+				else{
+					assertFalse(king.canMoveTest(i, j));
+				}
+			}
+		}
 	}
 	
 	public void assertBoardNotNull(){
@@ -76,8 +93,34 @@ public class CanMoveTest extends
 			fail("No board member initialised in setUp()!!!");
 		}
 	}
+	// =========================================================================
 	// TESTS end ===============================================================
-	public void fillBoardWith(AbstractPiece[] pieces){
+	// =========================================================================	
+	public boolean[][] initializeBooleanBoard(){
+		boolean[][] b = new boolean[width][height];
+		for(int i=0; i<width; i++){
+			for(int j=0; j<height; j++){
+				b[i][j] = false;
+			}
+		}
+		return b;
+	}
+	
+	public void setTrueTile(int x, int y){
+		boolBoard[x][y] = true;
+	}
+	
+	public AbstractPiece[][] initializeBoard(){
+		AbstractPiece[][] b = new AbstractPiece[width][height];
+		for(int i=0; i<width; i++){
+			for(int j=0; j<height; j++){
+				b[i][j] = null;
+			}
+		}
+		return b;
+	}
+	
+	public void fillBoardWithPieces(AbstractPiece[][] b, AbstractPiece[] pieces){
 		for(AbstractPiece p : pieces){
 			b[p.getLocation().getX()][p.getLocation().getY()] = p;
 		}
@@ -109,19 +152,22 @@ public class CanMoveTest extends
 		if(p==null)
 			return "-";
 		else if(p instanceof Pawn){
-			return "P";
+			return p.getColor()==Color.WHITE ? "P" : "p";
 		}
 		else if(p instanceof Rook){
-			return "R";
+			return p.getColor()==Color.WHITE ? "R" : "r";
 		}
 		else if(p instanceof Knight){
-			return "N";
+			return p.getColor()==Color.WHITE ? "N" : "n";
+		}
+		else if(p instanceof Bishop){
+			return p.getColor()==Color.WHITE ? "B" : "b";
 		}
 		else if(p instanceof Queen){
-			return "Q";
+			return p.getColor()==Color.WHITE ? "Q" : "q";
 		}
 		else if(p instanceof King){
-			return "K";
+			return p.getColor()==Color.WHITE ? "K" : "k";
 		}
 		else return "???";
 	}
