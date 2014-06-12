@@ -18,7 +18,7 @@ public class King extends AbstractPiece {
 	}
 	
 //	@Override
-//	protected MoveType CanMove(Point pt) {
+//	protected MoveType canMove(Point pt) {
 //		// TODO Auto-generated method stub
 //		return null;
 //	}

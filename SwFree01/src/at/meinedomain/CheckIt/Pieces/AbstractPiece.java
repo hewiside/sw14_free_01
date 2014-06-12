@@ -1,5 +1,7 @@
 package at.meinedomain.CheckIt.Pieces;
 
+import java.util.ArrayList;
+
 import android.util.Log;
 import at.meinedomain.CheckIt.Board;
 import at.meinedomain.CheckIt.Color;
@@ -28,7 +30,7 @@ public abstract class AbstractPiece {
 		TAG = tag;
 	}
 	
-	protected MoveType canMove(Point pt){
+	protected MoveType canMove(Point to){
 		Log.wtf("AbstractPiece", 
 				"Don't call the implementation of the abstract class!");
 		return MoveType.ILLEGAL;
@@ -146,7 +148,10 @@ public abstract class AbstractPiece {
 	
 	// get slide type
 	public SlideType slideType(Point to){
-		if(isOnSameRank(to)){
+		if(to.equals(location)){
+			return null;
+		}
+		else if(isOnSameRank(to)){
 			return SlideType.HORIZONTAL;
 		}
 		else if(isOnSameFile(to)){
@@ -165,47 +170,50 @@ public abstract class AbstractPiece {
 	
 	
 	// TODO TODO TODO
-//	public boolean canSlide(Point from, Point to){
-//		int x = from.getX();
-//		int y = from.getY();
-//		
-//		if(x == to.getX()){
-//			if(y == to.getY()){
-//				return false;	// from==to
-//			}
-//			// VERTICAL ||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-//			else{
-//				// TODO test between
-////				int diff = to.getY()-y;
-////				int offset = Math.abs(diff);
-////				int dir = diff/offset;
-////				
-////				// test, if tiles between from and to are empty
-////				for(int j=1; j<offset; j++){
-////					if(board.pieceAt(x, y+j) != null){
-////						return false;
-////					}
-////				}
-//				// TODO test, if goal is occupied by our own piece
-//				
-//			}
-//		}
-//		else{
-//			
-//		}
-//		
-//		return false;
-//	}
+	public boolean canSlide(Point from, Point to, ArrayList<SlideType> stList){
+		SlideType st = slideType(to);
+		
+		if(!stList.contains(st)){
+			return false;
+		}
+		else if(isOccupiedByMe(to)){
+			return false;
+		}
+		
+		// move legal if no pieces between from and to
+		else if(st == SlideType.HORIZONTAL){
+			if(!noPiecesBetween(from, to, SlideType.HORIZONTAL)){
+				return false;
+			}
+			return true;
+		}
+		else if(st == SlideType.VERTICAL){
+			if(!noPiecesBetween(from, to, SlideType.VERTICAL)){
+				return false;
+			}
+			return true;
+		}
+		else if(st == SlideType.UPWARD){
+			if(!noPiecesBetween(from, to, SlideType.UPWARD)){
+				return false;
+			}
+			return true;
+		}
+		else{ // st==SlideType.DOWNWARD
+			if(!noPiecesBetween(from, to, SlideType.HORIZONTAL)){
+				return false;
+			}
+			return true;
+		}
+	}
 
 	
 	
 	// TODO TODO TODO use the utility functions from above (isEmpty(),...)
 	public boolean noPiecesBetween(Point from, Point to, SlideType st){
 		if(st == SlideType.HORIZONTAL){
-			int diff = to.getX()-from.getX();
-			int offset = Math.abs(diff);
-			int dir = diff/offset;
-			for(int i=1; i<offset; i++){
+			int dir = horizontalDiff(to)/horizontalDist(to);
+			for(int i=1; i<horizontalDist(to); i++){
 				if(board.pieceAt(from.getX()+i*dir, from.getY()) != null){
 					return false;
 				}
@@ -214,10 +222,8 @@ public abstract class AbstractPiece {
 		}
 		
 		else if(st == SlideType.VERTICAL){
-			int diff = to.getY()-from.getY();
-			int offset = Math.abs(diff);
-			int dir = diff/offset;	
-			for(int j=1; j<offset; j++){
+			int dir = verticalDiff(to)/verticalDist(to);	
+			for(int j=1; j<verticalDist(to); j++){
 				if(board.pieceAt(from.getX(), from.getY()+j*dir) != null){
 					return false;
 				}
@@ -226,10 +232,9 @@ public abstract class AbstractPiece {
 		}
 		
 		else if(st == SlideType.UPWARD){
-			int diff = to.getX()-from.getX(); // we use x (y=x when upward)
-			int offset = Math.abs(diff);
-			int dir = diff/offset;
-			for(int i=1; i<offset; i++){
+			// we consider only x difference because y=x when upward
+			int dir = horizontalDiff(to)/horizontalDist(to);
+			for(int i=1; i<horizontalDist(to); i++){
 				if(board.pieceAt(from.getX()+i*dir, from.getY()+i*dir) != null){
 					return false;
 				}
@@ -238,10 +243,9 @@ public abstract class AbstractPiece {
 		}
 		
 		else if(st == SlideType.DOWNWARD){
-			int diff = to.getX()-from.getX(); // we use x (x=-y when downward)
-			int offset = Math.abs(diff);
-			int dir = diff/offset;
-			for(int i=1; i<offset; i++){
+			// we consider only x because x=-y when downward
+			int dir = horizontalDiff(to)/horizontalDist(to);
+			for(int i=1; i<horizontalDist(to); i++){
 				if(board.pieceAt(from.getX()+i*dir, from.getY()-i*dir) != null){ // note the minus!
 					return false;
 				}
