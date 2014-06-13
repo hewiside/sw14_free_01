@@ -250,7 +250,6 @@ public abstract class AbstractPiece {
 					return false;
 				}
 			}
-			Log.wtf("DOWNWARD to", ""+to.getX()+","+to.getY());
 			return true;
 		}
 		return false;
