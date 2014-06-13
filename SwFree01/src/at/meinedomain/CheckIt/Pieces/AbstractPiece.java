@@ -200,7 +200,7 @@ public abstract class AbstractPiece {
 			return true;
 		}
 		else{ // st==SlideType.DOWNWARD
-			if(!noPiecesBetween(from, to, SlideType.HORIZONTAL)){
+			if(!noPiecesBetween(from, to, SlideType.DOWNWARD)){
 				return false;
 			}
 			return true;
@@ -250,6 +250,7 @@ public abstract class AbstractPiece {
 					return false;
 				}
 			}
+			Log.wtf("DOWNWARD to", ""+to.getX()+","+to.getY());
 			return true;
 		}
 		return false;
