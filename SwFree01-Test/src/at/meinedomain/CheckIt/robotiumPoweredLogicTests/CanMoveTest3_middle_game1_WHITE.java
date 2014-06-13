@@ -56,8 +56,8 @@ public class CanMoveTest3_middle_game1_WHITE extends
 						bq(1,4),		wq(3,4),wn(4,4),
 				
 						wp(1,2),
-				wp(0,1),						bp(4,1),		wp(6,1),wp(7,1),
-												wr(4,0),		wk(6,0)
+				wp(0,1),						bp(4,1),/*---*/	wp(6,1),wp(7,1),
+												wr(4,0),/*---*/	wk(6,0)
 				};
 		
 		b = initializeBoard();

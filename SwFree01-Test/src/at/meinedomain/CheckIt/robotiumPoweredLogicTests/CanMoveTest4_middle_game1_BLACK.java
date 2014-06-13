@@ -50,7 +50,7 @@ public class CanMoveTest4_middle_game1_BLACK extends
 		
 		// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
 		pieces = new AbstractPiece[] {
-														br(5,7),		bk(7,7),
+														br(5,7),/*---*/	bk(7,7),
 						bp(1,6),								bp(6,6),bp(7,6),
 				bp(0,5),
 						bq(1,4),		wq(3,4),wn(4,4),

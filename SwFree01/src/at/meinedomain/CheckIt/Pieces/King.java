@@ -17,11 +17,18 @@ public class King extends AbstractPiece {
 		}
 	}
 	
-//	@Override
-//	protected MoveType canMove(Point pt) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
+	@Override
+	protected MoveType canMove(Point to) {
+		
+		
+		if(!to.equals(location) &&
+		   horizontalDist(to)<=1 &&
+		   verticalDist(to)  <=1 ){
+			
+			return MoveType.NORMAL;
+		}
+		return MoveType.ILLEGAL;
+	}
 //
 //	@Override
 //	public void tryToMove(Point pt) {

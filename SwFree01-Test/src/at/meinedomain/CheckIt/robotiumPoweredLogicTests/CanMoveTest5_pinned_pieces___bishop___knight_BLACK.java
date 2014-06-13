@@ -50,14 +50,14 @@ public class CanMoveTest5_pinned_pieces___bishop___knight_BLACK extends
 		
 		// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
 		pieces = new AbstractPiece[] {
-				/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	bk(7,7),
-				/*---*/	/*---*/	/*---*/	bp(3,6),/*---*/	/*---*/	bb(6,6),bn(7,6),
-				/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/
-				/*---*/	bb(1,4),/*---*/	/*---*/	wb(4,4),/*---*/	/*---*/	/*---*/	
-				/*---*/	/*---*/	wp(2,3),/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	
-				/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/
-				/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	wr(7,1),
-				/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	wk(6,0) /*---*/
+				/*   */	/*   */	/*   */	/*   */	/*   */	/*   */	/*   */	bk(7,7),
+				/*   */	/*   */	/*   */	bp(3,6),/*   */	/*   */	bb(6,6),bn(7,6),
+				/*   */	bn(1,5),/*   */	/*   */	/*   */	/*///*/	/*   */	/*|||*/
+				/*   */	bb(1,4),/*   */	/*   */	wb(4,4),/*   */	/*   */	/*|||*/
+				/*   */	/*   */	wp(2,3),/*   */	/*   */	/*   */	/*   */	/*|||*/	
+				/*   */	/*   */	/*   */	/*   */	/*   */	/*   */	/*   */	/*|||*/
+				/*   */	/*   */	/*   */	/*   */	/*   */	/*   */	/*   */	wr(7,1),
+				/*   */	/*   */	/*   */	/*   */	/*   */	/*   */	wk(6,0) /*   */	
 				};
 		
 		b = initializeBoard();
@@ -132,6 +132,31 @@ public class CanMoveTest5_pinned_pieces___bishop___knight_BLACK extends
 				else{
 					assertFalse("I shall not go to "+i+","+j,
 								bishop.canMoveTest(i, j));
+				}
+			}
+		}
+	}
+	
+	public void testNotPinnedKnight(){
+		assertBoardNotNull();
+		Knight knight = (Knight) board.pieceAt(1, 5);
+		
+		boolBoard = initializeBooleanBoard();
+		setTrueTile(0, 7);
+		setTrueTile(0, 3);
+		setTrueTile(2, 3);
+		setTrueTile(3, 4);
+//		setTrueTile(3, 6); (Occupied by our own pawn)
+		setTrueTile(2, 7);
+		
+		for(int i=0; i<width; i++){
+			for(int j=0; j<height; j++){
+				if(boolBoard[i][j] == true){
+					assertTrue(pieceToString(knight)+" can move to "+i+","+j, 
+							   knight.canMoveTest(i,j));
+				}
+				else{
+					assertFalse(knight.canMoveTest(i, j));
 				}
 			}
 		}

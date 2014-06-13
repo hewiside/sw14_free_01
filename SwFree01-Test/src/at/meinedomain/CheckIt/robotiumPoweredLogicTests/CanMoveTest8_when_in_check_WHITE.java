@@ -18,7 +18,7 @@ import at.meinedomain.CheckIt.Pieces.Pawn;
 import at.meinedomain.CheckIt.Pieces.Queen;
 import at.meinedomain.CheckIt.Pieces.Rook;
 
-public class CanMoveTest8_no_castling_when_in_check_WHITE extends
+public class CanMoveTest8_when_in_check_WHITE extends
 		ActivityInstrumentationTestCase2<CheckItGame> {
 
 //	private Solo solo;
@@ -32,7 +32,7 @@ public class CanMoveTest8_no_castling_when_in_check_WHITE extends
 	protected Color player;
 	
 	// SEE DRAWABLE-FOLDER TO SEE THE BOARD-CONFIGURATION
-	public CanMoveTest8_no_castling_when_in_check_WHITE () {
+	public CanMoveTest8_when_in_check_WHITE () {
 		super("at.meinedomain.CheckIt.CheckItGame", CheckItGame.class);
 	}
 
@@ -52,11 +52,11 @@ public class CanMoveTest8_no_castling_when_in_check_WHITE extends
 		pieces = new AbstractPiece[] {
 				bq(0,7),/*---*/	/*---*/	/*---*/	bk(4,7),/*---*/	/*---*/	bk(7,7),
 				/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	
-				/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/
+				/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/ 
 				/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	
 				/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	
-				/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	bn(5,2),wp(6,2),/*---*/
-				/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	wp(5,1),/*---*/	wp(7,1),
+				/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	bn(5,2),/*---*/ /*---*/ 
+				/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	wp(5,1),wp(6,1),wp(7,1),
 				wr(0,0),/*---*/	/*---*/	/*---*/	wk(4,0),/*---*/ /*---*/	wr(7,0)	
 				};
 		
@@ -79,7 +79,7 @@ public class CanMoveTest8_no_castling_when_in_check_WHITE extends
 		
 		boolBoard = initializeBooleanBoard();
 		setTrueTile(3, 0);
-		setTrueTile(3, 1);
+//		setTrueTile(3, 1); (3,1 is attacked by black knight)
 		setTrueTile(4, 1);
 //		setTrueTile(5, 1); (our own pawn at (5,1))
 		setTrueTile(5, 0);
@@ -97,6 +97,45 @@ public class CanMoveTest8_no_castling_when_in_check_WHITE extends
 		}
 	}
 
+	public void testIgnoringCheckNotPossible(){
+		assertBoardNotNull();
+		Pawn pawn = (Pawn) board.pieceAt(7, 1);
+		
+		boolBoard = initializeBooleanBoard();
+		// we can't ignore check --> no possible tile for this pawn.
+		
+		for(int i=0; i<width; i++){
+			for(int j=0; j<height; j++){
+				if(boolBoard[i][j] == true){
+					assertTrue(pieceToString(pawn)+" can move to "+i+","+j, 
+							   pawn.canMoveTest(i,j));
+				}
+				else{
+					assertFalse(pawn.canMoveTest(i, j));
+				}
+			}
+		}
+	}
+	
+	public void testTakeCheckingPiecePossible(){
+		assertBoardNotNull();
+		Pawn pawn = (Pawn) board.pieceAt(6, 1);
+		
+		boolBoard = initializeBooleanBoard();
+		setTrueTile(5, 2);
+		
+		for(int i=0; i<width; i++){
+			for(int j=0; j<height; j++){
+				if(boolBoard[i][j] == true){
+					assertTrue(pieceToString(pawn)+" can move to "+i+","+j, 
+							   pawn.canMoveTest(i,j));
+				}
+				else{
+					assertFalse(pawn.canMoveTest(i, j));
+				}
+			}
+		}
+	}
 	
 	// =========================================================================
 	// TESTS end ===============================================================
