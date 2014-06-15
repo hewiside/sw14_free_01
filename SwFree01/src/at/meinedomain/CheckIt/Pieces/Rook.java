@@ -26,6 +26,10 @@ public class Rook extends SlidingPiece {
 	@Override
 	protected MoveType canMove(Point to) {
 		
+		if(board.leavesInCheck(color, location, to)){
+			return MoveType.ILLEGAL;
+		}
+		
 		if(canSlide(to)){
 			if(isOccupiedByOpponent(to)){
 				return MoveType.CAPTURE;

@@ -102,7 +102,8 @@ public class CanMoveTest5_pinned_pieces___bishop___knight_BLACK extends
 		Bishop bishop = (Bishop) board.pieceAt(6, 6);
 		
 		boolBoard = initializeBooleanBoard();		
-		// no setTrueTile() because the knight is pinned!
+		setTrueTile(5,5); // must stay in the diagonal of checking white bishop!
+		setTrueTile(4,4);
 		
 		for(int i=0; i<width; i++){
 			for(int j=0; j<height; j++){

@@ -24,8 +24,10 @@ public class Pawn extends AbstractPiece {
 	
 	@Override
 	protected MoveType canMove(Point to) {
-		// TODO first test if the move would leave us in check e.g. by 
-		//      looking we are in check on a board where this piece is missing!
+		
+		if(board.leavesInCheck(color, location, to)){
+			return MoveType.ILLEGAL;
+		}
 		
 		// - go 1 step ahead
 		if(isEmpty(to) && isOnSameFile(to) && verticalDiff(to)==direction){

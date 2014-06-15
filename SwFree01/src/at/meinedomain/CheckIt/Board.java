@@ -273,17 +273,20 @@ public class Board {
 	}
 	
 	public boolean isInCheck(Color c){
-		return isLeftInCheck(c, null, null);
+		return leavesInCheck(c, null, null);
 	}
 	
 	// test if we are left in check if we move ignore to consider
 	// if ignore==consider==null then test for check in current position.
-	public boolean isLeftInCheck(Color c, Point ignore, Point consider){
+	public boolean leavesInCheck(Color c, Point ignore, Point consider){
 		Point kingPt = myColor==c ? myKing : opponentKing;
+		if(kingPt.equals(ignore))
+			kingPt = consider;
 		
 		for(int i=0; i<width; i++){
 			for(int j=0; j<height; j++){
-				if(!isEmpty(i,j) && pieceAt(i,j).getColor()!=c){
+				if(!isEmpty(i,j) && pieceAt(i,j).getColor()!=c 		 // if opp there
+					&& !pieceAt(i,j).getLocation().equals(consider)){// and we did't just capture the attacker
 					if(pieceAt(i,j).attacks(kingPt, ignore, consider)){
 						return true;
 					}

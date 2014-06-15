@@ -19,7 +19,10 @@ public class Knight extends AbstractPiece {
 	
 	@Override
 	protected MoveType canMove(Point to) {
-		// TODO test if move leaves us in check
+
+		if(board.leavesInCheck(color, location, to)){
+			return MoveType.ILLEGAL;
+		}
 		
 		if(attacks(to)) {
 			

@@ -20,6 +20,10 @@ public class King extends AbstractPiece {
 	@Override
 	protected MoveType canMove(Point to) {
 		
+		if(board.leavesInCheck(color, location, to)){
+			return MoveType.ILLEGAL;
+		}
+		
 		if(attacks(to)){
 			
 			if(isEmpty(to)){
