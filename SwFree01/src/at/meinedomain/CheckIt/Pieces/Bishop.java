@@ -8,9 +8,7 @@ import at.meinedomain.CheckIt.Color;
 import at.meinedomain.CheckIt.MoveType;
 import at.meinedomain.CheckIt.Point;
 
-public class Bishop extends AbstractPiece {
-
-	private ArrayList<SlideType> slideTypes;
+public class Bishop extends SlidingPiece {
 	
 	public Bishop(Board b, Color c, Point pt){
 		super(b, c, pt, "BISHOP");

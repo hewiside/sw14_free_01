@@ -75,7 +75,7 @@ public class CanMoveTest5_pinned_pieces___bishop___knight_BLACK extends
 	
 	public void testPinnedKnight(){
 		assertBoardNotNull();
-		Knight knight = (Knight) board.pieceAt(6, 0);
+		Knight knight = (Knight) board.pieceAt(7, 6);
 		
 		boolBoard = initializeBooleanBoard();
 		// no setTrueTile() because the knight is pinned!
@@ -95,7 +95,7 @@ public class CanMoveTest5_pinned_pieces___bishop___knight_BLACK extends
 	
 	public void testPinnedBishop(){
 		assertBoardNotNull();
-		Bishop bishop = (Bishop) board.pieceAt(4, 0);
+		Bishop bishop = (Bishop) board.pieceAt(6, 6);
 		
 		boolBoard = initializeBooleanBoard();		
 		// no setTrueTile() because the knight is pinned!
@@ -107,7 +107,8 @@ public class CanMoveTest5_pinned_pieces___bishop___knight_BLACK extends
 							   bishop.canMoveTest(i,j));
 				}
 				else{
-					assertFalse(bishop.canMoveTest(i, j));
+					assertFalse("I shall not go to "+i+","+j,
+								bishop.canMoveTest(i, j));
 				}
 			}
 		}

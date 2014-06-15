@@ -9,9 +9,7 @@ import at.meinedomain.CheckIt.MoveType;
 import at.meinedomain.CheckIt.Point;
 import at.meinedomain.CheckIt.Pieces.AbstractPiece.SlideType;
 
-public class Queen extends AbstractPiece {
-
-	private ArrayList<SlideType> slideTypes;
+public class Queen extends SlidingPiece {
 	
 	public Queen(Board b, Color c, Point pt){
 		super(b, c, pt, "QUEEN");
