@@ -21,16 +21,30 @@ public class Knight extends AbstractPiece {
 	protected MoveType canMove(Point to) {
 		// TODO test if move leaves us in check
 		
-		int distX = horizontalDist(to);
-		int distY = verticalDist(to);
-		
-		if(Math.max(distX, distY) == 2 && 
-		   Math.min(distX, distY) == 1 &&
-		   !isOccupiedByMe(to)){
+		if(attacks(to)) {
 			
-			return MoveType.NORMAL;
+			if(isEmpty(to)){
+				return MoveType.NORMAL;
+			}
+			if(isOccupiedByOpponent(to)){
+				return MoveType.CAPTURE;
+			}
 		}
 		return MoveType.ILLEGAL;
+	}
+	
+	@Override
+	public boolean attacks(Point tile, Point not, Point instead){
+		
+		int distX = horizontalDist(tile);
+		int distY = verticalDist(tile);
+		
+		if(Math.max(distX, distY) == 2 && 
+		   Math.min(distX, distY) == 1 ){
+			
+			   return true;
+		}
+		return false;
 	}
 
 	

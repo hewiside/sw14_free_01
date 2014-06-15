@@ -27,16 +27,33 @@ public class Rook extends AbstractPiece {
 	
 	@Override
 	protected MoveType canMove(Point to) {
-		return canSlide(location, to, slideTypes) ? MoveType.NORMAL : MoveType.ILLEGAL;
+		
+		if(canSlide(location, to, slideTypes)){
+			if(isOccupiedByOpponent(to)){
+				return MoveType.CAPTURE;
+			}
+			else{
+				return MoveType.NORMAL;
+			}
+		}
+		else{
+			return MoveType.ILLEGAL;
+		}
 	}
 //
 //	@Override
-//	public void tryToMove(Point pt) {
+//	public MoveType tryToMove(Point to) {
 //		// TODO Auto-generated method stub
-//
+//		return null;
 //	}
 
 	public ArrayList<SlideType> getSlideTypes(){
 		return slideTypes;
+	}
+	
+	public boolean attacks(Point tile, Point notConsidering, 
+			  Point insteadConsidering){
+		//	 TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO 	
+		return false;
 	}
 }

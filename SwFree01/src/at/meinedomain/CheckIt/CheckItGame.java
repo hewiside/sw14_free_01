@@ -204,6 +204,8 @@ public class CheckItGame extends AndroidGame
     		Log.d("CheckItGame", "Fragment not findable (This is often the case for invited devices.)");
     	}
     	else{
+    		if(Settings.soundEnabled)
+    			Assets.menu.play(1);
     		fragManager.beginTransaction().
     						remove(fragManager.findFragmentByTag("PeerList")).
     						commitAllowingStateLoss();

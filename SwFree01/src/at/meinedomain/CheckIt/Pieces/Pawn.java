@@ -36,7 +36,7 @@ public class Pawn extends AbstractPiece {
 		// - capture piece
 		if(horizontalDist(to) == 1 && verticalDiff(to) == direction){
 			if(isOccupiedByOpponent(to)){
-				return MoveType.NORMAL;
+				return MoveType.CAPTURE;
 			}
 			if(isEnPassant(to)){
 				return MoveType.EN_PASSANT;
@@ -62,18 +62,28 @@ public class Pawn extends AbstractPiece {
 	public MoveType tryToMove(Point to) {
 		// TODO the normal checks + check for en passant (see tryToMove() in Piece in the DD)
 		MoveType mt = super.tryToMove(to);
-		if(mt == MoveType.ILLEGAL  ||  mt == MoveType.NORMAL){
+		if(mt == MoveType.ILLEGAL ||  
+		   mt == MoveType.NORMAL  ||
+		   mt == MoveType.CAPTURE ){
 			return mt;
 		}
-		else if(mt == MoveType.DOUBLE_STEP){
+		else if(mt == MoveType.DOUBLE_STEP){ // WITH EN-PASSANT-SETTING
 			board.move(location, to, new Point(location.getX(), 
-											   location.getY()+direction));
+											   location.getY()+direction), mt);
 		}
 		else if(mt == MoveType.EN_PASSANT){
-			board.move(location, to);
+			board.move(location, to, mt);
 			// TODO remove opponent's pawn
 		}
 		return mt;
+	}
+	
+	@Override
+	public boolean attacks(Point tile, Point not, Point instead){
+		if(horizontalDist(tile) == 1 && verticalDiff(tile) == direction){
+			return true;
+		}
+		return false;
 	}
 	
 	private boolean isOnBaseline(){

@@ -67,8 +67,8 @@ public abstract class AbstractPiece {
 		if(mt == MoveType.ILLEGAL){
 			// nothing to do
 		}
-		if(mt == MoveType.NORMAL){
-			board.move(location, to);
+		if(mt == MoveType.NORMAL || mt == MoveType.CAPTURE){
+			board.move(location, to, mt);
 		}
 		return mt;
 	}
@@ -169,7 +169,6 @@ public abstract class AbstractPiece {
 	}
 	
 	
-	// TODO TODO TODO
 	public boolean canSlide(Point from, Point to, ArrayList<SlideType> stList){
 		SlideType st = slideType(to);
 		
@@ -208,8 +207,6 @@ public abstract class AbstractPiece {
 	}
 
 	
-	
-	// TODO TODO TODO use the utility functions from above (isEmpty(),...)
 	public boolean noPiecesBetween(Point from, Point to, SlideType st){
 		if(st == SlideType.HORIZONTAL){
 			int dir = horizontalDiff(to)/horizontalDist(to);
@@ -265,4 +262,10 @@ public abstract class AbstractPiece {
 	public boolean canMoveTest(int toX, int toY){
 		return canMove(new Point(toX, toY)) == MoveType.ILLEGAL ? false : true;
 	}
+
+	public boolean attacks(Point tile){
+		return attacks(tile, null, null);
+	}
+	public abstract boolean attacks(Point tile, Point notConsidering, 
+									  Point insteadConsidering);
 }

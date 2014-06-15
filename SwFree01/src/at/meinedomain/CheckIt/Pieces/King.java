@@ -20,12 +20,14 @@ public class King extends AbstractPiece {
 	@Override
 	protected MoveType canMove(Point to) {
 		
-		
-		if(!to.equals(location) &&
-		   horizontalDist(to)<=1 &&
-		   verticalDist(to)  <=1 ){
+		if(attacks(to)){
 			
-			return MoveType.NORMAL;
+			if(isEmpty(to)){
+				return MoveType.NORMAL;
+			}
+			if(isOccupiedByOpponent(to)){
+				return MoveType.CAPTURE;
+			}
 		}
 		return MoveType.ILLEGAL;
 	}
@@ -36,4 +38,14 @@ public class King extends AbstractPiece {
 //
 //	}
 
+	@Override
+	public boolean attacks(Point tile, Point not, Point instead){
+		if(!tile.equals(location) &&
+		   horizontalDist(tile)<=1 &&
+		   verticalDist(tile)  <=1 ){
+			
+			return true;
+		}
+		return false;
+	}
 }

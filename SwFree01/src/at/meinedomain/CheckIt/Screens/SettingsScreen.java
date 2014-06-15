@@ -1,6 +1,7 @@
 package at.meinedomain.CheckIt.Screens;
 
 import android.util.Log;
+import at.meinedomain.CheckIt.Assets;
 import at.meinedomain.CheckIt.CheckItGame;
 import at.meinedomain.CheckIt.Settings;
 
@@ -13,8 +14,15 @@ import com.badlogic.androidgames.framework.Screen;
 
 public class SettingsScreen extends AbstractScreen {
 	
+    int colorLight;
+    int colorDark;
+	
     public SettingsScreen(Game game) {
-        super(game);               
+        super(game);
+        colorLight = ((CheckItGame)game).getResources().
+    			getColor(at.meinedomain.CheckIt.R.color.light);
+        colorDark  = ((CheckItGame)game).getResources().
+    			getColor(at.meinedomain.CheckIt.R.color.dark);
     }   
 
 	// overriden from AbstractScreen--------------------------------------------
@@ -33,7 +41,7 @@ public class SettingsScreen extends AbstractScreen {
         if(((CheckItGame)game).getIsBackPressed()) {
         	((CheckItGame)game).setIsBackPressed(false);
         	if(Settings.soundEnabled){
-                //Assets.click.play(1);
+                Assets.menu.play(1);
         	}
             game.setScreen(new MainMenuScreen(game)); 
             return;
@@ -41,21 +49,22 @@ public class SettingsScreen extends AbstractScreen {
         
         int len = touchEvents.size();
         int unit = g.getWidth()/12;
+        int height = g.getHeight();
         for(int i = 0; i < len; i++) {
             TouchEvent event = touchEvents.get(i);
             if(event.type == TouchEvent.TOUCH_UP) {
-                // if "Sound" clicked
-            	if(inBounds(event, 4*unit, 2*unit, 4*unit, 4*unit)) {
+                // if Mute ON/OFF clicked
+            	if(inBounds(event, 4*unit, height/3-2*unit, 4*unit, 4*unit)) {
                     Settings.soundEnabled = !Settings.soundEnabled;
                     if(Settings.soundEnabled){
-//                        Assets.click.play(1);
+                        Assets.menu.play(1);
                     }
                 }
             	// if "Back" clicked
-                if(inBounds(event, 0, g.getHeight() - 3*unit, 3*unit, 3*unit)) {
+                if(inBounds(event, 4*unit, 2*height/3-2*unit, 4*unit, 4*unit)) {
                     game.setScreen(new MainMenuScreen(game));
                     if(Settings.soundEnabled)
-//                        Assets.click.play(1);
+                        Assets.menu.play(1);
                     return;
                 }
             }
@@ -73,20 +82,26 @@ public class SettingsScreen extends AbstractScreen {
     @Override
     public void present(float deltaTime) {
         Graphics g = game.getGraphics();
-        
-        // background
-        g.drawRect(0, 0, g.getWidth(), g.getHeight(), 0xffffce9e);
-        
-        // Sound button
+
         int unit = g.getWidth()/12;
+        int height = g.getHeight();
+        // background
+        g.drawRect(0, 0, g.getWidth(), g.getHeight(), colorLight);
+
+        // bars at top and bottom
+        g.drawRect(0, 0, 12*unit, 2*unit, colorDark);
+        g.drawRect(0, g.getHeight()-2*unit, 12*unit, 2*unit, colorDark);
+       
+        // Mute ON/OFF button
         if(Settings.soundEnabled){
-        	g.drawRect(4*unit, 2*unit, 4*unit, 4*unit, 0xffa18934); // green icon
+        	g.drawPixmap(Assets.buttonSound, 4*unit, height/3-2*unit);
         }
-        else {
-        	g.drawRect(4*unit, 2*unit, 4*unit, 4*unit, 0xffb55034);	// red icon
+        else{
+        	g.drawPixmap(Assets.buttonMute, 4*unit, height/3-2*unit);
         }
+
         // Back button
-        g.drawRect(0, g.getHeight() - 3*unit, 3*unit, 3*unit, 0xffb57554);
+        g.drawPixmap(Assets.buttonBack, 4*unit, 2*height/3-2*unit);
     }
 
     @Override

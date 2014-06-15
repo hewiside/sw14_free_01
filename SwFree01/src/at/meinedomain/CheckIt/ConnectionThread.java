@@ -74,7 +74,7 @@ public class ConnectionThread extends Thread {
 					Point from = new Point(b[0], b[1]);
 					Point to   = new Point(b[2], b[3]);
 					// TODO process EN_PASSANT-flag
-					board.move(from, to);
+					board.move(from, to, null);
 					timeGetterSetter.setTime(b[5]*60 + b[6]);
 					opponentsMoveMade = true;
 				}

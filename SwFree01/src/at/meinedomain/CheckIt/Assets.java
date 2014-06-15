@@ -18,8 +18,16 @@ public class Assets {
     public static Pixmap wq;
     public static Pixmap wr;
     
+    public static Pixmap buttonBack;
+    public static Pixmap buttonMute;
     public static Pixmap buttonPlay;
     public static Pixmap buttonSettings;
+    public static Pixmap buttonSound;
     
     public static Pixmap numbers;
+    
+    public static Sound capture;
+    public static Sound castle;
+    public static Sound move;
+    public static Sound menu;
 }

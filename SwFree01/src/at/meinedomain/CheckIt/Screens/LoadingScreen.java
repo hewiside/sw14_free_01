@@ -39,12 +39,23 @@ public class LoadingScreen extends AbstractScreen {
         Assets.wq = g.newPixmap("wq.png", PixmapFormat.ARGB4444);
         Assets.wr = g.newPixmap("wr.png", PixmapFormat.ARGB4444);
         
+        Assets.buttonBack = g.newPixmap("buttonBack.png", 
+				PixmapFormat.ARGB4444);
+        Assets.buttonMute = g.newPixmap("buttonMute.png", 
+										PixmapFormat.ARGB4444);
         Assets.buttonPlay = g.newPixmap("buttonPlay.png", 
         								PixmapFormat.ARGB4444);
         Assets.buttonSettings = g.newPixmap("buttonSettings.png", 
         								PixmapFormat.ARGB4444);
+        Assets.buttonSound = g.newPixmap("buttonSound.png", 
+				PixmapFormat.ARGB4444);
         
         Assets.numbers = g.newPixmap("numbers.png", PixmapFormat.ARGB4444);
+
+        Assets.capture = game.getAudio().newSound("capture.ogg");
+        Assets.castle  = game.getAudio().newSound("castle.ogg");
+        Assets.move    = game.getAudio().newSound("move.ogg");
+        Assets.menu    = game.getAudio().newSound("menu.ogg");
         
         Settings.load(game.getFileIO());
         game.setScreen(new MainMenuScreen(game));

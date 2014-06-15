@@ -19,8 +19,6 @@ public class Board {
 	private int width;
 	private int height;
 	private AbstractPiece[][] board;
-//	private AbstractPiece[][] whitePieces;
-//	private AbstractPiece[][] blackPieces;
 	private Color turn;
 	private Point markedPoint;
 	private Point markedPointOpponent;
@@ -98,6 +96,9 @@ public class Board {
 	}
 	
 	// Getters/Setters/move-methods=============================================
+	public AbstractPiece[][] getBoard(){
+		return board;
+	}
 	@Deprecated
 	public void setBoard(AbstractPiece[][] board){ // USED FOR TESTING ONLY!
 		this.board = board;
@@ -126,11 +127,11 @@ public class Board {
 	}
 		
 	// move without testing for correctness of the move.
-	public void move(Point from, Point to){
-		move(from, to, null);
+	public void move(Point from, Point to, MoveType mt){
+		move(from, to, null, mt);
 	}
 	// move without testing for correctness of the move.
-	public void move(Point from, Point to, Point ep){
+	public void move(Point from, Point to, Point ep, MoveType mt){
 		enPassant = ep;
 		if(turn.equals(player)){
 			sendMoveListener.sendMove(new Move(from, to));
@@ -141,6 +142,7 @@ public class Board {
 			markedPointOpponent = to;
 		}
 		Log.d("Board", "now placePiece() with from.x="+from.getX()+", from.y="+from.getY());
+		playSound(mt);
 		placePiece(from, to);
 		
 		turn = (turn.equals(Color.WHITE)) ? Color.BLACK : Color.WHITE;
@@ -190,6 +192,18 @@ public class Board {
 	}
 	public void toggleTurn(){
 		turn = (turn==Color.WHITE) ? Color.BLACK : Color.WHITE;
+	}
+	
+	public void playSound(MoveType mt){
+		if(!Settings.soundEnabled){
+			return;
+		}
+		else if(mt == MoveType.CAPTURE)
+			Assets.capture.play(1);
+		else if(mt == MoveType.CASTLE)
+			Assets.castle.play(1);
+		else
+			Assets.move.play(1);
 	}
 	
 	// Utility methods =========================================================
