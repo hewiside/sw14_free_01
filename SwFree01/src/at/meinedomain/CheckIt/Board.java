@@ -280,7 +280,9 @@ public class Board {
 	// if ignore==consider==null then test for check in current position.
 	public boolean leavesInCheck(Color c, Point ignore, Point consider){
 		Point kingPt = myColor==c ? myKing : opponentKing;
-		if(kingPt.equals(ignore))
+		// but if the king is moving right now, we need to reassign.
+		// color-test to because a king could move and cause an "Abzugsschach"
+		if(kingPt.equals(ignore) && pieceAt(ignore).getColor()==c)
 			kingPt = consider;
 		
 		for(int i=0; i<width; i++){
