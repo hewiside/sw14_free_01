@@ -14,7 +14,9 @@ public class Board {
 	}
 	
 	private SendMoveListener sendMoveListener;
-	private Color player;
+	private Color myColor;
+	private Point myKing;
+	private Point opponentKing;
 	private MatchState matchState;
 	private int width;
 	private int height;
@@ -27,7 +29,9 @@ public class Board {
 	// Constructors=============================================================
 	public Board(SendMoveListener sml, Color player){
 		this.sendMoveListener = sml;
-		this.player = player;
+		this.myColor = player;
+		myKing = new Point(4,0);
+		opponentKing = new Point(4,7);
 		matchState = MatchState.RUNNING;
 		width = 8;
 		height = 8;
@@ -87,11 +91,9 @@ public class Board {
 	
 	//--------------------------------------------------------------------------
 	// this constructor is used for testing the canMove()-method of pieces.
-	public Board(SendMoveListener sml, Color player, 
-				 AbstractPiece[][] board, Color turn){
+	public Board(SendMoveListener sml, Color player, Color turn){
 		this(sml, player);
 		// redefine the board
-		this.board = board;
 		this.turn = turn;
 	}
 	
@@ -102,6 +104,22 @@ public class Board {
 	@Deprecated
 	public void setBoard(AbstractPiece[][] board){ // USED FOR TESTING ONLY!
 		this.board = board;
+		
+		// set the myKing and opponentKing locations:
+		for(int i=0; i<width; i++){
+			for(int j=0; j<height; j++){
+				if(board[i][j]!=null && board[i][j] instanceof King){
+					if(pieceAt(i,j).getColor() == myColor){
+						myKing = new Point(i,j);
+						Log.d("Board", "My king is at "+i+","+j);
+					}
+					else{
+						opponentKing = new Point(i,j);
+						Log.d("Board", "Opponent's king is at "+i+","+j);
+					}
+				}
+			}
+		}
 	}
 	
 	public int getWidth(){
@@ -120,9 +138,20 @@ public class Board {
 	
 	// for rook-placing (castling) and piece-placing (pawn reaches last rank)
 	public void placePiece(Point from, Point to){
-		pieceAt(from).setLocation(to);
+		AbstractPiece movingPiece = pieceAt(from); 
 		
-		board[  to.getX()][  to.getY()] = pieceAt(from); 
+		movingPiece.setLocation(to);
+		
+		if(movingPiece instanceof King){
+			if(movingPiece.getColor() == myColor){
+				myKing = to;
+			}
+			else{
+				opponentKing = to;
+			}
+		}
+		
+		board[  to.getX()][  to.getY()] = movingPiece; 
 		board[from.getX()][from.getY()] = null;
 	}
 		
@@ -133,7 +162,7 @@ public class Board {
 	// move without testing for correctness of the move.
 	public void move(Point from, Point to, Point ep, MoveType mt){
 		enPassant = ep;
-		if(turn.equals(player)){
+		if(turn.equals(myColor)){
 			sendMoveListener.sendMove(new Move(from, to));
 			markedPoint = null;
 			markedPointOpponent = null;
@@ -239,6 +268,27 @@ public class Board {
 	public boolean isOccupiedByTurnOpponent(Point pt){
 		if(!isEmpty(pt) && pieceAt(pt).getColor()!=turn){
 			return true;
+		}
+		return false;
+	}
+	
+	public boolean isInCheck(Color c){
+		return isLeftInCheck(c, null, null);
+	}
+	
+	// test if we are left in check if we move ignore to consider
+	// if ignore==consider==null then test for check in current position.
+	public boolean isLeftInCheck(Color c, Point ignore, Point consider){
+		Point kingPt = myColor==c ? myKing : opponentKing;
+		
+		for(int i=0; i<width; i++){
+			for(int j=0; j<height; j++){
+				if(!isEmpty(i,j) && pieceAt(i,j).getColor()!=c){
+					if(pieceAt(i,j).attacks(kingPt, ignore, consider)){
+						return true;
+					}
+				}
+			}
 		}
 		return false;
 	}

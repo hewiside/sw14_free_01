@@ -42,7 +42,7 @@ public class CanMoveTest3_middle_game1_WHITE extends
 		// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO 
 		player = Color.WHITE;
 		
-		board = new Board(null, player, null, player); // with null-board!
+		board = new Board(null, player, player); // with null-board!
 		// we need to initialize the board before pieces since they need a
 		// board instance in their constructor. But we can't give the board
 		// constructor with the AbstractPiece[][]-arg since there are no
@@ -72,6 +72,9 @@ public class CanMoveTest3_middle_game1_WHITE extends
 	// TESTS begin =============================================================
 	// =========================================================================
 	// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO	
+	public void testIfNotCheck(){
+		assertFalse(board.isInCheck(Color.WHITE));
+	}
 	
 	public void testKing(){
 		assertBoardNotNull();

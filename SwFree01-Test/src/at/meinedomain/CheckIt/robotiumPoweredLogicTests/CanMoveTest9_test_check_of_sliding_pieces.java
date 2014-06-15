@@ -18,7 +18,7 @@ import at.meinedomain.CheckIt.Pieces.Pawn;
 import at.meinedomain.CheckIt.Pieces.Queen;
 import at.meinedomain.CheckIt.Pieces.Rook;
 
-public class CanMoveTest1_only_kings extends
+public class CanMoveTest9_test_check_of_sliding_pieces extends
 		ActivityInstrumentationTestCase2<CheckItGame> {
 
 //	private Solo solo;
@@ -31,13 +31,14 @@ public class CanMoveTest1_only_kings extends
 	protected AbstractPiece[] pieces;
 	protected Color player;
 	
-	public CanMoveTest1_only_kings() {
+	// SEE DRAWABLE-FOLDER TO SEE THE BOARD-CONFIGURATION
+	public CanMoveTest9_test_check_of_sliding_pieces () {
 		super("at.meinedomain.CheckIt.CheckItGame", CheckItGame.class);
 	}
 
 	protected void setUp() throws Exception {
 		super.setUp();
-	
+
 		// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO 
 		player = Color.WHITE;
 		
@@ -48,7 +49,17 @@ public class CanMoveTest1_only_kings extends
 		// pieces until the next statement.
 		
 		// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
-		pieces = new AbstractPiece[] {wk(4,0), bk(4,7)};
+		// NOTE: BOTH PLAYERS IN CHECK -> POSITION NOT ACHIEVABLE IN NORMAL GAME
+		pieces = new AbstractPiece[] {
+				bq(0,7),/*---*/	/*---*/	/*---*/	bk(4,7),/*---*/	/*---*/	br(7,7),
+				/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	
+				/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/ 
+				/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	wb(7,4),	
+				/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	
+				/*---*/	/*---*/	bq(2,2),/*---*/	/*---*/	/*---*/	/*---*/ /*---*/ 
+				/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	wp(5,1),wp(6,1),wp(7,1),
+				wr(0,0),/*---*/	/*---*/	/*---*/	wk(4,0),/*---*/ /*---*/	wr(7,0)	
+				};
 		
 		b = initializeBoard();
 		fillBoardWithPieces(b, pieces);
@@ -62,32 +73,19 @@ public class CanMoveTest1_only_kings extends
 	// TESTS begin =============================================================
 	// =========================================================================
 	// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO	
-	public void testIfNotCheck(){
-		assertFalse(board.isInCheck(Color.WHITE));
+	
+	public void testIfCheck(){
+		assertTrue(board.isInCheck(Color.WHITE));
 	}
 	
-	public void testKing() {
-		assertBoardNotNull();
-		King king = (King) board.pieceAt(4, 0);
-		
-		boolBoard = initializeBooleanBoard();
-		setTrueTile(3, 0);
-		setTrueTile(3, 1);
-		setTrueTile(4, 1);
-		setTrueTile(5, 1);
-		setTrueTile(5, 0);
-		
-		for(int i=0; i<width; i++){
-			for(int j=0; j<height; j++){
-				if(boolBoard[i][j] == true){
-					assertTrue("Can move to "+i+","+j, king.canMoveTest(i,j));
-				}
-				else{
-					assertFalse(king.canMoveTest(i, j));
-				}
-			}
-		}
+	public void testItCheckOpponent(){
+		assertTrue(board.isInCheck(Color.BLACK));
 	}
+	
+	
+	// =========================================================================
+	// TESTS end ===============================================================
+	// =========================================================================
 	
 	public void assertBoardNotNull(){
 		if(board==null){
@@ -97,9 +95,7 @@ public class CanMoveTest1_only_kings extends
 			fail("No board member initialised in setUp()!!!");
 		}
 	}
-	// =========================================================================
-	// TESTS end ===============================================================
-	// =========================================================================	
+	
 	public boolean[][] initializeBooleanBoard(){
 		boolean[][] b = new boolean[width][height];
 		for(int i=0; i<width; i++){

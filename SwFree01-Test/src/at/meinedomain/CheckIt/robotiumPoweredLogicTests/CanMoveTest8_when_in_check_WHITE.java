@@ -42,7 +42,7 @@ public class CanMoveTest8_when_in_check_WHITE extends
 		// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO 
 		player = Color.WHITE;
 		
-		board = new Board(null, player, null, player); // with null-board!
+		board = new Board(null, player, player); // with null-board!
 		// we need to initialize the board before pieces since they need a
 		// board instance in their constructor. But we can't give the board
 		// constructor with the AbstractPiece[][]-arg since there are no
@@ -50,7 +50,7 @@ public class CanMoveTest8_when_in_check_WHITE extends
 		
 		// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
 		pieces = new AbstractPiece[] {
-				bq(0,7),/*---*/	/*---*/	/*---*/	bk(4,7),/*---*/	/*---*/	bk(7,7),
+				bq(0,7),/*---*/	/*---*/	/*---*/	bk(4,7),/*---*/	/*---*/	br(7,7),
 				/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	
 				/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/ 
 				/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	/*---*/	
@@ -72,6 +72,14 @@ public class CanMoveTest8_when_in_check_WHITE extends
 	// TESTS begin =============================================================
 	// =========================================================================
 	// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO	
+	
+	public void testIfCheck(){
+		assertTrue(board.isInCheck(Color.WHITE));
+	}
+	
+	public void testIfNotCheckOpponent(){
+		assertFalse(board.isInCheck(Color.BLACK));
+	}
 	
 	public void testKing(){
 		assertBoardNotNull();
