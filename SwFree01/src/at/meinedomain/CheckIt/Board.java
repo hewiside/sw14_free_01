@@ -215,6 +215,20 @@ public class Board {
 		return pieceAt(x,y)==null ? true : false;
 	}
 	
+	public boolean emptyAfterOppMove(Point pt, Point oppFrom, Point oppTo){
+		if(oppFrom == null){
+			// assuming oppTo==null too.
+			return isEmpty(pt);
+		}
+		
+		else if(isEmpty(pt)){
+			return !pt.equals(oppTo);
+		}
+		else{ // was not empty
+			return pt.equals(oppFrom);
+		}
+	}
+	
 	public boolean isOccupiedByTurn(Point pt){
 		if(!isEmpty(pt) && pieceAt(pt).getColor()==turn){
 			return true;

@@ -28,7 +28,7 @@ public class Queen extends SlidingPiece {
 	@Override
 	protected MoveType canMove(Point to) {
 		
-		if(canSlide(location, to, slideTypes)){
+		if(canSlide(to)){
 			if(isOccupiedByOpponent(to)){
 				return MoveType.CAPTURE;
 			}
@@ -46,14 +46,4 @@ public class Queen extends SlidingPiece {
 //		// TODO Auto-generated method stub
 //		return null;
 //	}
-
-	public ArrayList<SlideType> getSlideTypes(){
-		return slideTypes;
-	}
-	
-	public boolean attacks(Point tile, Point notConsidering, 
-			  Point insteadConsidering){
-		//	 TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO 	
-		return false;
-	}
 }

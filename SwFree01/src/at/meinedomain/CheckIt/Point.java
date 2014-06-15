@@ -28,6 +28,9 @@ public class Point {
 	
 	@Override
 	public boolean equals(Object P){
+		if(P == null){
+			return false;
+		}
 		if(x == ((Point)P).getX()  &&  y == ((Point)P).getY()){
 			return true;
 		}

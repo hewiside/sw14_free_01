@@ -18,13 +18,12 @@ public class SlidingPiece extends AbstractPiece {
 	@Override
 	public boolean attacks(Point tile, Point notConsidering,
 			Point insteadConsidering) {
-		// TODO Auto-generated method stub
-		return false;
+		return canSlide(tile, notConsidering, insteadConsidering);
 	}
 	
 	// get slide type
 	public SlideType slideType(Point to){
-		if(to.equals(location)){
+		if(to.equals(location)){ // DO NOT DELETE!
 			return null;
 		}
 		else if(isOnSameRank(to)){
@@ -44,56 +43,63 @@ public class SlidingPiece extends AbstractPiece {
 		}
 	}
 	
-	public boolean canSlide(Point from, Point to, ArrayList<SlideType> stList){
-		return canSlide(from, to, null, null, stList);
+	public boolean canSlide(Point to){
+		return canSlide(to, null, null);
 	}
 	
 	
-	public boolean canSlide(Point from, Point to, 
-							Point not,  Point instead,
-							ArrayList<SlideType> stList){
+	public boolean canSlide(Point to, 
+							Point oppFrom,  Point oppTo){
 		SlideType st = slideType(to);
 		
-		if(!stList.contains(st)){
+		if(!slideTypes.contains(st)){
 			return false;
 		}
-		else if(isOccupiedByMe(to)){
+		else if(isOccupiedByMe(to) && !to.equals(oppTo)){
 			return false;
 		}
 		
 		// move legal if no pieces between from and to
 		else if(st == SlideType.HORIZONTAL){
-			if(!noPiecesBetween(from, to, SlideType.HORIZONTAL)){
+			if(!noPiecesBetween(location, to, SlideType.HORIZONTAL,
+								oppFrom, oppTo)){
 				return false;
 			}
 			return true;
 		}
 		else if(st == SlideType.VERTICAL){
-			if(!noPiecesBetween(from, to, SlideType.VERTICAL)){
+			if(!noPiecesBetween(location, to, SlideType.VERTICAL,
+								oppFrom, oppTo)){
 				return false;
 			}
 			return true;
 		}
 		else if(st == SlideType.UPWARD){
-			if(!noPiecesBetween(from, to, SlideType.UPWARD)){
+			if(!noPiecesBetween(location, to, SlideType.UPWARD,
+								oppFrom, oppTo)){
 				return false;
 			}
 			return true;
 		}
 		else{ // st==SlideType.DOWNWARD
-			if(!noPiecesBetween(from, to, SlideType.DOWNWARD)){
+			if(!noPiecesBetween(location, to, SlideType.DOWNWARD,
+								oppFrom, oppTo)){
 				return false;
 			}
 			return true;
 		}
 	}
 
-	
-	public boolean noPiecesBetween(Point from, Point to, SlideType st){
+	// oppFrom (oppTo) is the point the opponent moves from (to). So we 
+	// ignore oppFrom and consider oppTo in addition to the rest of the board.
+	public boolean noPiecesBetween(Point from, Point to, SlideType st,
+								   Point oppFrom, Point oppTo){ // TODO TODO TODO
 		if(st == SlideType.HORIZONTAL){
 			int dir = horizontalDiff(to)/horizontalDist(to);
 			for(int i=1; i<horizontalDist(to); i++){
-				if(board.pieceAt(from.getX()+i*dir, from.getY()) != null){
+				if(!board.emptyAfterOppMove(
+									new Point(from.getX()+i*dir, from.getY()), 
+									oppFrom, oppTo)){
 					return false;
 				}
 			}
@@ -103,7 +109,9 @@ public class SlidingPiece extends AbstractPiece {
 		else if(st == SlideType.VERTICAL){
 			int dir = verticalDiff(to)/verticalDist(to);	
 			for(int j=1; j<verticalDist(to); j++){
-				if(board.pieceAt(from.getX(), from.getY()+j*dir) != null){
+				if(!board.emptyAfterOppMove(
+						new Point(from.getX(), from.getY()+j*dir), 
+						oppFrom, oppTo)){
 					return false;
 				}
 			}
@@ -114,7 +122,9 @@ public class SlidingPiece extends AbstractPiece {
 			// we consider only x difference because y=x when upward
 			int dir = horizontalDiff(to)/horizontalDist(to);
 			for(int i=1; i<horizontalDist(to); i++){
-				if(board.pieceAt(from.getX()+i*dir, from.getY()+i*dir) != null){
+				if(!board.emptyAfterOppMove(
+						new Point(from.getX()+i*dir, from.getY()+i*dir), 
+						oppFrom, oppTo)){
 					return false;
 				}
 			}
@@ -125,7 +135,9 @@ public class SlidingPiece extends AbstractPiece {
 			// we consider only x because x=-y when downward
 			int dir = horizontalDiff(to)/horizontalDist(to);
 			for(int i=1; i<horizontalDist(to); i++){
-				if(board.pieceAt(from.getX()+i*dir, from.getY()-i*dir) != null){ // note the minus!
+				if(!board.emptyAfterOppMove(
+						new Point(from.getX()+i*dir, from.getY()-i*dir), 
+						oppFrom, oppTo)){
 					return false;
 				}
 			}
