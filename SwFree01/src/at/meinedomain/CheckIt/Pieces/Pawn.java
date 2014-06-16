@@ -52,8 +52,7 @@ public class Pawn extends AbstractPiece {
 		   isOnBaseline() && 
 		   isEmpty(location.getX(), location.getY()+direction)){
 			
-			return MoveType.DOUBLE_STEP;	// TODO set EN_PASSANT-Point on the board DO THIS IN MOVE TO GET THE EN_PASSANT POSSIBILIETIES AFTER OPPONENTS TURN!!!
-											// TODO set flag, that opponent gets notified of en-passant-possibility
+			return MoveType.DOUBLE_STEP;
 		}
 
 		return MoveType.ILLEGAL;
@@ -69,9 +68,8 @@ public class Pawn extends AbstractPiece {
 		   mt == MoveType.CAPTURE ){
 			return mt;
 		}
-		else if(mt == MoveType.DOUBLE_STEP){ // WITH EN-PASSANT-SETTING
-			board.move(location, to, new Point(location.getX(), 
-											   location.getY()+direction), mt);
+		else if(mt == MoveType.DOUBLE_STEP){
+			board.move(location, to, mt);
 		}
 		else if(mt == MoveType.EN_PASSANT){
 			board.move(location, to, mt);
@@ -86,6 +84,11 @@ public class Pawn extends AbstractPiece {
 			return true;
 		}
 		return false;
+	}
+	
+	
+	public boolean isEnPassant(Point to){
+		return board.getEnPassant() != null && to.equals(board.getEnPassant());
 	}
 	
 	private boolean isOnBaseline(){

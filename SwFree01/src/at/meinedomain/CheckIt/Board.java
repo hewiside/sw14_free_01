@@ -30,8 +30,8 @@ public class Board {
 	public Board(SendMoveListener sml, Color player){
 		this.sendMoveListener = sml;
 		this.myColor = player;
-		myKing = new Point(4,0);
-		opponentKing = new Point(4,7);
+		myKing       = myColor==Color.WHITE ? new Point(4,0) : new Point(4,7);
+		opponentKing = myColor==Color.WHITE ? new Point(4,7) : new Point(4,0);
 		matchState = MatchState.RUNNING;
 		width = 8;
 		height = 8;
@@ -154,16 +154,21 @@ public class Board {
 		board[  to.getX()][  to.getY()] = movingPiece; 
 		board[from.getX()][from.getY()] = null;
 	}
-		
+	
+	// Currently used for en-passant-capturing only.
+	private void killPiece(int x, int y){
+		board[x][y] = null;
+	}
+	
+//	// move without testing for correctness of the move.
+//	public void move(Point from, Point to, MoveType mt){
+//		move(from, to, null, mt);
+//	}
 	// move without testing for correctness of the move.
 	public void move(Point from, Point to, MoveType mt){
-		move(from, to, null, mt);
-	}
-	// move without testing for correctness of the move.
-	public void move(Point from, Point to, Point ep, MoveType mt){
-		enPassant = ep;
+//		enPassant = ep;
 		if(turn.equals(myColor)){
-			sendMoveListener.sendMove(new Move(from, to));
+			sendMoveListener.sendMove(new Move(from, to, mt));
 			markedPoint = null;
 			markedPointOpponent = null;
 		}
@@ -173,6 +178,20 @@ public class Board {
 		Log.d("Board", "now placePiece() with from.x="+from.getX()+", from.y="+from.getY());
 		playSound(mt);
 		placePiece(from, to);
+		if(mt==MoveType.CASTLE_KINGSIDE || mt==MoveType.CASTLE_QUEENSIDE){
+			placeCastlingRook(mt);
+		}
+		
+		if(mt==MoveType.EN_PASSANT){
+			killPiece(to.getX(), from.getY());
+		}
+		
+		if(mt==MoveType.DOUBLE_STEP){
+			enPassant = new Point(to.getX(), (from.getY()+to.getY())/2);
+		}
+		else{
+			enPassant = null;
+		}
 		
 		turn = (turn.equals(Color.WHITE)) ? Color.BLACK : Color.WHITE;
 	}
@@ -229,7 +248,7 @@ public class Board {
 		}
 		else if(mt == MoveType.CAPTURE)
 			Assets.capture.play(1);
-		else if(mt == MoveType.CASTLE)
+		else if(mt==MoveType.CASTLE_KINGSIDE || mt==MoveType.CASTLE_QUEENSIDE)
 			Assets.castle.play(1);
 		else
 			Assets.move.play(1);
@@ -296,5 +315,20 @@ public class Board {
 			}
 		}
 		return false;
+	}
+	
+	private void placeCastlingRook(MoveType mt){
+		if(mt==MoveType.CASTLE_KINGSIDE  &&  turn == Color.WHITE){
+			placePiece(new Point(7,0), new Point(5,0));
+		}
+		else if(mt==MoveType.CASTLE_QUEENSIDE  &&  turn == Color.WHITE){
+			placePiece(new Point(0,0), new Point(3,0));
+		}
+		else if(mt==MoveType.CASTLE_KINGSIDE  &&  turn == Color.BLACK){
+			placePiece(new Point(7,7), new Point(5,7));
+		}
+		else if(mt==MoveType.CASTLE_QUEENSIDE  &&  turn == Color.BLACK){
+			placePiece(new Point(0,7), new Point(3,7));
+		}
 	}
 }

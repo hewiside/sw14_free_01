@@ -98,10 +98,6 @@ public abstract class AbstractPiece {
 		return false;
 	}
 	
-	public boolean isEnPassant(Point to){
-		return board.getEnPassant() != null && to.equals(board.getEnPassant());
-	}
-	
 	
 	// test same file, rank, diagonal
 	public boolean isOnSameLine(Point to){

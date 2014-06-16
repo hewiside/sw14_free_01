@@ -11,6 +11,8 @@ import at.meinedomain.CheckIt.Pieces.AbstractPiece.SlideType;
 
 public class Rook extends SlidingPiece {
 	
+	private boolean hasntMoved;
+	
 	public Rook(Board b, Color c, Point pt){
 		super(b, c, pt, "ROOK");
 		if(c == Color.WHITE){
@@ -21,6 +23,8 @@ public class Rook extends SlidingPiece {
 		slideTypes = new ArrayList<>();
 		slideTypes.add(SlideType.HORIZONTAL);
 		slideTypes.add(SlideType.VERTICAL);
+		
+		hasntMoved = true;
 	}
 	
 	@Override
@@ -42,10 +46,21 @@ public class Rook extends SlidingPiece {
 			return MoveType.ILLEGAL;
 		}
 	}
-//
-//	@Override
-//	public MoveType tryToMove(Point to) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
+	
+	public boolean getHasntMoved(){
+		return hasntMoved;
+	}
+
+	@Override
+	public MoveType tryToMove(Point to) {
+		// TODO the normal checks + check for en passant (see tryToMove() in Piece in the DD)
+		MoveType mt = super.tryToMove(to);
+
+		if(mt == MoveType.NORMAL  ||
+		   mt == MoveType.CAPTURE ){
+			
+			hasntMoved = false;
+		}
+		return mt;
+	}
 }

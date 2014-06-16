@@ -3,15 +3,18 @@ package at.meinedomain.CheckIt;
 public class Move {
 	private Point from;
 	private Point to;
+	private MoveType mt;
 	
-	public Move(Point from, Point to){
+	public Move(Point from, Point to, MoveType mt){
 		this.from = from;
 		this.to = to;
+		this.mt = mt;
 	}
 	
-	public Move(int fromX, int fromY, int toX, int toY){
+	public Move(int fromX, int fromY, int toX, int toY, MoveType mt){
 		this.from = new Point(fromX, fromY);
 		this.to   = new Point(toX,   toY  );
+		this.mt   = mt;
 	}
 	
 	public Point getFrom(){
@@ -35,4 +38,7 @@ public class Move {
 		return to.getY();
 	}	
 	
+	public MoveType getMoveType(){
+		return mt;
+	}
 }

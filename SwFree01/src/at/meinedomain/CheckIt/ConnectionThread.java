@@ -73,8 +73,8 @@ public class ConnectionThread extends Thread {
 				if(length == 7){
 					Point from = new Point(b[0], b[1]);
 					Point to   = new Point(b[2], b[3]);
-					// TODO process EN_PASSANT-flag
-					board.move(from, to, null);
+					MoveType mt = decodeMoveType(b[4]);
+					board.move(from, to, mt);
 					timeGetterSetter.setTime(b[5]*60 + b[6]);
 					opponentsMoveMade = true;
 				}
@@ -85,6 +85,30 @@ public class ConnectionThread extends Thread {
 		} catch (IOException e) {
 			// Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+	
+	private MoveType decodeMoveType(byte b){
+		if(b == "N".getBytes()[0]){
+			return MoveType.NORMAL;
+		}
+		if(b == "C".getBytes()[0]){
+			return MoveType.CAPTURE;
+		}
+		if(b == "K".getBytes()[0]){
+			return MoveType.CASTLE_KINGSIDE;
+		}
+		if(b == "Q".getBytes()[0]){
+			return MoveType.CASTLE_QUEENSIDE;
+		}
+		if(b == "D".getBytes()[0]){
+			return MoveType.DOUBLE_STEP;
+		}
+		if(b == "E".getBytes()[0]){
+			return MoveType.EN_PASSANT;
+		}
+		else{
+			return MoveType.ILLEGAL;
 		}
 	}
 	
@@ -99,7 +123,7 @@ public class ConnectionThread extends Thread {
 			b[1] = (byte)myMove.getFromY();
 			b[2] = (byte)myMove.getToX();
 			b[3] = (byte)myMove.getToY();
-			b[4] = 0; // TODO this is a placeholder for EN_PASSANT-flag
+			b[4] = encodeMoveType(myMove.getMoveType());
 			b[5] = (byte)timeGetterSetter.getMinutes();
 			b[6] = (byte)timeGetterSetter.getSeconds();
 			try {
@@ -110,6 +134,30 @@ public class ConnectionThread extends Thread {
 				// Auto-generated catch block
 				e.printStackTrace();
 			}
+		}
+	}
+	
+	private byte encodeMoveType(MoveType mt){
+		if(mt==MoveType.NORMAL){
+			return "N".getBytes()[0];
+		}
+		if(mt==MoveType.CAPTURE){
+			return "C".getBytes()[0];
+		}
+		if(mt==MoveType.CASTLE_KINGSIDE){
+			return "K".getBytes()[0];
+		}
+		if(mt==MoveType.CASTLE_QUEENSIDE){
+			return "Q".getBytes()[0];
+		}
+		if(mt==MoveType.DOUBLE_STEP){
+			return "D".getBytes()[0];
+		}		
+		if(mt==MoveType.EN_PASSANT){
+			return "E".getBytes()[0];
+		}
+		else{
+			return "!".getBytes()[0];
 		}
 	}
 	
