@@ -69,7 +69,7 @@ public class ServerThread extends ConnectionThread{
 						break;
 					}
 				}
-				sendExitTag(out, b);
+				sendExitTag(b);
 			}
 			catch(InterruptedIOException e){
 				// try again

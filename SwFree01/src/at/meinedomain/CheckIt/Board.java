@@ -8,9 +8,17 @@ import at.meinedomain.CheckIt.Pieces.*;
 public class Board {
 	public enum MatchState{
 		RUNNING,
-		WON,
-		LOST,
-		DRAW
+		
+		CHECK_MATE_WON,
+		TIME_UP_WON,
+		
+		OPPONENT_GONE,
+		
+		CHECK_MATE_LOST,
+		TIME_UP_LOST,
+
+		STALE_MATE_DRAW,
+		LITTLE_MATERIAL_DRAW // TODO Test for this...
 	}
 	
 	private SendMoveListener sendMoveListener;
@@ -210,6 +218,19 @@ public class Board {
 			board[to.getX()][to.getY()] = new Bishop(this, turn, to);
 		}
 		
+		// check if game is over------------------------------------------------
+		Color nextCol = (turn.equals(Color.WHITE)) ? Color.BLACK : Color.WHITE;
+		if(isInCheckMate(nextCol)){
+			matchState = nextCol==myColor ? MatchState.CHECK_MATE_LOST : 
+											MatchState.CHECK_MATE_WON;
+			return;
+		}
+		if(isInStaleMate(nextCol)){
+			matchState = MatchState.STALE_MATE_DRAW;
+			return;
+		}
+		
+		// ok, let's continue---------------------------------------------------
 		turn = (turn.equals(Color.WHITE)) ? Color.BLACK : Color.WHITE;
 	}
 	

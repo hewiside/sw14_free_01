@@ -14,6 +14,7 @@ import at.meinedomain.CheckIt.SendMoveListener;
 import at.meinedomain.CheckIt.ServerThread;
 import at.meinedomain.CheckIt.Settings;
 import at.meinedomain.CheckIt.TimeGetterSetter;
+import at.meinedomain.CheckIt.Board.MatchState;
 
 import java.util.List;
 
@@ -60,6 +61,8 @@ public class GameScreen extends AbstractScreen implements SendMoveListener,
 	private int colorLight; 
 	private int darkOverlay; 
 	private int highlightOverlay;
+	private int winOverlay;
+	private int loseOverlay;
 	
     public GameScreen(Game game_) {
         super(game_);
@@ -70,6 +73,8 @@ public class GameScreen extends AbstractScreen implements SendMoveListener,
         colorLight = game.getResources().getColor(R.color.light);
         darkOverlay = game.getResources().getColor(R.color.dark_overlay);
         highlightOverlay = game.getResources().getColor(R.color.selector_overlay);
+        winOverlay       = game.getResources().getColor(R.color.selector_overlay);
+        loseOverlay      = game.getResources().getColor(R.color.forbidden_overlay);
 
         player = game.getPlayerColor(); // is set because this Screen is only
         		// set if MainMenu Screen recognizes a color in CheckItGame.
@@ -182,6 +187,11 @@ public class GameScreen extends AbstractScreen implements SendMoveListener,
     	}
     	else if(board.getTurn() != player){
     		state = GameState.OPPONENTS_TURN;
+    	}
+    	if(myTime <= 0){
+    		board.setMatchState(MatchState.TIME_UP_LOST);
+    		connectionThread.sendTimeUpTag();
+    		state = GameState.GAME_OVER;
     	}
     	else{ // I am expected to move
     		myTime -= deltaTime;
@@ -426,10 +436,10 @@ public class GameScreen extends AbstractScreen implements SendMoveListener,
     
     private void drawReadyUI(Graphics g){
     	if(player == Color.WHITE){
-    		drawDarkOverlay(g, 5, HEIGHT/2);
+    		drawOverlay(g, 5, HEIGHT/2, darkOverlay);
     	}
     	if(player == Color.BLACK){
-    		drawDarkOverlay(g, 5, HEIGHT);
+    		drawOverlay(g, 5, HEIGHT, darkOverlay);
     		g.drawPixmap(Assets.buttonPlay, WIDTH /2 - BUTTON_SIZE/2, 
     										HEIGHT/2 - BUTTON_SIZE/2);
     	}
@@ -443,12 +453,25 @@ public class GameScreen extends AbstractScreen implements SendMoveListener,
     }
     private void drawGameOverUI(Graphics g){
     	// TODO play-again-button & go-back-button
-    	drawDarkOverlay(g, 10, HEIGHT);
+    	if(board.getMatchState() == MatchState.CHECK_MATE_WON ||
+    	   board.getMatchState() == MatchState.TIME_UP_WON){
+    		
+    		drawOverlay(g, 1, HEIGHT, winOverlay);
+    	}
+ 
+    	else if(board.getMatchState() == MatchState.CHECK_MATE_LOST ||
+    			board.getMatchState() == MatchState.TIME_UP_LOST){
+    		
+    		drawOverlay(g, 2, HEIGHT, loseOverlay);
+    	}
+    	else{
+    		drawOverlay(g, 5, HEIGHT, darkOverlay);
+    	}
     }
 
-    private void drawDarkOverlay(Graphics g, int howOften, int height){
+    private void drawOverlay(Graphics g, int howOften, int height, int color){
     	for(int i=0; i<howOften; i++){
-    		g.drawRect(0, 0, WIDTH, height, darkOverlay);
+    		g.drawRect(0, 0, WIDTH, height, color);
     	}
     }
     

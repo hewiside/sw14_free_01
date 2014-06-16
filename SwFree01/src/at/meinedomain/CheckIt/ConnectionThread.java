@@ -26,10 +26,11 @@ public class ConnectionThread extends Thread {
 	protected float opponentsTime;
 	
 	protected static final int SERVER_PORT = 8864;
-	protected static final int INITIAL_SOCKET_TIMEOUT = 30000;
-	protected static final int SOCKET_TIMEOUT = 2000; // TODO TODO set to 50
+	protected static final int INITIAL_SOCKET_TIMEOUT = 3000;
+	protected static final int SOCKET_TIMEOUT = 50; // TODO TODO set to 50
 	protected static final String START_TAG = "STARTNOW"; // IMPORTANT: all tags shall have length BUFFER_SIZE --> easy comparison between byte[] and String.
 	protected static final String EXIT_TAG  = "EXIT....";
+	protected static final String TIME_TAG  = "TIME UP!";
 	protected static final int BUFFER_SIZE = 8;
 	public static final float DUMMY_OPPONENTS_TIME = Float.MAX_VALUE;
 	
@@ -185,7 +186,7 @@ public class ConnectionThread extends Thread {
 		}
 	}
 	
-	protected void sendExitTag(OutputStream out, byte[] b){
+	protected void sendExitTag(byte[] b){
 		for(int i=0; i<EXIT_TAG.length(); i++){
 			b[i] = (byte) EXIT_TAG.charAt(i);
 		}
@@ -193,6 +194,19 @@ public class ConnectionThread extends Thread {
 			Log.d("ConnectionThread", "I'm leaving. Bye, bye!");
 			out.write(b);
 			Log.d("ConnectionThread", "Yes, I said bye, bye!");
+		} catch (IOException e) {
+			// Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void sendTimeUpTag(){
+		byte[] b = new byte[BUFFER_SIZE];
+		for(int i=0; i<TIME_TAG.length(); i++){
+			b[i] = (byte) TIME_TAG.charAt(i);
+		}
+		try {
+			out.write(b);
 		} catch (IOException e) {
 			// Auto-generated catch block
 			e.printStackTrace();
@@ -218,8 +232,13 @@ public class ConnectionThread extends Thread {
 	private void compareToExitTagAndProcess(byte[] b){
 		try {
 			if(EXIT_TAG.equals(new String(b, "UTF-8"))){
-				board.setMatchState(Board.MatchState.WON);
+				board.setMatchState(Board.MatchState.OPPONENT_GONE);
 				Log.d("ConnectionThread", "Opponent left.");
+				// TODO also call requestStop() ?
+			}
+			if(TIME_TAG.equals(new String(b, "UTF-8"))){
+				board.setMatchState(Board.MatchState.TIME_UP_WON);
+				Log.d("ConnectionThread", "Opponent out of time.");
 				// TODO also call requestStop() ?
 			}
 		} catch (UnsupportedEncodingException e) {

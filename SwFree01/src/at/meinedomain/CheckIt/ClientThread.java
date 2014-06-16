@@ -66,7 +66,7 @@ public class ClientThread extends ConnectionThread{
 					break;
 				}
 			}
-			sendExitTag(out, b);
+			sendExitTag(b);
 		}
 		catch(IOException e){
 			Log.wtf("CheckItGame", e.getMessage());
