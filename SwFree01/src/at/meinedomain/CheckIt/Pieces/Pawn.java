@@ -28,6 +28,10 @@ public class Pawn extends AbstractPiece {
 		if(board.leavesInCheck(color, location, to)){
 			return MoveType.ILLEGAL;
 		}
+		// - go 1 step ahead and reach the last rank
+		if(legallyReachedLastRank(to)){
+			return MoveType.PAWN_TO;
+		}
 		
 		// - go 1 step ahead
 		if(isEmpty(to) && isOnSameFile(to) && verticalDiff(to)==direction){
@@ -73,7 +77,9 @@ public class Pawn extends AbstractPiece {
 		}
 		else if(mt == MoveType.EN_PASSANT){
 			board.move(location, to, mt);
-			// TODO remove opponent's pawn
+		}
+		else if(mt == MoveType.PAWN_TO){
+			board.move(location, to, MoveType.PAWN_TO_QUEEN);
 		}
 		return mt;
 	}
@@ -98,6 +104,15 @@ public class Pawn extends AbstractPiece {
 		else{
 			return (location.getY() == board.getHeight()-2);
 		}
+	}
+	
+	private boolean legallyReachedLastRank(Point to){
+		if(!isEmpty(to) || !isOnSameFile(to) || verticalDiff(to)!=direction){
+			return false;
+		}
+		
+		int lastRank = color==Color.WHITE ? 7 : 0;
+		return to.getY()==lastRank ? true : false;
 	}
 
 }

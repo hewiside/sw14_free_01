@@ -193,6 +193,23 @@ public class Board {
 			enPassant = null;
 		}
 		
+		if(mt==MoveType.PAWN_TO_QUEEN){
+			killPiece(to.getX(), to.getY());
+			board[to.getX()][to.getY()] = new Queen(this, turn, to);
+		}
+		else if(mt==MoveType.PAWN_TO_ROOK){
+			killPiece(to.getX(), to.getY());
+			board[to.getX()][to.getY()] = new Rook(this, turn, to);
+		}
+		else if(mt==MoveType.PAWN_TO_KNIGHT){
+			killPiece(to.getX(), to.getY());
+			board[to.getX()][to.getY()] = new Knight(this, turn, to);
+		}
+		else if(mt==MoveType.PAWN_TO_BISHOP){
+			killPiece(to.getX(), to.getY());
+			board[to.getX()][to.getY()] = new Bishop(this, turn, to);
+		}
+		
 		turn = (turn.equals(Color.WHITE)) ? Color.BLACK : Color.WHITE;
 	}
 	
@@ -293,6 +310,26 @@ public class Board {
 	
 	public boolean isInCheck(Color c){
 		return leavesInCheck(c, null, null);
+	}
+	
+	public boolean isInCheckMate(Color c){
+		return isInCheck(c) && !canMove(c)  ?  true  :  false;
+	}
+	
+	public boolean isInStaleMate(Color c){
+		return !isInCheck(c) && !canMove(c) ?  true  : false;
+	}
+	
+	private boolean canMove(Color c){
+		for(int i=0; i<width; i++){
+			for(int j=0; j<height; j++){
+				if(!isEmpty(i,j) && pieceAt(i,j).getColor()==c &&
+				   pieceAt(i,j).canMoveSomewhere()){
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	// test if we are left in check if we move ignore to consider

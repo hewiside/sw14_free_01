@@ -36,6 +36,17 @@ public abstract class AbstractPiece {
 		return MoveType.ILLEGAL;
 	}
 	
+	public boolean canMoveSomewhere(){
+		for(int i=0; i<board.getWidth(); i++){
+			for(int j=0; j<board.getHeight(); j++){
+				if(canMoveTest(i,j)){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
 	public Color getColor(){
 		return color;
 	}
@@ -151,7 +162,7 @@ public abstract class AbstractPiece {
 	}
 	
 	// this *public* method is intended for testing purposes and for the board
-	// to check wether a move leaves us in check or discover check-/stale-mate.
+	// to check whether a move leaves us in check or discover check-/stale-mate.
 	public boolean canMoveTest(int toX, int toY){
 		return canMove(new Point(toX, toY)) == MoveType.ILLEGAL ? false : true;
 	}
