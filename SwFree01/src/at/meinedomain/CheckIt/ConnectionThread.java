@@ -107,6 +107,18 @@ public class ConnectionThread extends Thread {
 		if(b == "E".getBytes()[0]){
 			return MoveType.EN_PASSANT;
 		}
+		if(b == "q".getBytes()[0]){
+			return MoveType.PAWN_TO_QUEEN;
+		}
+		if(b == "r".getBytes()[0]){
+			return MoveType.PAWN_TO_ROOK;
+		}
+		if(b == "n".getBytes()[0]){
+			return MoveType.PAWN_TO_KNIGHT;
+		}
+		if(b == "b".getBytes()[0]){
+			return MoveType.PAWN_TO_BISHOP;
+		}
 		else{
 			return MoveType.ILLEGAL;
 		}
@@ -156,8 +168,20 @@ public class ConnectionThread extends Thread {
 		if(mt==MoveType.EN_PASSANT){
 			return "E".getBytes()[0];
 		}
+		if(mt==MoveType.PAWN_TO_QUEEN){
+			return "q".getBytes()[0];
+		}
+		if(mt==MoveType.PAWN_TO_ROOK){
+			return "r".getBytes()[0];
+		}
+		if(mt==MoveType.PAWN_TO_KNIGHT){
+			return "n".getBytes()[0];
+		}
+		if(mt==MoveType.PAWN_TO_BISHOP){
+			return "b".getBytes()[0];
+		}
 		else{
-			return "!".getBytes()[0];
+			return "?".getBytes()[0];
 		}
 	}
 	
